@@ -1,0 +1,8 @@
+{
+  "events": {
+    "start": "cls"
+  },
+  "watch": ["src", "server.js"],
+  "ext": "js",
+  "exec": "npm run start"
+}
