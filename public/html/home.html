@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Home</title>
+    <link rel="stylesheet" href="../css/home.css">
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="Logo">
+        </div>
+        <div class="button-container">
+            <button class="header-button help-button">
+                <i class="fas fa-question-circle"></i>
+            </button>
+            <button class="header-button logout-button" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1>What would you like to do?</h1>
+        <div class="icon-grid">
+            <div class="icon-item">
+                <a href="#">
+                    <i class="fas fa-calendar-alt"></i>
+                    <p>Reserve Court</p>
+                </a>
+            </div>
+            <div class="icon-item">
+                <a href="#">
+                    <i class="fas fa-bullhorn"></i>
+                    <p>View Announcements</p>
+                </a>
+            </div>
+            <div class="icon-item">
+                <a href="#">
+                    <i class="fas fa-building"></i>
+                    <p>Organization</p>
+                </a>
+            </div>
+            <div class="icon-item">
+                <a href="#">
+                    <i class="fas fa-id-badge"></i>
+                    <p>Membership</p>
+                </a>
+            </div>
+            <div class="icon-item">
+                <a href="#">
+                    <i class="fas fa-shopping-cart"></i>
+                    <p>Shop Now</p>
+                </a>
+            </div>
+            <div class="icon-item">
+                <a href="#">
+                    <i class="fas fa-calendar-week"></i>
+                    <p>View Schedule</p>
+                </a>
+            </div>
+            <div class="icon-item">
+                <a href="userProfile.html">
+                    <i class="fas fa-user-edit"></i>
+                    <p>Edit Profile</p>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Logout</h2>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to log out?</p>
+            </div>
+            <div class="modal-footer">
+                <button id="confirmLogout">Yes</button>
+                <button id="cancelLogout">Cancel</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get the modal
+        var modal = document.getElementById("logoutModal");
+
+        // Get the button that opens the modal
+        var btn = document.getElementById("logoutBtn");
+
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+
+        // Get the confirm and cancel buttons
+        var confirmLogout = document.getElementById("confirmLogout");
+        var cancelLogout = document.getElementById("cancelLogout");
+
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks on cancel, close the modal
+        cancelLogout.onclick = function() {
+            modal.style.display = "none";
+        }
+
+        // When the user clicks on confirmLogout, handle logout
+        confirmLogout.onclick = function() {
+            // Handle the logout process here (e.g., redirect to a logout URL)
+            window.location.href = "logout.php"; // Adjust this to your logout URL
+        }
+
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

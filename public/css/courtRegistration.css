@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+body {
+    margin: 0;
+    padding: 20px;
+    background-color: #FFF;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: #ffffff;
+    border-radius: 5px;
+    box-shadow: 0 0 8px rgba(0,0,0,0.2);
+    padding: 20px;
+    width: 90%;
+    max-width: 1000px;
+    margin: 20px auto;
+}
+
+h1 {
+    font-size: 35px;
+    font-weight: 600;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+form {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #2e2e2e;
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="time"],
+input[type="file"] {
+    width: 100%;
+    height: 45px;
+    padding-left: 10px;
+    outline: none;
+    font-size: 12px;
+    font-weight: 400;
+    background-color: #f1f4fb;
+    color: #000;
+    border-radius: 5px;
+    border: 1px solid #f1f4fb;
+    margin: 8px 0;
+    box-sizing: border-box;
+    position: relative;
+}
+
+input:focus {
+    border: 1px solid black;
+}
+
+.submit {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 45px;
+    width: 100%;
+    max-width: 200px;
+    border: none;
+    outline: none;
+    color: white;
+    border-radius: 5px;
+    margin: 25px auto;
+    background-color: #142850;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: 400;
+    grid-column: span 3;
+}
+
+.submit:hover {
+    background-color: #397CF7 !important;
+}
+
+/* Amenities Section */
+.amenities-container {
+    grid-column: span 3;
+}
+
+.amenity-field {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    position: relative;
+    width: 50%;
+}
+
+.amenity-field input {
+    flex: 1;
+    height: 40px;
+    padding: 5px 10px;
+}
+
+.amenity-field button.remove-amenity-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 10px;
+    color: #FF0000;
+    position: absolute;
+    right: 10px;
+}
+
+.add-amenity-btn {
+    background-color: #142850;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 5px 15px;
+    color: white;
+    border-radius: 3px;
+    margin-top: 10px;
+}
+
+/* File Uploads Section */
+.file-input {
+    grid-column: span 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+input[type="file"] {
+    opacity: 0;
+    position: absolute;
+    z-index: 2;
+    width: 100%;
+    height: 45px;
+    cursor: pointer;
+}
+
+.custom-file-upload {
+    display: inline-block;
+    background-color: #f1f4fb;
+    border: 1px solid #f1f4fb;
+    border-radius: 5px;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #000;
+    width: 100%;
+    text-align: left;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.upload-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/724/724933.png');
+    background-size: cover;
+}
+
+.custom-file-upload span {
+    margin-left: 10px;
+    color: #999;
+}

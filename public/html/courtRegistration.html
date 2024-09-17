@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Court Registration</title>
+    <link rel="stylesheet" href="../css/courtRegistration.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Court Registration</h1>
+        <div class="details-container">
+            <h3>Business Details</h3>
+            <form>
+                <!-- Business Name, Operating Hours (From), Operating Hours (To) -->
+                <div>
+                    <label for="businessName">Business Name</label>
+                    <input type="text" id="businessName" name="businessName" placeholder="Enter business name" required>
+                </div>
+                <div>
+                    <label for="operatingHoursFrom">Operating Hours (From)</label>
+                    <input type="time" id="operatingHoursFrom" name="operatingHoursFrom" required>
+                </div>
+                <div>
+                    <label for="operatingHoursTo">Operating Hours (To)</label>
+                    <input type="time" id="operatingHoursTo" name="operatingHoursTo" required>
+                </div>
+            
+                <!-- Contact Number, Business Email -->
+                <div>
+                    <label for="contactNumber">Contact Number</label>
+                    <input type="tel" id="contactNumber" name="contactNumber" placeholder="Enter contact number" required>
+                </div>
+                <div>
+                    <label for="businessEmail">Business Email</label>
+                    <input type="email" id="businessEmail" name="businessEmail" placeholder="Enter business email" required>
+                </div>
+                <div></div>
+            
+                <!-- Amenities -->
+                <div class="amenities-container">
+                    <h3>All Available Amenities</h3>
+                    <label for="amenities">Available Amenities</label>
+                    <div class="amenity-field">
+                        <input type="text" name="amenities[]" placeholder="Enter amenity" required>
+                    </div>
+                    <button type="button" class="add-amenity-btn" onclick="addAmenity()">Add more</button>
+                </div>
+
+                
+                <!-- File Uploads -->
+                <div class="files-container">
+                    <h3>Important Files to Upload</h3>
+                    <div class="file-input">
+                        <label for="dti">DTI Registration</label>
+                        <div class="custom-file-upload">
+                            <span class="upload-icon"></span>
+                            <input type="file" id="dti" name="dti" required onchange="showFileName(this)">
+                            <span>No file chosen</span>
+                        </div>
+                    </div>
+                    <div class="file-input">
+                        <label for="businessPermit">Business Permit</label>
+                        <div class="custom-file-upload">
+                            <span class="upload-icon"></span>
+                            <input type="file" id="businessPermit" name="businessPermit" required onchange="showFileName(this)">
+                            <span>No file chosen</span>
+                        </div>
+                    </div>
+                    <div class="file-input">
+                        <label for="barangayClearance">Barangay Clearance</label>
+                        <div class="custom-file-upload">
+                            <span class="upload-icon"></span>
+                            <input type="file" id="barangayClearance" name="barangayClearance" required onchange="showFileName(this)">
+                            <span>No file chosen</span>
+                        </div>
+                    </div>
+                    <div class="file-input">
+                        <label for="bir">BIR Registration</label>
+                        <div class="custom-file-upload">
+                            <span class="upload-icon"></span>
+                            <input type="file" id="bir" name="bir" required onchange="showFileName(this)">
+                            <span>No file chosen</span>
+                        </div>
+                    </div>
+                    <div class="file-input">
+                        <label for="sanitaryPermit">Sanitary Permit</label>
+                        <div class="custom-file-upload">
+                            <span class="upload-icon"></span>
+                            <input type="file" id="sanitaryPermit" name="sanitaryPermit" required onchange="showFileName(this)">
+                            <span>No file chosen</span>
+                        </div>
+                    </div>
+                    <div class="file-input">
+                        <label for="fireSafety">Fire Safety Certificate</label>
+                        <div class="custom-file-upload">
+                            <span class="upload-icon"></span>
+                            <input type="file" id="fireSafety" name="fireSafety" required onchange="showFileName(this)">
+                            <span>No file chosen</span>
+                        </div>
+                    </div>
+                </div>
+            
+                <button class="submit" type="submit">Submit</button>
+            </form>
+            
+    </div>
+
+    <script>
+        // Function to update file name on selection
+        function showFileName(input) {
+            var fileName = input.files[0] ? input.files[0].name : 'No file chosen';
+            var span = input.nextElementSibling;
+            span.textContent = fileName;
+        }
+
+        function addAmenity() {
+    var container = document.querySelector('.amenities-container');
+    var amenityField = document.createElement('div');
+    amenityField.classList.add('amenity-field');
+
+    var input = document.createElement('input');
+    input.type = 'text';
+    input.name = 'amenities[]';
+    input.placeholder = 'Enter amenity';
+    input.required = true;
+
+    var removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.innerHTML = '&#x2715;'; // 'x' symbol for remove button
+    removeBtn.classList.add('remove-amenity-btn');
+    removeBtn.onclick = function() {
+        removeAmenity(removeBtn);
+    };
+
+    amenityField.appendChild(input);
+    amenityField.appendChild(removeBtn);
+    container.insertBefore(amenityField, container.querySelector('.add-amenity-btn')); // Add new field before the "Add more" button
+}
+
+
+        function removeAmenity(button) {
+            var amenityField = button.parentNode;
+            amenityField.remove();
+        }
+    </script>
+
+</body>
+</html>
