@@ -10,8 +10,14 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '127.0.0.1';
 
-// serve public folder as static
-app.use(express.static(path.join(__dirname, 'public')));
+// serve public folder as static and cache it
+app.use(
+  express.static(path.join(path.join(__dirname), 'public'), {
+    setHeaders(res) {
+      res.setHeader('Cache-Control', 'public,max-age=31536000,immutable');
+    }
+  })
+);
 
 // For logging HTTP requests.
 app.use(morgan('dev'));
@@ -35,6 +41,8 @@ app.use(cors());
 
 // Initialize and register all the application routes
 const initRoutes = require('./src/routes');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 initRoutes(app);
 
 app.listen(PORT, HOST, () => {
