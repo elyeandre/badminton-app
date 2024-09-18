@@ -33,12 +33,8 @@ app.use(helmet());
  **/
 app.use(cors());
 
-// if (process.env.NODE_ENV === 'development') {
-//   app.use('*', createProxyMiddleware({ target: 'http://127.0.0.1:3000', ws: true }));
-// }
-
 // Initialize and register all the application routes
-const initRoutes = require('./src/routes/routes');
+const initRoutes = require('./src/routes');
 initRoutes(app);
 
 app.listen(PORT, HOST, () => {
