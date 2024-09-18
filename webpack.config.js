@@ -113,7 +113,8 @@ module.exports = (env, argv) => {
       ...htmlPlugins
     ],
     resolve: {
-      roots: [path.resolve(__dirname, 'public'), path.resolve(__dirname, 'public/assets/images')]
+      roots: [path.resolve(__dirname, 'public'), path.resolve(__dirname, 'public/assets/images')],
+      extensions: ['json', '.js']
     },
     optimization: {
       minimize: true,
