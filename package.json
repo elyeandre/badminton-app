@@ -4,7 +4,9 @@
   "main": "server.js",
   "scripts": {
     "start": "cross-env NODE_ENV=production node server.js",
-    "dev": "cross-env NODE_ENV=development nodemon server.js"
+    "dev": "cross-env NODE_ENV=development webpack serve --open --env mode=development",
+    "watch": "webpack --watch --env mode=development",
+    "build": "webpack --env mode=production"
   },
   "keywords": [
     "badminton court reservation"
