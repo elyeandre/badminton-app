@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Home</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    font-family: 'Poppins', sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    height: 7.3%;
+    background-color: #fff;
+    padding: 10px 24px; /* Reduced padding shorthand */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    top: 0; 
+}
+
+
+.logo-container img {
+    width: 50px;
+    height: auto;
+    padding-top: 4px;
+}
+
+.button-container {
+    display: flex;
+    align-items: center;
+    margin-right: 55px;
+}
+
+.header-button {
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    transition: background-color 0.3s;
+}
+
+.header-button i {
+    margin-right: 0;
+    color: #000;
+}
+
+.header-button.help-button:hover {
+    background-color: #397CF7;
+}
+
+.header-button.logout-button:hover {
+    background-color: #397CF7;
+}
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="../img/logo.png" alt="Logo">
+        </div>
+        <div class="button-container">
+            <button class="header-button help-button">
+                <i class="fas fa-question-circle"></i>
+            </button>
+            <button class="header-button logout-button" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+    </div>
+</body>
+</html>

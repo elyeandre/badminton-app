@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Owner Profile</title>
+    <link rel="stylesheet" href="../css/ownerProfile.css">
+    <script src="../js/sideNavAdmin.js" defer></script>
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <div id="profileNav" class="profile-nav">
+            <a href="ownerProfile.html" class="active">Owner Profile</a>
+            <a href="businessProfile.html">Business Profile</a>
+            <a href="pinPointProfile.html">Pin Point Profile</a>
+        </div>
+
+        <div class="box">
+            <h3>Personal Information <i class="fas fa-edit"></i></h3>
+            <div class="grid-container">
+                <div class="input-group">
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" placeholder="Enter your first name">
+                </div>
+                <div class="input-group">
+                    <label for="middleName">Middle Name</label>
+                    <input type="text" id="middleName" placeholder="Enter your middle name">
+                </div>
+                <div class="input-group">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" id="lastName" placeholder="Enter your last name">
+                </div>
+                <!-- Gender as Dropdown -->
+                <div class="input-group">
+                    <label for="gender">Gender</label>
+                    <select id="gender">
+                        <option disabled selected>Select gender</option>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="birthday">Birthday</label>
+                    <input type="date" id="birthday">
+                </div>
+                <!-- Status as Dropdown -->
+                <div class="input-group">
+                    <label for="status">Status</label>
+                    <select id="status">
+                        <option disabled selected>Select status</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Widowed/er">Widowed/er</option>
+                        <option value="Separated">Separated</option>
+                        <option value="Cohabitant">Cohabitant</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="contactNumber">Contact Number</label>
+                    <input type="text" id="contactNumber" placeholder="Enter your contact number">
+                </div>
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="Enter your email">
+                </div>
+                <!-- Municipality as Dropdown -->
+                <div class="input-group">
+                    <label for="municipality">Municipality</label>
+                    <select id="municipality">
+                        <option disabled selected>Select municipality</option>
+                        <option>Abucay</option>
+                        <option>Bagac</option>
+                        <option>Balanga City</option>
+                        <option>Dinalupihan</option>
+                        <option>Hermosa</option>
+                        <option>Limay</option>
+                        <option>Mariveles</option>
+                        <option>Morong</option>
+                        <option>Orani</option>
+                        <option>Orion</option>
+                        <option>Samal</option>
+                        <option>Pilar</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
