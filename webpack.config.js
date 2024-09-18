@@ -7,6 +7,7 @@ const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
 const fs = require('fs');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const pageTitles = {
   index: 'Welcome',
@@ -108,6 +109,17 @@ module.exports = (env, argv) => {
       new CleanWebpackPlugin({
         protectWebpackAssets: false,
         cleanAfterEveryBuildPatterns: ['*.LICENSE.txt']
+      }),
+      new CopyWebpackPlugin({
+        patterns: [
+          // Copy JS and CSS files to the 'public' folder
+          { from: 'build/*.js', to: path.resolve(__dirname, 'public/[name][ext]') },
+          { from: 'build/*.css', to: path.resolve(__dirname, 'public/[name][ext]') },
+
+          // Move HTML files to the 'src' folder
+          { from: 'build/index.html', to: path.resolve(__dirname, 'src/html/index.html') },
+          { from: 'build/signIn.html', to: path.resolve(__dirname, 'src/html/signIn.html') }
+        ]
       }),
       new NodePolyfillPlugin(),
       ...htmlPlugins
