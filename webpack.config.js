@@ -76,7 +76,7 @@ module.exports = (env, argv) => {
       filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'build'),
       assetModuleFilename: '[path][name][ext]',
-      clean: false
+      clean: true
     },
     module: {
       rules: [
