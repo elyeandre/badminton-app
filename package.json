@@ -7,7 +7,8 @@
     "dev": "cross-env NODE_ENV=development webpack serve --open --env mode=development",
     "development": "nodemon",
     "watch": "webpack --watch --env mode=development",
-    "build": "cross-env NODE_ENV=production webpack --env mode=production"
+    "clean-build": "node clean-build.js",
+    "build": "cross-env NODE_ENV=production && webpack --env mode=production"
   },
   "keywords": [
     "badminton court reservation"
@@ -30,11 +31,11 @@
     "@babel/preset-env": "^7.25.4",
     "babel-loader": "^9.2.1",
     "clean-webpack-plugin": "^4.0.0",
-    "copy-webpack-plugin": "^12.0.2",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.0",
     "ejs-easy-loader": "^0.1.4",
+    "filemanager-webpack-plugin": "^8.0.0",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.0",
     "mini-css-extract-plugin": "^2.9.1",

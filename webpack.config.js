@@ -3,11 +3,11 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { loadCSS, extractCSS } = require('./webpack.parts');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const FileManagerPlugin = require('filemanager-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const { merge } = require('webpack-merge');
 const TerserPlugin = require('terser-webpack-plugin');
 const fs = require('fs');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 const pageTitles = {
   index: 'Welcome',
@@ -105,22 +105,49 @@ module.exports = (env, argv) => {
         }
       ]
     },
+    watch: true,
+    watchOptions: {
+      // Options for file watching
+      aggregateTimeout: 300, // Delay the rebuild after changes
+      poll: 1000, // Check for changes every second
+      ignored: /node_modules/ // Ignore changes in the node_modules folder
+    },
     plugins: [
+      new FileManagerPlugin({
+        events: {
+          onStart: {
+            delete: [
+              {
+                source: path.join(__dirname, 'build/').replaceAll('\\', '/'),
+                options: {
+                  force: true,
+                  recursive: true
+                }
+              }
+            ]
+          },
+          onEnd: {
+            copy: [
+              // Copy all JavaScript files
+              { source: path.join(__dirname, 'build/*.js'), destination: path.join(__dirname, 'public') },
+              // Copy all CSS files
+              { source: path.join(__dirname, 'build/*.css'), destination: path.join(__dirname, 'public') },
+              // Copy all HTML files
+              {
+                source: path.join(__dirname, 'build/*.html'),
+                destination: path.resolve(__dirname, 'src/html')
+              }
+            ]
+          }
+        },
+        runTasksInSeries: false, // Run tasks in parallel
+        runOnceInWatchMode: false // Run tasks only once in watch mode
+      }),
       new CleanWebpackPlugin({
         protectWebpackAssets: false,
         cleanAfterEveryBuildPatterns: ['*.LICENSE.txt']
       }),
-      new CopyWebpackPlugin({
-        patterns: [
-          // Copy JS and CSS files to the 'public' folder
-          { from: 'build/*.js', to: path.resolve(__dirname, 'public/[name][ext]') },
-          { from: 'build/*.css', to: path.resolve(__dirname, 'public/[name][ext]') },
 
-          // Move HTML files to the 'src' folder
-          { from: 'build/index.html', to: path.resolve(__dirname, 'src/html/index.html') },
-          { from: 'build/signIn.html', to: path.resolve(__dirname, 'src/html/signIn.html') }
-        ]
-      }),
       new NodePolyfillPlugin(),
       ...htmlPlugins
     ],
