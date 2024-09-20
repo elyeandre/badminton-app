@@ -1,10 +1,27 @@
 <body>
-  <div id="index-ui"></div>
+  <div id="index-ui">
+    <div class="container">
+      <div class="upper-content-container">
+        <div class="logo-container">
+          <a href="/">
+            <img src="/assets/images/logo-white.png" alt="Logo" />
+          </a>
+        </div>
+        <div class="title-container">
+          <h2>Bataan Badminton Portal</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="img-container">
+      <img src="/assets/images/indexImg.png" alt="Image" />
+    </div>
+  </div>
+
   <div class="login-form-container">
     <div class="login-form" id="loginFormContainer">
       <div class="text">Sign in</div>
-      <div class="alert alert-danger" role="alert"></div>
-      <form method="post" action="#">
+      <form id="loginform">
         <div class="data">
           <label>Username</label>
           <input type="text" id="username" name="username" placeholder="Enter your username" required />
@@ -12,7 +29,7 @@
         <div class="data">
           <label>Password</label>
           <input id="password" name="password" type="password" placeholder="Enter your password" required />
-          <!--<i class="fas fa-eye-slash toggle-password"></i>-->
+          <!--<i class="fas fa-eye-slash toggle-password"></i> -->
         </div>
         <div class="data">
           <label>User Type</label>
@@ -34,10 +51,11 @@
     <div>
       <h4>
         Don't have an account?
-        <a href="#">Sign up here.</a>
+        <a href="/signup">Sign up here.</a>
       </h4>
     </div>
   </div>
+
   <!-- Forgot Password Modal -->
   <div
     class="modal fade"

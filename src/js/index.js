@@ -1,4 +1,3 @@
-import '../css/index-ui.css';
 import '../css/style.css';
 
 const doc = document;
