@@ -9,15 +9,15 @@ let routes = (app) => {
   });
 
   router.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../../src/html/index.html'));
+    res.sendFile(path.resolve(__dirname, '../../build/index.html'));
   });
 
   router.get('/signin', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../../src/html/signin.html'));
+    res.sendFile(path.resolve(__dirname, '../../build/signin.html'));
   });
 
   router.get('/signup', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../../src/html/signup.html'));
+    res.sendFile(path.resolve(__dirname, '../../build/signup.html'));
   });
 
   app.use(router);
