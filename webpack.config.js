@@ -124,20 +124,15 @@ module.exports = (env, argv) => {
                 }
               }
             ]
+          },
+          onEnd: {
+            copy: [
+              // Copy all JavaScript files
+              { source: path.join(__dirname, 'build/*.js'), destination: path.join(__dirname, 'public') },
+              // Copy all CSS files
+              { source: path.join(__dirname, 'build/*.css'), destination: path.join(__dirname, 'public') }
+            ]
           }
-          // onEnd: {
-          //   copy: [
-          //     // Copy all JavaScript files
-          //     { source: path.join(__dirname, 'build/*.js'), destination: path.join(__dirname, 'public') },
-          //     // Copy all CSS files
-          //     { source: path.join(__dirname, 'build/*.css'), destination: path.join(__dirname, 'public') },
-          //     // Copy all HTML files
-          //     {
-          //       source: path.join(__dirname, 'build/*.html'),
-          //       destination: path.resolve(__dirname, 'src/html')
-          //     }
-          //   ]
-          // }
         },
         runTasksInSeries: false, // Run tasks in parallel
         runOnceInWatchMode: false // Run tasks only once in watch mode
@@ -152,7 +147,7 @@ module.exports = (env, argv) => {
     ],
     resolve: {
       roots: [path.resolve(__dirname, 'public'), path.resolve(__dirname, 'public/assets/images')],
-      extensions: ['json', '.js']
+      extensions: ['.json', '.js']
     },
     optimization: {
       minimize: true,
