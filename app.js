@@ -29,7 +29,28 @@ app.use(morgan('dev'));
  *
  **/
 
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      baseUri: ["'self'"],
+      fontSrc: ["'self'", 'https:', 'data:'],
+      formAction: ["'self'"],
+      frameAncestors: ["'self'"],
+      imgSrc: ["'self'", 'data:'],
+      objectSrc: ["'none'"],
+      scriptSrc: [
+        "'self'",
+        'https://code.jquery.com',
+        'https://cdn.jsdelivr.net',
+        'https://stackpath.bootstrapcdn.com'
+      ],
+      scriptSrcAttr: ["'none'"],
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+      upgradeInsecureRequests: []
+    }
+  })
+);
 
 /**
  *
