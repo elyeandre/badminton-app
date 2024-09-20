@@ -26,7 +26,7 @@ app.use(morgan('dev'));
  *
  * Helmet helps you secure your Express app by setting various HTTP headers
  * It protects against common security vulnerabilities like clickjacking, XSS, etc.
- *
+ * TODO: Change http to https
  **/
 
 app.use(
@@ -34,7 +34,7 @@ app.use(
     directives: {
       defaultSrc: ["'self'"],
       baseUri: ["'self'"],
-      fontSrc: ["'self'", 'https:', 'data:'],
+      fontSrc: ["'self'", 'http:', 'data:'],
       formAction: ["'self'"],
       frameAncestors: ["'self'"],
       imgSrc: ["'self'", 'data:'],
@@ -46,7 +46,7 @@ app.use(
         'https://stackpath.bootstrapcdn.com'
       ],
       scriptSrcAttr: ["'none'"],
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"]
+      styleSrc: ["'self'", 'http:', "'unsafe-inline'"]
       // Temporarily disable this
       // upgradeInsecureRequests: []
     }
