@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=production npm run build && node app.js",
-    "dev": "cross-env NODE_ENV=development webpack serve --open --env mode=development",
+    "start": "npx cross-env NODE_ENV=production npm run build && node app.js",
+    "dev": "npx cross-env NODE_ENV=development webpack serve --open --env mode=development",
     "development": "nodemon",
     "watch": "webpack --watch --env mode=development",
     "clean-build": "node clean-build.js",
-    "build": "cross-env NODE_ENV=production npm run clean-build && webpack --env mode=production"
+    "build": "npx cross-env NODE_ENV=production npm run clean-build && webpack --env mode=production"
   },
   "keywords": [
     "badminton court reservation"
