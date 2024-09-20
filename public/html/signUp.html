@@ -13,7 +13,7 @@
             <div class="upper-content-container">
                 <div class="logo-container">
                     <a href="index.html">
-                        <img src="../img/logo-white.png" alt="Logo">
+                        <img src="../assets/images/logo-white.png" alt="Logo">
                     </a>
                 </div>
                 <div class="title-container">
@@ -23,7 +23,7 @@
         </div>
     
         <div class="img-container">
-            <img src="../img/indexImg.png" alt="Image">
+            <img src="../assets/images/indexImg.png" alt="Image">
         </div>
     </div>
 
@@ -33,13 +33,13 @@
             <div class="image-grid">
                 <div class="image-item">
                     <a href="#" onclick="showSignUpForm('courtOwner')">
-                        <img src="../img/1.png" alt="Image 1">
+                        <img src="../assets/images/1.png" alt="Image 1">
                         <p>Court Owner</p>
                     </a>
                 </div>
                 <div class="image-item">
                     <a href="#" onclick="showSignUpForm('user')">
-                        <img src="../img/4.png" alt="Image 4">
+                        <img src="../assets/images/4.png" alt="Image 4">
                         <p>User</p>
                     </a>
                 </div>                
@@ -250,22 +250,6 @@
             </div>
         </form>
     </div>
-    
-    <script>
-        function showSignUpForm(type) {
-            if (type === 'courtOwner') {
-                document.getElementById('courtOwnerFormContainer').style.display = 'block';
-                document.getElementById('userFormContainer').style.display = 'none';
-            } else {
-                document.getElementById('courtOwnerFormContainer').style.display = 'none';
-                document.getElementById('userFormContainer').style.display = 'block';
-            }
-        }
-
-        function hideSignupForm() {
-            document.getElementById('courtOwnerFormContainer').style.display = 'none';
-            document.getElementById('userFormContainer').style.display = 'none';
-        }
-    </script>
+    <script src="../js/signUp.js"></script>
 </body>
 </html>

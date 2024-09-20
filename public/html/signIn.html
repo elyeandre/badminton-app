@@ -8,19 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../css/signIn.css">
-    <script>
-        function handleSubmit(event) {
-            event.preventDefault();
-            var userType = document.querySelector('select[name="userType"]').value;
-            if (userType === "Admin") {
-                window.location.href = "adminDash.html";
-            } else if (userType === "Coach" || userType === "Player") {
-                window.location.href = "home.html";
-            } else {
-                alert("Please select a user type.");
-            }
-        }
-    </script>
 </head>
 <body>
     <div id="index-ui"> 
@@ -28,7 +15,7 @@
             <div class="upper-content-container">
                 <div class="logo-container">
                     <a href="index.html">
-                        <img src="../img/logo-white.png" alt="Logo">
+                        <img src="../assets/images/logo-white.png" alt="Logo">
                     </a>
                 </div>
                 <div class="title-container">
@@ -38,7 +25,7 @@
         </div>
     
         <div class="img-container">
-            <img src="../img/indexImg.png" alt="Image">
+            <img src="../assets/images/indexImg.png" alt="Image">
         </div>
     </div>
 
@@ -100,6 +87,7 @@
         </div>
     </div>
 
+    <script src="../js/signIn.js"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
