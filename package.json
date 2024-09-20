@@ -6,9 +6,9 @@
     "start": "npx cross-env NODE_ENV=production npm run build && node app.js",
     "dev": "npx cross-env NODE_ENV=development webpack serve --open --env mode=development",
     "development": "nodemon",
-    "watch": "webpack --watch --env mode=development",
+    "watch": "npx webpack --watch --env mode=development",
     "clean-build": "node clean-build.js",
-    "build": "npx cross-env NODE_ENV=production npm run clean-build && webpack --env mode=production"
+    "build": "npx cross-env NODE_ENV=production npm run clean-build && npx webpack --env mode=production"
   },
   "keywords": [
     "badminton court reservation"
