@@ -11,7 +11,8 @@ const fs = require('fs');
 
 const pageTitles = {
   index: 'Welcome',
-  signin: 'Sign In'
+  signin: 'Sign In',
+  signup: 'Sign Up'
 };
 
 // Page-specific stylesheets and scripts
@@ -30,6 +31,10 @@ const pageAssets = {
       'https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js',
       'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'
     ]
+  },
+  signup: {
+    styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
+    scripts: []
   }
 };
 
@@ -71,7 +76,8 @@ module.exports = (env, argv) => {
     devtool: env.mode === 'production' ? false : 'source-map',
     entry: {
       index: './src/js/index.js',
-      signIn: './src/js/signIn.js'
+      signin: './src/js/signIn.js',
+      signup: './src/js/signUp.js'
     },
     output: {
       filename: '[name].[contenthash].js',
@@ -104,13 +110,6 @@ module.exports = (env, argv) => {
           }
         }
       ]
-    },
-    watch: true,
-    watchOptions: {
-      // Options for file watching
-      aggregateTimeout: 300, // Delay the rebuild after changes
-      poll: 1000, // Check for changes every second
-      ignored: /node_modules/ // Ignore changes in the node_modules folder
     },
     plugins: [
       new FileManagerPlugin({
