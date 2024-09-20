@@ -46,8 +46,9 @@ app.use(
         'https://stackpath.bootstrapcdn.com'
       ],
       scriptSrcAttr: ["'none'"],
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-      upgradeInsecureRequests: []
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"]
+      // Temporarily disable this
+      // upgradeInsecureRequests: []
     }
   })
 );
