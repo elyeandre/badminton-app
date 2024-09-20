@@ -12,6 +12,10 @@ yarn.lock
 .env.local
 .env.*.local
 
+# Ignore generated assets
+public/*.css
+public/*js
+
 # Logs
 logs/
 *.log
