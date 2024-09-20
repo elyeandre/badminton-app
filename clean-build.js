@@ -4,6 +4,7 @@ const fs = require('fs');
 // directories to operate on
 const htmlDir = path.resolve(__dirname, 'src/html');
 const publicDir = path.resolve(__dirname, 'public');
+const buildDir = path.resolve(__dirname, 'build');
 
 // function to delete files with specific extensions in a directory
 const deleteFilesWithExtension = (dir, extensions) => {
@@ -54,5 +55,17 @@ const deleteHtmlFiles = (dir, excludePattern) => {
   });
 };
 
+// function to delete a directory recursively
+const deleteDirectory = (dir) => {
+  fs.rm(dir, { recursive: true, force: true }, (err) => {
+    if (err) {
+      console.error(`Error deleting directory ${dir}:`, err);
+    } else {
+      console.log(`Deleted directory: ${dir}`);
+    }
+  });
+};
+
 deleteHtmlFiles(htmlDir, 'body-content');
 deleteFilesWithExtension(publicDir, ['.css', '.js']);
+deleteDirectory(buildDir);
