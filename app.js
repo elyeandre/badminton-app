@@ -32,26 +32,51 @@ app.use(morgan('dev'));
 app.use(
   helmet.contentSecurityPolicy({
     directives: {
-      defaultSrc: ["'self'"],
+      defaultSrc: ["'self'", 'http:'], // Allow HTTP resources
       baseUri: ["'self'"],
       fontSrc: ["'self'", 'http:', 'data:'],
-      formAction: ["'self'"],
+      formAction: ["'self'", 'http:'], // Allow HTTP for form actions
       frameAncestors: ["'self'"],
-      imgSrc: ["'self'", 'data:'],
+      imgSrc: ["'self'", 'http:', 'data:'], // Allow HTTP images and data URIs
       objectSrc: ["'none'"],
       scriptSrc: [
         "'self'",
+        'http:', // Allow HTTP scripts
         'https://code.jquery.com',
         'https://cdn.jsdelivr.net',
         'https://stackpath.bootstrapcdn.com'
       ],
       scriptSrcAttr: ["'none'"],
-      styleSrc: ["'self'", 'http:', "'unsafe-inline'"]
+      styleSrc: ["'self'", 'http:', "'unsafe-inline'"] // Allow HTTP styles
       // Temporarily disable this
       // upgradeInsecureRequests: []
     }
   })
 );
+
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: ["'self'"],
+//       baseUri: ["'self'"],
+//       fontSrc: ["'self'", 'https:', 'data:'],
+//       formAction: ["'self'"],
+//       frameAncestors: ["'self'"],
+//       imgSrc: ["'self'", 'data:'],
+//       objectSrc: ["'none'"],
+//       scriptSrc: [
+//         "'self'",
+//         'https://code.jquery.com',
+//         'https://cdn.jsdelivr.net',
+//         'https://stackpath.bootstrapcdn.com'
+//       ],
+//       scriptSrcAttr: ["'none'"],
+//       styleSrc: ["'self'", 'https:', "'unsafe-inline'"]
+//       // Temporarily disable this
+//       // upgradeInsecureRequests: []
+//     }
+//   })
+// );
 
 /**
  *
