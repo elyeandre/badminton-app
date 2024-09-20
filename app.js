@@ -29,30 +29,30 @@ app.use(morgan('dev'));
  * TODO: Change http to https
  **/
 
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'", 'http:'], // Allow HTTP resources
-      baseUri: ["'self'"],
-      fontSrc: ["'self'", 'http:', 'data:'],
-      formAction: ["'self'", 'http:'], // Allow HTTP for form actions
-      frameAncestors: ["'self'"],
-      imgSrc: ["'self'", 'http:', 'data:'], // Allow HTTP images and data URIs
-      objectSrc: ["'none'"],
-      scriptSrc: [
-        "'self'",
-        'http:', // Allow HTTP scripts
-        'https://code.jquery.com',
-        'https://cdn.jsdelivr.net',
-        'https://stackpath.bootstrapcdn.com'
-      ],
-      scriptSrcAttr: ["'none'"],
-      styleSrc: ["'self'", 'http:', "'unsafe-inline'"] // Allow HTTP styles
-      // Temporarily disable this
-      // upgradeInsecureRequests: []
-    }
-  })
-);
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       defaultSrc: ["'self'", 'http:'], // Allow HTTP resources
+//       baseUri: ["'self'"],
+//       fontSrc: ["'self'", 'http:', 'data:'],
+//       formAction: ["'self'", 'http:'], // Allow HTTP for form actions
+//       frameAncestors: ["'self'"],
+//       imgSrc: ["'self'", 'http:', 'data:'], // Allow HTTP images and data URIs
+//       objectSrc: ["'none'"],
+//       scriptSrc: [
+//         "'self'",
+//         'http:', // Allow HTTP scripts
+//         'https://code.jquery.com',
+//         'https://cdn.jsdelivr.net',
+//         'https://stackpath.bootstrapcdn.com'
+//       ],
+//       scriptSrcAttr: ["'none'"],
+//       styleSrc: ["'self'", 'http:', "'unsafe-inline'"] // Allow HTTP styles
+//       // Temporarily disable this
+//       // upgradeInsecureRequests: []
+//     }
+//   })
+// );
 
 // app.use(
 //   helmet.contentSecurityPolicy({
@@ -84,7 +84,7 @@ app.use(
  * It's useful when your frontend and backend are hosted on different domains or ports
  *
  **/
-app.use(cors());
+// app.use(cors());
 
 // Initialize and register all the application routes
 const initRoutes = require('./src/routes');
