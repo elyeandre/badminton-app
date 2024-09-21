@@ -5,8 +5,8 @@ const fs = require('fs');
 const publicDir = path.resolve(__dirname, '../public');
 const buildDir = path.resolve(__dirname, '../build');
 
-// function to delete files with specific extensions in a directory
-const deleteFilesWithExtension = (dir, extensions) => {
+// function to delete files with specific extensions in a directory, ignoring specified files
+const deleteFilesWithExtension = (dir, extensions, excludeFiles = []) => {
   fs.readdir(dir, (err, files) => {
     if (err) {
       console.error(`Error reading directory ${dir}:`, err);
@@ -14,7 +14,7 @@ const deleteFilesWithExtension = (dir, extensions) => {
     }
 
     const filesToDelete = files.filter((file) => {
-      return extensions.some((ext) => file.endsWith(ext));
+      return extensions.some((ext) => file.endsWith(ext)) && !excludeFiles.includes(file);
     });
 
     filesToDelete.forEach((file) => {
@@ -65,5 +65,5 @@ const deleteDirectory = (dir) => {
   });
 };
 
-deleteFilesWithExtension(publicDir, ['.css', '.js']);
+deleteFilesWithExtension(publicDir, ['.css', '.js'], ['error.css']); // Exclude error.css
 deleteDirectory(buildDir);
