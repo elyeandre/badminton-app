@@ -36,6 +36,7 @@
     "helmet": "^7.1.0",
     "html-loader": "^5.1.0",
     "html-webpack-plugin": "^5.6.0",
+    "http-errors": "^2.0.0",
     "mini-css-extract-plugin": "^2.9.1",
     "morgan": "^1.10.0",
     "node-polyfill-webpack-plugin": "^4.0.0",
