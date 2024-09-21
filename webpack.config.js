@@ -43,7 +43,7 @@ const pages = Object.keys(pageTitles);
 // Create an array to store HtmlWebpackPlugin instances
 const htmlPlugins = pages.map((page) => {
   // Construct the file path
-  const filePath = path.resolve(__dirname, 'src/html', `${page}-body-content.html`);
+  const filePath = path.resolve(__dirname, 'src/views', `${page}-body-content.html`);
   // Read the content of each file
   const bodyContent = fs.readFileSync(filePath, 'utf-8');
 
