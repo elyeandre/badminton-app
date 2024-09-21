@@ -1,9 +1,9 @@
 {
   "name": "badminton-app",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "npx cross-env NODE_ENV=production npm run build && node app.js",
+    "start": "npx cross-env NODE_ENV=production npm run build && node server.js",
     "dev": "npx cross-env NODE_ENV=development npx webpack serve --open --env mode=development",
     "development": "nodemon",
     "watch": "npx webpack --watch --env mode=development",
