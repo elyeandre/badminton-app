@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
+const compression = require('compression');
 const helmet = require('helmet');
 const cors = require('cors');
 const path = require('path');
@@ -85,6 +86,12 @@ app.use(morgan('dev'));
  *
  **/
 // app.use(cors());
+/**
+ *
+ * enable compression reduces the size of html css and js to significantly improves the latency
+ *
+ */
+app.use(compression());
 
 // Initialize and register all the application routes
 const initRoutes = require('./src/routes');
