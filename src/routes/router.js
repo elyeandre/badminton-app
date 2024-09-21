@@ -20,7 +20,7 @@ let routes = (app) => {
     res.sendFile(path.resolve(__dirname, '../../build/signup.html'));
   });
 
-  app.use(router);
+  app.use('/', router);
 };
 
 module.exports = routes;
