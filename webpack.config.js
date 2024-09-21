@@ -54,7 +54,7 @@ const htmlPlugins = pages.map((page) => {
   const chunks = [page];
 
   return new HtmlWebpackPlugin({
-    template: './src/template.ejs', // Template for all HTML pages
+    template: './src/views/template.ejs', // Template for all HTML pages
     filename: `./${page}.html`, // Output file for each page
     domain: 'badminton-app-sooty.vercel.app',
     bodyContent, // Inject the body content dynamically
