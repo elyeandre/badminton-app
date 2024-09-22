@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const compression = require('compression');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const mongoose = require('mongoose');
 const helmet = require('helmet');
 const path = require('path');
 const createError = require('http-errors');
@@ -101,10 +102,21 @@ const server = app.listen(config.get('port'), config.get('host'), () => {
 });
 
 // handle graceful shutdown
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   console.log('Shutting down server...');
-  server.close(() => {
+
+  // close server connections
+  server.close(async () => {
     console.log('Closed out remaining connections.');
+
+    // close MongoDB connection
+    try {
+      await mongoose.connection.close();
+      console.log('MongoDB connection closed.');
+    } catch (error) {
+      console.error('Error while closing MongoDB connection:', error);
+    }
+
     process.exit(0);
   });
 });
