@@ -13,7 +13,7 @@ const { error } = console;
 const config = require('config');
 
 // database connection
-const connectDB = require('./src/utils/db');
+const connectDB = require('./config/db');
 connectDB(config);
 
 const app = express();
