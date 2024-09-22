@@ -7,104 +7,161 @@
     <link rel="stylesheet" href="../css/courtRegistration.css">
 </head>
 <body>
-
     <div class="container">
         <h1>Court Registration</h1>
         <div class="details-container">
-            <h3>Business Details</h3>
+            <h3>1. Complete Court Basic Information</h3>
             <form>
-                <!-- Business Name, Operating Hours (From), Operating Hours (To) -->
-                <div>
-                    <label for="businessName">Business Name</label>
-                    <input type="text" id="businessName" name="businessName" placeholder="Enter business name" required>
-                </div>
-                <div>
-                    <label for="operatingHoursFrom">Operating Hours (From)</label>
-                    <input type="time" id="operatingHoursFrom" name="operatingHoursFrom" required>
-                </div>
-                <div>
-                    <label for="operatingHoursTo">Operating Hours (To)</label>
-                    <input type="time" id="operatingHoursTo" name="operatingHoursTo" required>
-                </div>
-            
-                <!-- Contact Number, Business Email -->
-                <div>
-                    <label for="contactNumber">Contact Number</label>
-                    <input type="tel" id="contactNumber" name="contactNumber" placeholder="Enter contact number" required>
-                </div>
-                <div>
-                    <label for="businessEmail">Business Email</label>
-                    <input type="email" id="businessEmail" name="businessEmail" placeholder="Enter business email" required>
-                </div>
-                <div></div>
-            
-                <!-- Amenities -->
-                <div class="amenities-container">
-                    <h3>All Available Amenities</h3>
-                    <label for="amenities">Available Amenities</label>
-                    <div class="amenity-field">
-                        <input type="text" name="amenities[]" placeholder="Enter amenity" required>
+                <div class="business-container">
+                    <div>
+                        <label for="businessName">Business Name</label>
+                        <input type="text" id="businessName" name="businessName" placeholder="Enter business name" required>
                     </div>
-                    <button type="button" class="add-amenity-btn" onclick="addAmenity()">Add more</button>
+                    <div>
+                        <label for="contactNumber">Contact Number</label>
+                        <input type="tel" id="contactNumber" name="contactNumber" placeholder="Enter contact number" required>
+                    </div>
+                    <div>
+                        <label for="businessEmail">Business Email</label>
+                        <input type="email" id="businessEmail" name="businessEmail" placeholder="Enter business email" required>
+                    </div>
+                    <div>
+                        <label for="operatingHoursFrom">Operating Hours (From)</label>
+                        <input type="time" id="operatingHoursFrom" name="operatingHoursFrom" required>
+                    </div>
+                    <div>
+                        <label for="operatingHoursTo">Operating Hours (To)</label>
+                        <input type="time" id="operatingHoursTo" name="operatingHoursTo" required>
+                    </div>
+                    <div>
+                        <label for="fee">Hourly Rate (PHP)</label>
+                        <input type="number" id="fee" name="fee" placeholder="Enter rate per hour" required>
+                    </div>
                 </div>
 
-                
-                <!-- File Uploads -->
-                <div class="files-container">
-                    <h3>Important Files to Upload</h3>
-                    <div class="file-input">
-                        <label for="dti">DTI Registration</label>
-                        <div class="custom-file-upload">
-                            <span class="upload-icon"></span>
-                            <input type="file" id="dti" name="dti" required onchange="showFileName(this)">
-                            <span>No file chosen</span>
-                        </div>
-                    </div>
-                    <div class="file-input">
-                        <label for="businessPermit">Business Permit</label>
-                        <div class="custom-file-upload">
-                            <span class="upload-icon"></span>
-                            <input type="file" id="businessPermit" name="businessPermit" required onchange="showFileName(this)">
-                            <span>No file chosen</span>
-                        </div>
-                    </div>
-                    <div class="file-input">
-                        <label for="barangayClearance">Barangay Clearance</label>
-                        <div class="custom-file-upload">
-                            <span class="upload-icon"></span>
-                            <input type="file" id="barangayClearance" name="barangayClearance" required onchange="showFileName(this)">
-                            <span>No file chosen</span>
-                        </div>
-                    </div>
-                    <div class="file-input">
-                        <label for="bir">BIR Registration</label>
-                        <div class="custom-file-upload">
-                            <span class="upload-icon"></span>
-                            <input type="file" id="bir" name="bir" required onchange="showFileName(this)">
-                            <span>No file chosen</span>
-                        </div>
-                    </div>
-                    <div class="file-input">
-                        <label for="sanitaryPermit">Sanitary Permit</label>
-                        <div class="custom-file-upload">
-                            <span class="upload-icon"></span>
-                            <input type="file" id="sanitaryPermit" name="sanitaryPermit" required onchange="showFileName(this)">
-                            <span>No file chosen</span>
-                        </div>
-                    </div>
-                    <div class="file-input">
-                        <label for="fireSafety">Fire Safety Certificate</label>
-                        <div class="custom-file-upload">
-                            <span class="upload-icon"></span>
-                            <input type="file" id="fireSafety" name="fireSafety" required onchange="showFileName(this)">
-                            <span>No file chosen</span>
+                <div class="pin-container">
+                    <h3>2. Upload Business Logo and Description</h3>
+                    <div class="pin-grid">
+                        <!-- Image Upload Section -->
+                        <label for="pin-image-upload" class="upload-label">
+                            <div class="image-upload-container">
+                                <img id="pin-preview" src="https://via.placeholder.com/120x120.png?text=Logo" alt="Upload Business Logo" />
+                                <input type="file" id="pin-image-upload" accept="image/*" style="display: none;" />
+                            </div>
+                        </label>
+                        <!-- Description Section -->
+                        <div class="pin-description">
+                            <label for="pin-description-textarea">Tell us about your court</label>
+                            <textarea id="pin-description-textarea" rows="4" placeholder="Enter a description"></textarea>
                         </div>
                     </div>
                 </div>
-                <button class="submit" type="submit">Submit</button>
+
+                <div class="courts-container">
+                    <h3 style="display: inline-block;">3. Upload Available Court Images</h3>
+                    <button type="button" class="add-court-btn" onclick="addCourt()">+ Add More Court</button>
+                    <div class="courts-grid" id="courtsGrid">
+                        <!-- Court 1 (initial court) -->
+                        <div class="court-wrapper" id="courtWrapper1">
+                            <div class="court" id="court1">
+                                <button class="remove-court-btn" onclick="removeCourt(1)">×</button>
+                                <img src="https://cdn-icons-png.flaticon.com/512/724/724933.png" alt="Upload Court" id="courtImage1" class="image-holder">
+                                <input type="file" id="courtUpload1" onchange="uploadCourtImage(1)">
+                            </div>
+                            <div class="court-number" id="courtNumber1">Court 1</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Facilities Section -->
+                <div class="facilities-container">
+                    <h3 style="display: inline-block;">4. Upload Available Facility Images</h3>
+                    <button type="button" class="add-facility-btn" onclick="addFacility()">+ Add More Facility</button>
+                    <div class="facilities-grid" id="facilitiesGrid">
+                        <!-- Facility 1 (initial facility) -->
+                        <div class="facility-wrapper" id="facilityWrapper1">
+                            <div class="court" id="court1">
+                                <button class="remove-facility-btn" onclick="removeCourt(1)">×</button>
+                                <img src="https://cdn-icons-png.flaticon.com/512/724/724933.png" alt="Upload Court" id="courtImage1" class="image-holder">
+                                <input type="file" id="facilityUpload" onchange="uploadFacility(1)">
+                            </div>
+                            <input type="text" name="facilities[]" placeholder="Enter facility Name" required>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- File Uploads Section -->
+                <div class="files-container">
+                    <h3>5. Upload All Required Business Documents</h3>
+                    <div class="file-upload-grid">
+                        <div class="file-input">
+                            <label for="businessPermit">Business Permit (from City Hall)</label>
+                            <div class="custom-file-upload">
+                                <span class="upload-icon"></span>
+                                <input type="file" id="businessPermit" name="businessPermit" required onchange="showFileName(this)">
+                                <span>No file chosen</span>
+                            </div>
+                        </div>
+                        <div class="file-input">
+                            <label for="dti">Certificate of Business Name Registration (from DTI)</label>
+                            <div class="custom-file-upload">
+                                <span class="upload-icon"></span>
+                                <input type="file" id="dti" name="dti" required onchange="showFileName(this)">
+                                <span>No file chosen</span>
+                            </div>
+                        </div>
+                        <div class="file-input">
+                            <label for="bir">Certificate of Registration (from BIR)</label>
+                            <div class="custom-file-upload">
+                                <span class="upload-icon"></span>
+                                <input type="file" id="bir" name="bir" required onchange="showFileName(this)">
+                                <span>No file chosen</span>
+                            </div>
+                        </div>
+                        <div class="file-input">
+                            <label for="sanitaryPermit">Sanitary Permit (from City Health Office)</label>
+                            <div class="custom-file-upload">
+                                <span class="upload-icon"></span>
+                                <input type="file" id="sanitaryPermit" name="sanitaryPermit" required onchange="showFileName(this)">
+                                <span>No file chosen</span>
+                            </div>
+                        </div>
+                        <div class="file-input">
+                            <label for="barangayClearance">Barangay Clearance</label>
+                            <div class="custom-file-upload">
+                                <span class="upload-icon"></span>
+                                <input type="file" id="barangayClearance" name="barangayClearance" required onchange="showFileName(this)">
+                                <span>No file chosen</span>
+                            </div>
+                        </div>
+                        <div class="file-input">
+                            <label for="nonCoverage">Certificate of Non-Coverage (from DENR)</label>
+                            <div class="custom-file-upload">
+                                <span class="upload-icon"></span>
+                                <input type="file" id="nonCoverage" name="nonCoverage" required onchange="showFileName(this)">
+                                <span>No file chosen</span>
+                            </div>
+                        </div>
+                        <div class="file-input">
+                            <label for="doleRegistration">Certificate of Registration (from DOLE)</label>
+                            <div class="custom-file-upload">
+                                <span class="upload-icon"></span>
+                                <input type="file" id="doleRegistration" name="doleRegistration" required onchange="showFileName(this)">
+                                <span>No file chosen</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="2d-container"></div>
+                    <h3 style="display: inline-block;">6. Pin Point your Location</h3>
+                </div>
+                
+                <!-- Submit Button -->
+                <button type="submit" class="submit">Register</button>
             </form>
-        </div>    
+        </div>
     </div>
-    <script src="../js/courtRegistration.js"></script>
 </body>
 </html>
