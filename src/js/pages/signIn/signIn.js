@@ -1,4 +1,4 @@
-import '../css/signIn.css';
+import '../../../css/pages/signIn/signIn.css';
 
 const doc = document;
 const { log } = console;

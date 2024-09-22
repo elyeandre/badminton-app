@@ -75,9 +75,9 @@ module.exports = (env, argv) => {
     mode: env.mode,
     devtool: env.mode === 'production' ? false : 'source-map',
     entry: {
-      index: './src/js/index.js',
-      signin: './src/js/signIn.js',
-      signup: './src/js/signUp.js'
+      index: './src/js/pages/index/index.js',
+      signin: './src/js/pages/signIn/signIn.js',
+      signup: './src/js/pages/signUp/signUp.js'
     },
     output: {
       filename: '[name].[contenthash].js',

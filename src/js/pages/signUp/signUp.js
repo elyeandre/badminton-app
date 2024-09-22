@@ -1,4 +1,4 @@
-import '../css/signUp.css';
+import '../../../css/pages/signUp/signUp.css';
 
 const doc = document;
 const { log, error } = console;

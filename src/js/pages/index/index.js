@@ -1,4 +1,4 @@
-import '../css/style.css';
+import '../../../css/pages/index/style.css';
 
 const doc = document;
 const { log } = console;
