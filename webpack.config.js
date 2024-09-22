@@ -43,7 +43,7 @@ const pages = Object.keys(pageTitles);
 // Create an array to store HtmlWebpackPlugin instances
 const htmlPlugins = pages.map((page) => {
   // Construct the file path
-  const filePath = path.resolve(__dirname, 'src/views/partials', `${page}-body-content.html`);
+  const filePath = path.resolve(__dirname, 'client/views/partials', `${page}-body-content.html`);
   // Read the content of each file
   const bodyContent = fs.readFileSync(filePath, 'utf-8');
 
@@ -54,7 +54,7 @@ const htmlPlugins = pages.map((page) => {
   const chunks = [page];
 
   return new HtmlWebpackPlugin({
-    template: './src/views/template.ejs', // Template for all HTML pages
+    template: './client/views/template.ejs', // Template for all HTML pages
     filename: `./${page}.html`, // Output file for each page
     domain: 'badminton-app-sooty.vercel.app',
     bodyContent, // Inject the body content dynamically
@@ -70,14 +70,15 @@ const htmlPlugins = pages.map((page) => {
   });
 });
 
-module.exports = (env, argv) => {
+module.exports = () => {
+  const mode = process.env.NODE_ENV || 'development';
   const commonConfig = {
-    mode: env.mode,
-    devtool: env.mode === 'production' ? false : 'source-map',
+    mode: mode,
+    devtool: mode === 'production' ? false : 'source-map',
     entry: {
-      index: './src/js/pages/index/index.js',
-      signin: './src/js/pages/signIn/signIn.js',
-      signup: './src/js/pages/signUp/signUp.js'
+      index: './client/js/pages/index/index.js',
+      signin: './client/js/pages/signIn/signIn.js',
+      signup: './client/js/pages/signUp/signUp.js'
     },
     output: {
       filename: '[name].[contenthash].js',
@@ -175,7 +176,7 @@ module.exports = (env, argv) => {
       ]
     }
   };
-  if (env.mode === 'production') {
+  if (mode === 'production') {
     return merge(commonConfig, extractCSS({ use: 'css-loader' }));
   } else {
     return merge(commonConfig, loadCSS());

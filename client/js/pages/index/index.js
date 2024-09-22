@@ -10,12 +10,12 @@ const get = (selector) => doc.querySelector(selector);
 
 // handle redirection to sign up page
 const handleSignUpRedirect = () => {
-  window.location.href = '/signup';
+  window.location.href = '/register';
 };
 
 // handle redirection to sign in page
 const handleSignInRedirect = () => {
-  window.location.href = '/signin';
+  window.location.href = '/login';
 };
 
 doc.addEventListener('DOMContentLoaded', () => {
