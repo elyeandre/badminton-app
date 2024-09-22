@@ -7,8 +7,7 @@ const helmet = require('helmet');
 const path = require('path');
 const createError = require('http-errors');
 
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || '127.0.0.1';
+const config = require(`./config/${process.env.NODE_ENV || 'development'}`);
 
 const app = express();
 
@@ -87,6 +86,6 @@ app.use(function (err, req, res, next) {
   });
 });
 
-app.listen(PORT, HOST, () => {
-  console.log(`Server is running at http://${HOST}:${PORT}`);
+app.listen(config.port, config.host || '127.0.0.1', () => {
+  console.log(`Server is running at http://${config.host || '127.0.0.1'}:${config.port}`);
 });
