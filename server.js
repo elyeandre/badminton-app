@@ -3,6 +3,7 @@ const express = require('express');
 const morgan = require('morgan');
 const compression = require('compression');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const path = require('path');
 const createError = require('http-errors');
@@ -55,6 +56,7 @@ app.use(
 app.use(express.json());
 // middleware to parse URL-encoded bodies (e.g., form submissions)
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 // serve public folder as static and cache it
 app.use(
   express.static(path.join(path.join(__dirname), 'public'), {
