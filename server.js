@@ -92,4 +92,11 @@ const server = app.listen(config.get('port'), config.get('host'), () => {
   console.log(`Server is running at http://${config.get('host')}:${config.get('port')}`);
 });
 
+// handle graceful shutdown
+process.on('SIGINT', () => {
+  console.log('Shutting down server...');
+  server.close(() => {
+    console.log('Closed out remaining connections.');
+    process.exit(0);
+  });
 });
