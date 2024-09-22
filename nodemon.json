@@ -2,7 +2,7 @@
   "events": {
     "start": "cls"
   },
-  "watch": ["src", "server.js"],
+  "watch": ["src", "server.js", "config", "client"],
   "ext": "js",
   "exec": "npm run serverStart"
 }
