@@ -6,6 +6,8 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 const createError = require('http-errors');
+const { log } = console;
+const { error } = console;
 
 const config = require('config');
 
