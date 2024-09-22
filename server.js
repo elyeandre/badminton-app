@@ -16,6 +16,7 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'src', 'views'));
 
+// CORS middleware allows your API to be accessed from other origins (domains)
 app.use(cors());
 // enable compression reduces the size of html css and js to significantly improves the latency
 app.use(compression());
@@ -45,8 +46,6 @@ app.use(
   })
 );
 
-// CORS middleware allows your API to be accessed from other origins (domains)
-app.use(cors());
 // middleware to parse JSON bodies from incoming requests
 app.use(express.json());
 // middleware to parse URL-encoded bodies (e.g., form submissions)
