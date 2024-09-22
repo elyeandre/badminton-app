@@ -9,6 +9,10 @@ const createError = require('http-errors');
 
 const config = require('config');
 
+// database connection
+const connectDB = require('./src/utils/db');
+connectDB(config);
+
 const app = express();
 
 // view engine setup
