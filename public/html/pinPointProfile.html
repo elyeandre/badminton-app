@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Pin Point Profile</title>
+    <link rel="stylesheet" href="../css/pinPointProfile.css"> 
+    <script src="../js/sideNavAdmin.js" defer></script>
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <div id="profileNav" class="profile-nav">
+            <a href="ownerProfile.html">Owner Profile</a>
+            <a href="businessProfile.html">Business Profile</a>
+            <a href="pinPointProfile.html" class="active">Pin Point Profile</a>
+        </div>
+
+        <div class="container">
+            <!-- Pin Container -->
+            <div class="pin-container">
+                <h3>Business Logo and Description <i class="fas fa-edit"></i></h3>
+                <div class="image-upload-container">
+                    <img id="pin-preview" src="https://via.placeholder.com/150x150.png?text=Logo" alt="Upload Business Logo" />
+                    <input type="file" id="pin-image-upload" accept="image/*" style="display: none;" />
+                </div>
+                <h4>Business Name</h4>
+                <textarea id="pin-description-textarea" placeholder="Tell us about your court"></textarea>
+            </div>
+
+            <!-- Map Container -->
+            <div class="map-container">
+                <h3>Location <i class="fas fa-edit"></i></h3>
+                <div class="location-field">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" placeholder="Location" readonly />
+                </div>
+                <div class="map-box"></div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

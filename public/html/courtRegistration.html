@@ -10,32 +10,34 @@
     <div class="container">
         <h1>Court Registration</h1>
         <div class="details-container">
-            <h3>1. Complete Court Basic Information</h3>
             <form>
-                <div class="business-container">
-                    <div>
-                        <label for="businessName">Business Name</label>
-                        <input type="text" id="businessName" name="businessName" placeholder="Enter business name" required>
-                    </div>
-                    <div>
-                        <label for="contactNumber">Contact Number</label>
-                        <input type="tel" id="contactNumber" name="contactNumber" placeholder="Enter contact number" required>
-                    </div>
-                    <div>
-                        <label for="businessEmail">Business Email</label>
-                        <input type="email" id="businessEmail" name="businessEmail" placeholder="Enter business email" required>
-                    </div>
-                    <div>
-                        <label for="operatingHoursFrom">Operating Hours (From)</label>
-                        <input type="time" id="operatingHoursFrom" name="operatingHoursFrom" required>
-                    </div>
-                    <div>
-                        <label for="operatingHoursTo">Operating Hours (To)</label>
-                        <input type="time" id="operatingHoursTo" name="operatingHoursTo" required>
-                    </div>
-                    <div>
-                        <label for="fee">Hourly Rate (PHP)</label>
-                        <input type="number" id="fee" name="fee" placeholder="Enter rate per hour" required>
+                <div class="basic-container">
+                    <h3>1. Complete Court Basic Information</h3>
+                    <div class="business-container">
+                        <div>
+                            <label for="businessName">Business Name</label>
+                            <input type="text" id="businessName" name="businessName" placeholder="Enter business name" required>
+                        </div>
+                        <div>
+                            <label for="contactNumber">Contact Number</label>
+                            <input type="tel" id="contactNumber" name="contactNumber" placeholder="Enter contact number" required>
+                        </div>
+                        <div>
+                            <label for="businessEmail">Business Email</label>
+                            <input type="email" id="businessEmail" name="businessEmail" placeholder="Enter business email" required>
+                        </div>
+                        <div>
+                            <label for="operatingHoursFrom">Operating Hours (From)</label>
+                            <input type="time" id="operatingHoursFrom" name="operatingHoursFrom" required>
+                        </div>
+                        <div>
+                            <label for="operatingHoursTo">Operating Hours (To)</label>
+                            <input type="time" id="operatingHoursTo" name="operatingHoursTo" required>
+                        </div>
+                        <div>
+                            <label for="fee">Hourly Rate (PHP)</label>
+                            <input type="number" id="fee" name="fee" placeholder="Enter rate per hour" required>
+                        </div>
                     </div>
                 </div>
 
@@ -73,7 +75,6 @@
                     </div>
                 </div>
                 
-                <!-- Facilities Section -->
                 <div class="facilities-container">
                     <h3 style="display: inline-block;">4. Upload Available Facility Images</h3>
                     <button type="button" class="add-facility-btn" onclick="addFacility()">+ Add More Facility</button>
@@ -91,7 +92,6 @@
                     </div>
                 </div>
 
-                <!-- File Uploads Section -->
                 <div class="files-container">
                     <h3>5. Upload All Required Business Documents</h3>
                     <div class="file-upload-grid">
@@ -154,11 +154,10 @@
                     </div>
                 </div>
 
-                <div class="2d-container"></div>
+                <div class="map-container">
                     <h3 style="display: inline-block;">6. Pin Point your Location</h3>
                 </div>
                 
-                <!-- Submit Button -->
                 <button type="submit" class="submit">Register</button>
             </form>
         </div>

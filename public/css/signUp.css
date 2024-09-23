@@ -165,7 +165,7 @@ form .fields .input-field {
   border-radius: 5px;
   border: 1px solid #f1f4fb;
   padding: 0 15px;
-  height: 42px; /* Consistent height for all input types */
+  height: 42px;
   margin: 8px 0;
 }
 
@@ -173,18 +173,18 @@ form .fields .input-field {
 .input-field input[type="password"],
 .input-field input[type="email"],
 .input-field input[type="date"] {
-  height: 42px; /* Ensure consistent height for text, password, and date inputs */
+  height: 42px; 
 }
 
 .input-field select {
-  height: 42px; /* Ensure select dropdown has the same height */
+  height: 42px; 
 }
 
 .signup-form form button {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 45px; /* Slightly taller button */
+  height: 45px; 
   max-width: 200px;
   width: 100%;
   border: none;
