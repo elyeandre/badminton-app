@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcrypt');
 const { isEmail } = require('validator');
 
 const userSchema = new mongoose.Schema({
@@ -22,7 +21,7 @@ const userSchema = new mongoose.Schema({
   },
   gender: {
     type: String,
-    enum: ['Male', 'Female', 'Other'],
+    enum: ['Male', 'Female'],
     required: [true, 'Gender is required']
   },
   dateOfBirth: {
@@ -57,43 +56,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Password is required'],
     minlength: [8, 'Password must be at least 8 characters long'],
-    select: false // Prevents password from being returned in queries
+    select: false //Prevents password from being returned in queries
   },
   createdAt: {
     type: Date,
     default: Date.now
   }
-});
-
-// Hashing password before saving user
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
-
-// Method to compare password for login
-userSchema.methods.comparePassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
-};
-
-// Virtual field to ensure password confirmation matches
-userSchema
-  .virtual('confirmPassword')
-  .get(() => this._confirmPassword)
-  .set(function (value) {
-    this._confirmPassword = value;
-  });
-
-// Pre-validate hook to ensure password confirmation matches
-userSchema.pre('validate', function (next) {
-  if (this.password !== this.confirmPassword) {
-    this.invalidate('confirmPassword', 'Passwords do not match');
-  }
-  next();
 });
 
 const User = mongoose.model('User', userSchema);
