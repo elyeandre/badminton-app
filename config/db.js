@@ -29,7 +29,7 @@ const connectDB = async (dbConfig) => {
 
       return;
     } catch (err) {
-      console.error(`MongoDB connection error on attempt ${attempt}:`, err.message);
+      error(`MongoDB connection error on attempt ${attempt}:`, err.message);
       if (attempt < maxRetries) {
         log(`Retrying connection in ${retryDelay / 1000} seconds...`);
         await new Promise((resolve) => setTimeout(resolve, retryDelay));
