@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Popup Profile</title>
+    <link rel="stylesheet" href="../css/userPinPointViewing.css">
+</head>
+<body>
+    <div class="location-icon">
+        <i class="fas fa-map-marker-alt"></i> 
+    </div>
+
+    <div class="popup-container" id="popupProfile">
+        <button class="close-btn" onclick="togglePopup()">×</button>
+        
+        <div class="popup-header">
+            <label for="pin-image-upload" class="upload-label">
+                <div class="image-upload-container">
+                    <img id="pin-preview" src="https://via.placeholder.com/150x150.png?text=Logo" alt="Upload Business Logo" />
+                    <input type="file" id="pin-image-upload" accept="image/*" style="display: none;" />
+                </div>
+            </label>            
+            <div class="right-section">
+                <h1>Court Name</h1>
+                <div class="location-field">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <input type="text" value="" readonly />
+                </div>    
+                <div class="description-field">
+                    <textarea id="court-description-textarea" placeholder="Court Description"></textarea>
+                </div>
+
+                <!-- Carousel Section -->
+                <div class="carousel">
+                    <div class="carousel-images">
+                        <img src="https://via.placeholder.com/700x300?text=Image+1" alt="Image 1">
+                        <img src="https://via.placeholder.com/700x300?text=Image+2" alt="Image 2">
+                        <img src="https://via.placeholder.com/700x300?text=Image+3" alt="Image 3">
+                    </div>
+                    <button class="carousel-btn prev" onclick="prevSlide()">&#8249;</button>
+                    <button class="carousel-btn next" onclick="nextSlide()">&#8250;</button>
+                </div>
+            </div>
+        </div>
+
+        <button class="reserve-btn">Reserve Now</button>
+    </div>
+<script src="../js/userPinPointViewing.js"></script>
+</body>
+</html>

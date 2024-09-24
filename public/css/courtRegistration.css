@@ -270,6 +270,11 @@ input:focus {
     color: #fff;
     border-color: #397CF7;
 }
+
+.payment-container {
+    margin-bottom: 3%;
+}
+
 .files-container {
     width: 100%;
     margin-bottom: 3%;

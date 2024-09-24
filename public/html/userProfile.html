@@ -8,22 +8,14 @@
     <title>User Profile</title>
 </head>
 <body>
-    <!-- Header -->
-    <div class="header">
-        <div class="logo-container">
-            <img src="../img/logo.png" alt="Logo">
-        </div>
-        <div class="button-container">
-            <button class="header-button help-button">
-                <i class="fas fa-question-circle"></i>
-            </button>
-            <button class="header-button logout-button" id="logoutBtn">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-    </div>
-
-    <!-- Content -->
+    <div id="navbar"></div>
+    <script>
+        fetch('navBarUser.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar').innerHTML = data;
+            });
+    </script>
     <div class="content-container">
         <!-- Profile Card -->
         <div class="profile-card">
@@ -37,6 +29,7 @@
             <button class="navbar-item active" onclick="activateButton(this); showContent('personalInfo')">Personal Information</button>
             <button class="navbar-item" onclick="activateButton(this); showContent('skillLevel')">Skill Level</button>
             <button class="navbar-item" onclick="activateButton(this); showContent('myBadge')">My Badge</button>
+            <button class="navbar-item" onclick="activateButton(this); showContent('settings')">Settings</button>
         </div>
 
         <!-- Dynamic Content Section -->
@@ -114,73 +107,5 @@
             </div>
         </div>
     </div>
-
-    <!-- JavaScript -->
-    <script>
-        let isEditModeBox1 = false;
-        let isEditModeBox2 = false;
-
-        function toggleEditModeBox1() {
-            const editIconBox1 = document.getElementById("editIconBox1");
-            const usernameField = document.getElementById("username");
-            const cameraIcon = document.getElementById("cameraIcon");
-
-            isEditModeBox1 = !isEditModeBox1;
-            if (isEditModeBox1) {
-                editIconBox1.classList.remove("fa-edit");
-                editIconBox1.classList.add("fa-save");
-                usernameField.removeAttribute("readonly");
-                cameraIcon.style.display = "block"; // Show camera icon for image upload
-            } else {
-                editIconBox1.classList.remove("fa-save");
-                editIconBox1.classList.add("fa-edit");
-                usernameField.setAttribute("readonly", true);
-                cameraIcon.style.display = "none"; // Hide camera icon after save
-            }
-        }
-
-        function toggleEditModeBox2() {
-            const editIconBox2 = document.getElementById("editIconBox2");
-            const fieldsBox2 = document.querySelectorAll('.personal-info-container .input-field input');
-            const selectsBox2 = document.querySelectorAll('.personal-info-container .input-field select');
-
-            isEditModeBox2 = !isEditModeBox2;
-            if (isEditModeBox2) {
-                editIconBox2.classList.remove("fa-edit");
-                editIconBox2.classList.add("fa-save");
-                fieldsBox2.forEach(field => field.removeAttribute('readonly'));
-                selectsBox2.forEach(select => select.removeAttribute('disabled'));
-            } else {
-                editIconBox2.classList.remove("fa-save");
-                editIconBox2.classList.add("fa-edit");
-                fieldsBox2.forEach(field => field.setAttribute('readonly', true));
-                selectsBox2.forEach(select => select.setAttribute('disabled', true));
-            }
-        }
-
-        function activateButton(button) {
-            const buttons = document.getElementsByClassName("navbar-item");
-            for (let i = 0; i < buttons.length; i++) {
-                buttons[i].classList.remove("active");
-            }
-            button.classList.add("active");
-        }
-
-        function showContent(sectionId) {
-            const sections = document.querySelectorAll(".personal-info-container");
-            sections.forEach(section => {
-                section.style.display = section.id === sectionId ? "block" : "none";
-            });
-        }
-
-        function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-                const output = document.getElementById("profilePic");
-                output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-        }
-    </script>
 </body>
 </html>

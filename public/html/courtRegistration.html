@@ -92,8 +92,22 @@
                     </div>
                 </div>
 
+                <div class="payment-container">
+                    <h3>5. Upload Mode of Payment</h3>
+                    <div class="file-upload-grid">
+                        <div class="file-input">
+                            <label for="payment">(Screenshot of QR Code in GCASH)</label>
+                            <div class="custom-file-upload">
+                                <span class="upload-icon"></span>
+                                <input type="file" id="payment" name="payment" required onchange="showFileName(this)">
+                                <span>No file chosen</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="files-container">
-                    <h3>5. Upload All Required Business Documents</h3>
+                    <h3>6. Upload All Required Business Documents</h3>
                     <div class="file-upload-grid">
                         <div class="file-input">
                             <label for="businessPermit">Business Permit (from City Hall)</label>
@@ -155,7 +169,7 @@
                 </div>
 
                 <div class="map-container">
-                    <h3 style="display: inline-block;">6. Pin Point your Location</h3>
+                    <h3 style="display: inline-block;">7. Pin Point your Location</h3>
                 </div>
                 
                 <button type="submit" class="submit">Register</button>
