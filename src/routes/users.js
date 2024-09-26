@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
-const mongoose = require('mongoose');
-const createError = require('http-errors');
+const checkMongoConnection = require('../middleware/checkMongoConnection');
 const serveFile = require('../utils/fileUtils');
+const { registerUser } = require('../controllers/userController');
 
 let routes = (app) => {
   // serve the registration page
@@ -12,13 +12,8 @@ let routes = (app) => {
     serveFile(filePath, res, next);
   });
 
-  // Serve the login page
-  router.get('/login', async (req, res, next) => {
-    // check if MongoDB is connected
-    if (mongoose.connection.readyState !== 1) {
-      // 1 indicates connected
-      return next(createError(503, 'Service Unavailable.'));
-    }
+  // handle Registration
+  router.post('/register', checkMongoConnection, registerUser, (req, res, next) => {});
 
   // serve the login page
   router.get('/login', checkMongoConnection, (req, res, next) => {
