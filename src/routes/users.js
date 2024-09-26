@@ -3,11 +3,13 @@ const router = express.Router();
 const path = require('path');
 const mongoose = require('mongoose');
 const createError = require('http-errors');
+const serveFile = require('../utils/fileUtils');
 
 let routes = (app) => {
-  // Serve the registration page
-  router.get('/register', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../../build/signup.html'));
+  // serve the registration page
+  router.get('/register', checkMongoConnection, (req, res, next) => {
+    const filePath = path.resolve(__dirname, '../../build/signup.html');
+    serveFile(filePath, res, next);
   });
 
   // Serve the login page
@@ -18,11 +20,10 @@ let routes = (app) => {
       return next(createError(503, 'Service Unavailable.'));
     }
 
-    try {
-      res.sendFile(path.resolve(__dirname, '../../build/signin.html'));
-    } catch (err) {
-      next(createError(500, 'Internal Server Error'));
-    }
+  // serve the login page
+  router.get('/login', checkMongoConnection, (req, res, next) => {
+    const filePath = path.resolve(__dirname, '../../build/signin.html');
+    serveFile(filePath, res, next);
   });
 
   app.use('/', router);
