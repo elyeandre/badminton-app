@@ -2,5 +2,6 @@ const commonConfig = require('./commonConfig');
 
 module.exports = {
   ...commonConfig,
+  tlsAllowInvalidCertificates: true,
   host: process.env.HOST_DEV || '127.0.0.1'
 };

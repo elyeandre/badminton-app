@@ -10,7 +10,9 @@ const connectDB = async (dbConfig) => {
     try {
       await mongoose.connect(dbConfig.uri, {
         user: dbConfig.user,
-        pass: dbConfig.password
+        pass: dbConfig.password,
+        tls: dbConfig.tls,
+        tlsCAFile: dbConfig.tlsCAFile
       });
       log('MongoDB connected successfully');
 
