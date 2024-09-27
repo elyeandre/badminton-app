@@ -131,7 +131,10 @@ module.exports = () => {
               // Copy all JavaScript files
               { source: path.join(__dirname, 'build/*.js'), destination: path.join(__dirname, 'public') },
               // Copy all CSS files
-              { source: path.join(__dirname, 'build/*.css'), destination: path.join(__dirname, 'public') }
+              { source: path.join(__dirname, 'build/*.css'), destination: path.join(__dirname, 'public') },
+              ...(mode === 'development'
+                ? [{ source: path.join(__dirname, 'build/*.map'), destination: path.join(__dirname, 'public') }]
+                : [])
             ]
           }
         },
