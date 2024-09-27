@@ -14,7 +14,8 @@ yarn.lock
 
 # Ignore generated assets
 public/*.css
-public/*js
+public/*.js
+public/*.map
 !/public/error.css
 test/
 
