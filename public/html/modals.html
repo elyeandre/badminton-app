@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modal</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
+    
+    body {
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content {
+      background-color: #fff;
+      margin: 15% auto;
+      padding: 20px;
+      border-radius: 10px;
+      width: 30%;
+      text-align: center;
+    }
+
+    .close {
+      position: absolute;
+      right: 15px;
+      top: 10px;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .success-box {
+      border: 2px solid green;
+    }
+
+    .success-box h2 {
+      color: green;
+    }
+
+    .error-box {
+      border: 2px solid #f04747;
+    }
+
+    .error-box h2 {
+      color: #f04747;
+    }
+
+    .confirm-box {
+      border: 2px solid #397CF7;
+    }
+
+    .confirm-box h2 {
+      color: #142850;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .confirm-btn {
+      background-color: #142850;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    .confirm-btn:hover {
+      background-color: #397CF7;
+    }
+
+    .cancel-btn {
+      background-color: #f1f4fb;
+      color: #142850;
+    }
+
+    .cancel-btn:hover {
+      background-color: #397CF7;
+      color: #fff;
+    }
+
+    input, textarea {
+      background-color: #f1f4fb;
+      border: 1px solid #397CF7;
+      padding: 10px;
+      width: 100%;
+      margin-top: 10px;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <button class="btn confirm-btn" onclick="openSuccessModal()">Open Success Modal</button>
+  <button class="btn confirm-btn" onclick="openErrorModal()">Open Error Modal</button>
+  <button class="btn confirm-btn" onclick="openConfirmationModal()">Open Confirmation Modal</button>
+
+  <div id="successModal" class="modal">
+    <div class="modal-content success-box">
+      <span class="close">&times;</span>
+      <h2>Success</h2>
+      <p>Your action was successful!</p>
+      <button class="btn confirm-btn">OK</button>
+    </div>
+  </div>
+
+  <div id="errorModal" class="modal">
+    <div class="modal-content error-box">
+      <span class="close">&times;</span>
+      <h2>Error</h2>
+      <p>Something went wrong, please try again.</p>
+      <button class="btn confirm-btn">OK</button>
+    </div>
+  </div>
+
+  <div id="confirmationModal" class="modal">
+    <div class="modal-content confirm-box">
+      <span class="close">&times;</span>
+      <h2>Are you sure?</h2>
+      <p>Do you want to proceed with this action?</p>
+      <button class="btn confirm-btn">Yes</button>
+      <button class="btn cancel-btn">Cancel</button>
+    </div>
+  </div>
+
+  <script>
+    var successModal = document.getElementById("successModal");
+    var errorModal = document.getElementById("errorModal");
+    var confirmationModal = document.getElementById("confirmationModal");
+
+    var closeButtons = document.querySelectorAll('.close');
+
+    closeButtons.forEach(btn => {
+      btn.onclick = function() {
+        this.parentElement.parentElement.style.display = "none";
+      };
+    });
+
+    function openSuccessModal() {
+      successModal.style.display = "block";
+    }
+
+    function openErrorModal() {
+      errorModal.style.display = "block";
+    }
+
+    function openConfirmationModal() {
+      confirmationModal.style.display = "block";
+    }
+  </script>
+
+</body>
+</html>
