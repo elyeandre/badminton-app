@@ -1,32 +1,46 @@
 const User = require('../models/User');
-const bcrypt = require('bcrypt');
 const createError = require('http-errors');
+const { error } = console;
 
 exports.registerUser = async (req, res, next) => {
   try {
-    const { firstName, lastName, email, username, password, gender, dateOfBirth, municipality, contactNumber } =
-      req.body;
+    const {
+      first_name,
+      middle_name,
+      last_name,
+      email,
+      username,
+      password,
+      gender,
+      date_of_birth,
+      municipality,
+      contact_number,
+      status_owner,
+      role
+    } = req.body;
 
     // check if the user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return next(createError(400, 'Email already exists'));
+      // send a custom response for email already exists
+      return res.status(400).json({ error: 'Email already exists' }); // Modify this line
     }
-
-    // hash the password
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user object
     const newUser = new User({
-      firstName,
-      lastName,
+      first_name,
+      middle_name,
+      last_name,
       email,
       username,
-      password: hashedPassword,
+      password,
       gender,
-      dateOfBirth,
+      date_of_birth,
       municipality,
-      contactNumber
+      contact_number,
+      status_owner,
+      role,
+      ...(role === 'Admin' && { status_owner })
     });
 
     // save the user to the database
@@ -35,7 +49,28 @@ exports.registerUser = async (req, res, next) => {
     // send a success response (you can also generate a token here)
     res.status(201).json({ message: 'User registered successfully' });
   } catch (err) {
-    console.error('Error registering user:', err);
-    next(createError(500, 'Internal Server Error'));
+    const isProduction = req.app.get('env') === 'production';
+
+    // log the error for debugging purposes
+    error('Error registering user:', err);
+
+    // handle validation errors
+    if (err.name === 'ValidationError') {
+      const validationErrors = Object.values(err.errors).map((error) => error.message);
+
+      // return generic message in production, detailed message in non-production
+      if (isProduction) {
+        return next(createError(400, 'Invalid input data.'));
+      } else {
+        return next(createError(400, validationErrors.join(', ')));
+      }
+    }
+
+    // for all other types of errors, return a generic server error in production
+    if (isProduction) {
+      return next(createError(500, 'Internal Server Error'));
+    } else {
+      return next(createError(500, err.message));
+    }
   }
 };
