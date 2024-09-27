@@ -67,5 +67,5 @@ const deleteDirectory = (dir) => {
   });
 };
 
-deleteFilesWithExtension(publicDir, ['.css', '.js'], ['error.css']); // Exclude error.css
+deleteFilesWithExtension(publicDir, ['.css', '.js', '.map'], ['error.css']); // Exclude error.css
 deleteDirectory(buildDir);
