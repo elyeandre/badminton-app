@@ -4,6 +4,7 @@ const path = require('path');
 const checkMongoConnection = require('../middleware/checkMongoConnection');
 const serveFile = require('../utils/fileUtils');
 const { registerUser } = require('../controllers/userController');
+const { validateRegistration } = require('../middleware/userRegValidator'); // Update path as needed
 
 let routes = (app) => {
   // serve the registration page
@@ -13,7 +14,7 @@ let routes = (app) => {
   });
 
   // handle Registration
-  router.post('/register', checkMongoConnection, registerUser, (req, res, next) => {});
+  router.post('/user/register', checkMongoConnection, validateRegistration, registerUser);
 
   // serve the login page
   router.get('/login', checkMongoConnection, (req, res, next) => {
