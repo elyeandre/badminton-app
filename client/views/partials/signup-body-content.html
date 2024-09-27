@@ -3,7 +3,7 @@
     <div class="container">
       <div class="upper-content-container">
         <div class="logo-container">
-          <a href="/">
+          <a href="index.html">
             <img src="/assets/images/logo-white.png" alt="Logo" />
           </a>
         </div>
@@ -48,7 +48,6 @@
     <label for="show" class="close-btn fas fa-times" title="close" id="closeCourtOwnerForm"></label>
     <div class="text">Sign up as Court Owner</div>
     <form id="ownerSignUpForm" method="POST" action="verifyAccount.html">
-      <input type="hidden" name="userType" value="courtOwner" />
       <div class="form first">
         <div class="details owner" id="owner-details">
           <span class="title">Owner Details</span>
@@ -155,7 +154,7 @@
           <div class="fields">
             <div class="input-field">
               <label for="username">Username</label>
-              <input type="text" id="username" name="username_courtOwner" placeholder="Enter your username" required />
+              <input type="text" id="username" name="username_owner" placeholder="Enter your username" required />
             </div>
             <div class="input-field">
               <label for="password1-owner">Password</label>
@@ -188,7 +187,6 @@
     <label for="show" class="close-btn fas fa-times" title="close" id="closeUserForm"></label>
     <div class="text">Sign up as User</div>
     <form id="userSignUpForm" method="POST" action="verifyAccount.html">
-      <input type="hidden" name="userType" value="user" />
       <div class="form first">
         <div class="details owner" id="user-details">
           <span class="title">User Details</span>
@@ -233,7 +231,12 @@
             </div>
             <div class="input-field">
               <label for="date-of-birth-user">Date of Birth</label>
-              <input type="date" id="date-of-birth-user" name="date_of_birth_user" required />
+              <input
+                type="date"
+                id="date-of-birth-user"
+                name="date_of_birth_user"
+                placeholder="Enter birth date"
+                required />
               <div class="error-message"></div>
             </div>
             <div class="input-field">
@@ -254,28 +257,33 @@
               <label for="municipality-user">Municipality</label>
               <select id="municipality-user" name="municipality_user" required>
                 <option disabled selected>Select municipality</option>
-                <option value="Abucay">Abucay</option>
-                <option value="Bagac">Bagac</option>
-                <option value="Balanga City">Balanga City</option>
-                <option value="Dinalupihan">Dinalupihan</option>
-                <option value="Hermosa">Hermosa</option>
-                <option value="Limay">Limay</option>
-                <option value="Mariveles">Mariveles</option>
-                <option value="Morong">Morong</option>
-                <option value="Orani">Orani</option>
-                <option value="Orion">Orion</option>
-                <option value="Samal">Samal</option>
-                <option value="Pilar">Pilar</option>
+                <option>Abucay</option>
+                <option>Bagac</option>
+                <option>Balanga City</option>
+                <option>Dinalupihan</option>
+                <option>Hermosa</option>
+                <option>Limay</option>
+                <option>Mariveles</option>
+                <option>Morong</option>
+                <option>Orani</option>
+                <option>Orion</option>
+                <option>Samal</option>
+                <option>Pilar</option>
+              </select>
+            </div>
+            <div class="input-field">
+              <label for="user-type">User Type</label>
+              <select id="user-type" name="user_type" required>
+                <option disabled selected>Select user type</option>
+                <option value="COACH">Coach</option>
+                <option value="PLAYER">Player</option>
               </select>
             </div>
           </div>
         </div>
 
         <div class="details personal" id="user-account-details">
-          <span class="title">
-            Account Details
-            <h4>(This will serve as your credentials when accessing the user page.)</h4>
-          </span>
+          <span class="title">Account Details</span>
           <div class="fields">
             <div class="input-field">
               <label for="username-user">Username</label>
