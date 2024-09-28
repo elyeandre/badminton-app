@@ -12,7 +12,8 @@ const fs = require('fs');
 const pageTitles = {
   index: 'Welcome',
   signin: 'Sign In',
-  signup: 'Sign Up'
+  signup: 'Sign Up',
+  verification: 'Email Verification'
 };
 
 // Page-specific stylesheets and scripts
@@ -34,6 +35,10 @@ const pageAssets = {
   },
   signup: {
     styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
+    scripts: []
+  },
+  verification: {
+    styles: [],
     scripts: []
   }
 };
@@ -78,7 +83,8 @@ module.exports = () => {
     entry: {
       index: './client/js/pages/index/index.js',
       signin: './client/js/pages/signIn/signIn.js',
-      signup: './client/js/pages/signUp/signUp.js'
+      signup: './client/js/pages/signUp/signUp.js',
+      verification: './client/js/pages/verification/verification.js'
     },
     output: {
       filename: '[name].[contenthash].js',
