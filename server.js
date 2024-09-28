@@ -22,8 +22,13 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'client', 'views'));
 
+// check the environment variable to decide on security features
+const disableSecurity = config.get('disableSecurity');
+
 // CORS middleware allows your API to be accessed from other origins (domains)
-app.use(cors());
+if (!disableSecurity) {
+  app.use(cors());
+}
 app.disable('x-powered-by'); // reduce fingerprinting
 app.use(cookieParser());
 // enable compression reduces the size of html css and js to significantly improves the latency
@@ -31,28 +36,31 @@ app.use(compression());
 // for logging HTTP requests.
 app.use(morgan('dev'));
 //It protects against common security vulnerabilities like clickjacking, XSS, etc.
-app.use(
-  helmet.contentSecurityPolicy({
-    directives: {
-      defaultSrc: ["'self'"],
-      baseUri: ["'self'"],
-      fontSrc: ["'self'", 'https:', 'data:'],
-      formAction: ["'self'"],
-      frameAncestors: ["'self'"],
-      imgSrc: ["'self'", 'data:'],
-      objectSrc: ["'none'"],
-      scriptSrc: [
-        "'self'",
-        'https://code.jquery.com',
-        'https://cdn.jsdelivr.net',
-        'https://stackpath.bootstrapcdn.com'
-      ],
-      scriptSrcAttr: ["'none'"],
-      styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
-      upgradeInsecureRequests: []
-    }
-  })
-);
+
+if (!disableSecurity) {
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        baseUri: ["'self'"],
+        fontSrc: ["'self'", 'https:', 'data:'],
+        formAction: ["'self'"],
+        frameAncestors: ["'self'"],
+        imgSrc: ["'self'", 'data:'],
+        objectSrc: ["'none'"],
+        scriptSrc: [
+          "'self'",
+          'https://code.jquery.com',
+          'https://cdn.jsdelivr.net',
+          'https://stackpath.bootstrapcdn.com'
+        ],
+        scriptSrcAttr: ["'none'"],
+        styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+        upgradeInsecureRequests: []
+      }
+    })
+  );
+}
 
 // middleware to parse JSON bodies from incoming requests
 app.use(express.json());

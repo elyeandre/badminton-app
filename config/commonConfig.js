@@ -13,5 +13,6 @@ module.exports = {
     pass: process.env.EMAIL_PASSWORD
   },
   jwtSecret: process.env.JWT_SECRET,
-  port: process.env.PORT || 3000
+  port: process.env.PORT || 3000,
+  disableSecurity: process.env.DISABLE_SECURITY
 };
