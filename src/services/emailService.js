@@ -2,20 +2,26 @@ require('dotenv').config();
 const nodemailer = require('nodemailer');
 const User = require('../models/User');
 const { generateOTP } = require('../utils/otpUtils');
-const { error } = console;
-const { log } = console;
-
+const { error, log } = console;
 const config = require('config');
+const fs = require('fs').promises; // Use promises for cleaner async/await syntax
+const path = require('path');
 
 exports.sendOTP = async (email) => {
   try {
-    const otp = generateOTP(); // generate OTP using the utility
+    const otp = generateOTP(); //Generate OTP using the utility
     const otpExpiration = Date.now() + 10 * 60 * 1000; // OTP valid for 10 minutes
 
     // store the OTP and expiration time in the database associated with the user
-    await User.updateOne({ email }, { otp, otpExpires: otpExpiration }).exec();
+    const updateResult = await User.updateOne({ email }, { otp, otpExpires: otpExpiration }).exec();
 
-    // configure nodemailer to send the email
+    if (updateResult.nModified === 0) {
+      return error(`No user found with email: ${email}`);
+    }
+
+    log(`OTP updated for user: ${email}`);
+
+    // Configure Nodemailer to send the email
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -24,27 +30,29 @@ exports.sendOTP = async (email) => {
       }
     });
 
+    const templatePath = path.join(__dirname, '../../client/html/otpEmailTemplate.html');
+
+    // Use async/await to read the HTML template
+    const htmlContent = await fs.readFile(templatePath, 'utf8');
+
+    // Replace placeholder with actual OTP
+    const emailContent = htmlContent.replace('[OTP PLACEHOLDER]', otp);
+
     const mailOptions = {
       from: config.gmail.user,
       to: email,
       subject: 'Email Verification',
-      html: `
-        <div style="text-align: center;">
-          <img src="http://badminton-app.ap-1.evennode.com/assets/images/logo.png" alt="Logo" style="width: 100px; height: auto;" />
-          <h2>Your OTP Code</h2>
-          <p>Your OTP code is <strong>${otp}</strong>. It is valid for 10 minutes.</p>
-        </div>
-      `
+      html: emailContent
     };
 
-    transporter.sendMail(mailOptions, (err, info) => {
-      if (err) {
-        error('Error sending OTP:', err);
-      } else {
-        log('OTP sent:', info.response);
-      }
-    });
+    // Send the email using your email service here
+    const info = await transporter.sendMail(mailOptions);
+    log('OTP sent:', info.response);
   } catch (err) {
-    error('Error in sendOTP function:', err);
+    if (err.code === 'ENOENT') {
+      error('Error: HTML template file not found');
+    } else {
+      error('Error in sendOTP function:', err);
+    }
   }
 };
