@@ -1,6 +1,9 @@
 const User = require('../models/User');
 const createError = require('http-errors');
 const { error, log } = console;
+const { sendOTP } = require('../services/emailService');
+const { generateNewVerificationToken } = require('../utils/genVerificationToken');
+const { Buffer } = require('buffer');
 
 exports.registerUser = async (req, res, next) => {
   try {
@@ -24,7 +27,7 @@ exports.registerUser = async (req, res, next) => {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       // send a custom response for email already exists
-      return res.status(400).json({ error: 'Email already exists' }); // Modify this line
+      return res.status(400).json({ error: 'Email already exists' });
     }
 
     // Create a new user object
@@ -41,6 +44,12 @@ exports.registerUser = async (req, res, next) => {
       municipality,
       contact_number,
       status_owner,
+      verificationToken: null,
+      isTokenUsed: false,
+      tokenExpires: null,
+      isVerified: false,
+      otp: null, // initialize OTP as null
+      otpExpires: null, // initialize OTP expiration
       role,
       ...(role === 'Admin' && { status_owner })
     });
@@ -48,8 +57,14 @@ exports.registerUser = async (req, res, next) => {
     // save the user to the database
     await newUser.save();
 
-    // send a success response (you can also generate a token here)
-    res.status(201).json({ message: 'User registered successfully' });
+    const token = await generateNewVerificationToken(email);
+
+    const base64Email = Buffer.from(email).toString('base64');
+
+    await sendOTP(email);
+
+    // verification page with  token
+    return res.status(201).json({ redirectUrl: `/verification?token=${token}&email=${base64Email}` });
   } catch (err) {
     const isProduction = req.app.get('env') === 'production';
 
