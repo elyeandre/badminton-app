@@ -73,6 +73,18 @@ const userSchema = new mongoose.Schema(
         message: 'Role must be either Admin, Player, or Coach.'
       }
     },
+    isVerified: {
+      type: Boolean,
+      default: false
+    },
+    otp: {
+      type: Number,
+      default: null
+    },
+    otpExpires: {
+      type: Date,
+      default: null
+    },
     status_owner: {
       type: String,
       enum: ['single', 'married', 'widowed/er', 'separated', 'cohabitant'],
