@@ -124,6 +124,28 @@ userSchema.pre('save', async function (next) {
   next();
 });
 
+// method to compare password
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  console.log(this.password);
+  return await bcrypt.compare(candidatePassword, this.password);
+};
+
+userSchema
+  .virtual('confirm_password')
+  .get(function () {
+    return this._confirm_password;
+  })
+  .set(function (value) {
+    this._confirm_password = value;
+  });
+
+// pre-validate hook to ensure password confirmation matches
+userSchema.pre('validate', function (next) {
+  if (this.password !== this.confirm_password) {
+    this.invalidate('confirm_password', 'Passwords do not match');
+  }
+  next();
+});
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
