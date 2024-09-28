@@ -24,6 +24,8 @@ app.set('views', path.join(__dirname, 'client', 'views'));
 
 // CORS middleware allows your API to be accessed from other origins (domains)
 app.use(cors());
+app.disable('x-powered-by'); // reduce fingerprinting
+app.use(cookieParser());
 // enable compression reduces the size of html css and js to significantly improves the latency
 app.use(compression());
 // for logging HTTP requests.
@@ -72,6 +74,7 @@ const userRoutes = require('./src/routes/userRoutes');
 const testRoutes = require('./src/routes/testEndpoints');
 indexRoutes(app);
 userRoutes(app);
+testRoutes(app);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
