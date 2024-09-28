@@ -1,8 +1,7 @@
 import '../../../css/pages/index/style.css';
 
 const doc = document;
-const { log } = console;
-const { error } = console;
+const { log, error } = console;
 
 const getById = (id) => doc.getElementById(id);
 const getAll = (selector) => doc.querySelectorAll(selector);

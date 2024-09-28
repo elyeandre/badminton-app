@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
-const { log } = console;
-const { error } = console;
+const { log, error } = console;
 
 const connectDB = async (dbConfig) => {
   const maxRetries = 5;

@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const createError = require('http-errors');
-const { error } = console;
+const { error, log } = console;
 
 exports.registerUser = async (req, res, next) => {
   try {
