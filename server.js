@@ -68,8 +68,9 @@ app.use(
 );
 
 // initialize and register all the application routes
-const indexRoutes = require('./src/routes/index');
-const userRoutes = require('./src/routes/users');
+const indexRoutes = require('./src/routes/indexRoutes');
+const userRoutes = require('./src/routes/userRoutes');
+const testRoutes = require('./src/routes/testEndpoints');
 indexRoutes(app);
 userRoutes(app);
 
