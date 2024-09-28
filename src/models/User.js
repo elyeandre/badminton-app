@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
+const config = require('config');
+const jwt = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema(
   {
@@ -27,8 +28,14 @@ const userSchema = new mongoose.Schema(
       required: [true, 'Email is required'],
       unique: true,
       lowercase: true,
-      validate: [isEmail, 'Please enter a valid email address']
-      // TODO: Add validation to allow only Gmail, Yahoo, and Googlemail addresses.
+      validate: {
+        validator: function (value) {
+          const validDomains = ['gmail.com', 'yahoo.com', 'googlemail.com'];
+          const domain = value.split('@')[1];
+          return validDomains.includes(domain);
+        },
+        message: 'Email must be from Gmail, Yahoo, or Googlemail.'
+      }
     },
     username: {
       type: String,
@@ -36,11 +43,16 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: [3, 'Username must be at least 4 characters long']
     },
-    // TODO: check if the string can be considered a strong password or not
     password: {
       type: String,
       required: [true, 'Password is required'],
       minlength: [8, 'Password must be at least 8 characters long'],
+      validate: {
+        validator: function (value) {
+          return /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])/.test(value);
+        },
+        message: 'Password must be stronger (contain upper/lower case letters, numbers, and special characters).'
+      },
       select: false //prevents password from being returned in queries
     },
     gender: {
@@ -72,6 +84,18 @@ const userSchema = new mongoose.Schema(
         values: ['admin', 'player', 'coach'],
         message: 'Role must be either Admin, Player, or Coach.'
       }
+    },
+    verificationToken: {
+      type: String,
+      default: null
+    },
+    isTokenUsed: {
+      type: Boolean,
+      default: false
+    },
+    tokenExpires: {
+      type: Date,
+      default: null
     },
     isVerified: {
       type: Boolean,
@@ -119,7 +143,8 @@ userSchema.pre('validate', function (next) {
 // hash the password before saving
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, 10);
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
   }
   next();
 });
@@ -146,6 +171,19 @@ userSchema.pre('validate', function (next) {
   }
   next();
 });
+
+// method to generate jwt token
+userSchema.methods.generateAccessJWT = function () {
+  let payload = {
+    id: this._id,
+    email: this.email,
+    role: this.role
+  };
+  return jwt.sign(payload, config.jwtSecret, {
+    expiresIn: '5m'
+  });
+};
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
