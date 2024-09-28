@@ -67,8 +67,10 @@ doc.addEventListener('DOMContentLoaded', function () {
 
       const result = await response.json();
       if (response.status === 201) {
-        // Handle successful registration (e.g., redirect or show a success message)
-        alert('Registration successful');
+        alert('Registration successful!');
+        form.reset();
+        // redirect to verification page with base64 email
+        window.location.href = result.redirectUrl;
       } else {
         // Check if the email already exists
         if (result.error === 'Email already exists') {
@@ -96,17 +98,18 @@ const buildUserObject = (formData, role) => {
   const suffix = isAdmin ? '_owner' : '_user';
 
   const userObject = {
-    first_name: formData.get(`first_name${suffix}`),
-    middle_name: formData.get(`middle_name${suffix}`),
-    last_name: formData.get(`last_name${suffix}`),
-    email: formData.get(`email${suffix}`),
-    username: formData.get(`username${suffix}`),
-    password: formData.get(`password1${suffix}`),
-    gender: formData.get(`gender${suffix}`),
-    date_of_birth: formData.get(`date_of_birth${suffix}`),
-    municipality: formData.get(`municipality${suffix}`),
-    contact_number: formData.get(`contact_number${suffix}`),
-    role: role || formData.get(`role${suffix}`)
+    first_name: formData.get(`first_name${suffix}`).trim(),
+    middle_name: formData.get(`middle_name${suffix}`).trim(),
+    last_name: formData.get(`last_name${suffix}`).trim(),
+    email: formData.get(`email${suffix}`).trim(),
+    username: formData.get(`username${suffix}`).trim(),
+    password: formData.get(`password1${suffix}`).trim(),
+    confirm_password: formData.get(`password2${suffix}`).trim(),
+    gender: formData.get(`gender${suffix}`).trim(),
+    date_of_birth: formData.get(`date_of_birth${suffix}`).trim(),
+    municipality: formData.get(`municipality${suffix}`).trim(),
+    contact_number: formData.get(`contact_number${suffix}`).trim(),
+    role: role || formData.get(`role${suffix}`).trim()
   };
 
   // add status_owner only if the role is 'Admin'
