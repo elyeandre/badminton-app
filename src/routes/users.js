@@ -5,6 +5,7 @@ const checkMongoConnection = require('../middleware/checkMongoConnection');
 const serveFile = require('../utils/fileUtils');
 const { registerUser } = require('../controllers/userController');
 const { validateRegistration } = require('../middleware/userRegValidator'); // Update path as needed
+const { validateVerify } = require('../middleware/userVerifyValidator');
 
 let routes = (app) => {
   // serve the registration page
