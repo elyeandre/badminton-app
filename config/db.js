@@ -8,11 +8,11 @@ const connectDB = async (dbConfig) => {
 
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
-      await mongoose.connect(dbConfig.uri, {
-        user: dbConfig.user,
-        pass: dbConfig.password,
-        tls: dbConfig.tls,
-        tlsCAFile: dbConfig.tlsCAFile
+      await mongoose.connect(dbConfig.mongodb.uri, {
+        user: dbConfig.mongodb.user,
+        pass: dbConfig.mongodb.password,
+        tls: dbConfig.mongodb.tls,
+        tlsCAFile: dbConfig.mongodb.tlsCAFile
       });
       log('MongoDB connected successfully');
 
