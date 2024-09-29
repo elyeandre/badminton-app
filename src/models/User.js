@@ -109,6 +109,10 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: null
     },
+    refreshToken: {
+      type: String,
+      default: null // store refresh token here
+    },
     status_owner: {
       type: String,
       enum: ['single', 'married', 'widowed/er', 'separated', 'cohabitant'],
@@ -130,7 +134,6 @@ const userSchema = new mongoose.Schema(
 
 userSchema.pre('validate', function (next) {
   const lowercaseFields = ['gender', 'role', 'status_owner'];
-
   lowercaseFields.forEach((field) => {
     if (this[field]) {
       this[field] = this[field].toLowerCase();
@@ -151,7 +154,6 @@ userSchema.pre('save', async function (next) {
 
 // method to compare password
 userSchema.methods.comparePassword = async function (candidatePassword) {
-  console.log(this.password);
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -172,16 +174,19 @@ userSchema.pre('validate', function (next) {
   next();
 });
 
-// method to generate jwt token
-userSchema.methods.generateAccessJWT = function () {
-  let payload = {
+userSchema.methods.generateTokens = function () {
+  const payload = {
     id: this._id,
-    email: this.email,
     role: this.role
   };
-  return jwt.sign(payload, config.jwtSecret, {
-    expiresIn: '5m'
-  });
+
+  // generate Access Token (short-lived)
+  const accessToken = jwt.sign(payload, config.jwtSecret, { expiresIn: '5m', algorithm: 'HS256' });
+
+  // generate Refresh Token (long-lived)
+  const refreshToken = jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '7d', algorithm: 'HS256' });
+
+  return { accessToken, refreshToken };
 };
 
 const User = mongoose.model('User', userSchema);

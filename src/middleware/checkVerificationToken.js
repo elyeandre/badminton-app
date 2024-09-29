@@ -14,7 +14,7 @@ const checkVerificationToken = async (req, res, next) => {
     const user = await User.findOne({ verificationToken: token });
 
     if (!user) {
-      return next(createError(404, 'Invalid or expired verification token'));
+      return next(createError(404, 'Invalid token'));
     }
 
     if (user.tokenExpires < Date.now()) {
