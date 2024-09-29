@@ -4,7 +4,6 @@ const path = require('path');
 const serveFile = require('../utils/fileUtils');
 const checkMongoConnection = require('../middleware/checkMongoConnection');
 const checkVerificationToken = require('../middleware/checkVerificationToken');
-const verifyToken = require('../middleware/authJwt');
 
 let routes = (app) => {
   router.get('/', (req, res, next) => {
@@ -27,10 +26,6 @@ let routes = (app) => {
 
     const filePath = path.resolve(__dirname, '../../build/verification.html');
     serveFile(filePath, res, next);
-  });
-
-  app.get('/test-redirect', (req, res) => {
-    res.redirect('/some-other-route');
   });
 
   // serve the login page

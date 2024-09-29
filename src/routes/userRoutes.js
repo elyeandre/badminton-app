@@ -1,24 +1,61 @@
 const express = require('express');
 const router = express.Router();
-const checkMongoConnection = require('../middleware/checkMongoConnection');
-const { registerUser } = require('../controllers/userController');
-const { validateRegistration } = require('../middleware/userRegValidator');
-const { validateLogin } = require('../middleware/loginValidator');
-const { validateVerify } = require('../middleware/userVerifyValidator');
-const { verifyEmail } = require('../controllers/verificationController');
-const { loginUser } = require('../controllers/authController');
+const roleChecker = require('../middleware/roleChecker');
+const User = require('../models/User'); // import the User model
+const verifyToken = require('../middleware/authJwt');
+const createError = require('http-errors');
 
 let routes = (app) => {
-  // handle the verification
-  router.post('/verify', checkMongoConnection, validateVerify, verifyEmail);
+  // Test endpoint for admin only
+  router.get('/admin', verifyToken, roleChecker(['admin']), async (req, res, next) => {
+    try {
+      const user = await User.findById(req.user._id); // Use req.user.id
 
-  // handle Registration
-  router.post('/register', checkMongoConnection, validateRegistration, registerUser);
+      const { password, verificationToken, isTokenUsed, tokenExpires, otp, otpExpires, ...data } = user._doc; // Exclude sensitive fields
 
-  // handle login
-  router.post('/login', checkMongoConnection, validateLogin, loginUser);
+      res.status(200).json({
+        message: 'Admin access granted!',
+        userRole: req.user.role,
+        userData: data
+      });
+    } catch (err) {
+      return next(createError(500, 'Internal Server Error'));
+    }
+  });
 
-  app.use('/user', router);
+  // Test endpoint for player only
+  router.get('/player', verifyToken, roleChecker(['player']), async (req, res, next) => {
+    try {
+      const user = await User.findById(req.user._id);
+      const { password, verificationToken, isTokenUsed, tokenExpires, otp, otpExpires, ...data } = user._doc; // Exclude sensitive fields
+
+      res.status(200).json({
+        message: 'Player access granted!',
+        userRole: req.user.role,
+        userData: data
+      });
+    } catch (err) {
+      return next(createError(500, 'Internal Server Error'));
+    }
+  });
+
+  // Test endpoint for coach only
+  router.get('/coach', verifyToken, roleChecker(['coach']), async (req, res, next) => {
+    try {
+      const user = await User.findById(req.user._id);
+      const { password, verificationToken, isTokenUsed, tokenExpires, otp, otpExpires, ...data } = user._doc; // exclude sensitive fields
+
+      res.status(200).json({
+        message: 'Coach access granted!',
+        userRole: req.user.role,
+        userData: data
+      });
+    } catch (err) {
+      return next(createError(500, 'Internal Server Error'));
+    }
+  });
+
+  app.use('/test', router);
 };
 
 module.exports = routes;
