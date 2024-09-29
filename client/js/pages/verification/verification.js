@@ -21,7 +21,7 @@ doc.addEventListener('DOMContentLoaded', function () {
 
 const verifyOTP = async (email, otp) => {
   try {
-    const response = await fetch('/user/verify', {
+    const response = await fetch('/auth/verify', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -57,7 +57,7 @@ doc.addEventListener('DOMContentLoaded', function () {
     log(userObject);
 
     try {
-      const response = await fetch('/user/register', {
+      const response = await fetch('/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

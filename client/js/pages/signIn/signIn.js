@@ -29,7 +29,7 @@ doc.addEventListener('DOMContentLoaded', function () {
 const sendLoginRequest = async (username, password, role) => {
   log(username, password, role);
   try {
-    const response = await fetch('/user/login', {
+    const response = await fetch('/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
