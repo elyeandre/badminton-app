@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 const helmet = require('helmet');
 const path = require('path');
 const createError = require('http-errors');
-const { log, error } = console;
 
 const config = require('config');
 
@@ -78,11 +77,11 @@ app.use(
 
 // initialize and register all the application routes
 const indexRoutes = require('./src/routes/indexRoutes');
+const authRoutes = require('./src/routes/authRoutes');
 const userRoutes = require('./src/routes/userRoutes');
-const testRoutes = require('./src/routes/testEndpoints');
 indexRoutes(app);
 userRoutes(app);
-testRoutes(app);
+authRoutes(app);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
