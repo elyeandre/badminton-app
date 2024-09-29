@@ -2,16 +2,37 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const createError = require('http-errors');
 const config = require('config');
+const Blacklist = require('../models/Blacklist');
 
 const verifyToken = async (req, res, next) => {
   try {
-    const authHeader = req.headers['cookie']; // Get the session cookie from the request header
+    // Get the session cookie or Authorization header
+    const authHeader = req.headers['cookie'] || req.header('Authorization')?.replace('Bearer ', '');
 
+    // If neither are present, send an Unauthorized error
     if (!authHeader) return next(createError(401, 'Unauthorized'));
 
-    const cookie = authHeader.split('=')[1]; // Extract the token from the cookie
+    let token;
 
-    jwt.verify(cookie, config.jwtSecret, async (err, decoded) => {
+    // If it's from the cookie, extract the token from the correct cookie name
+    if (req.headers['cookie']) {
+      // Split the cookie string into key-value pairs
+      const cookies = authHeader.split(';').reduce((acc, cookie) => {
+        const [name, value] = cookie.trim().split('=');
+        acc[name] = value;
+        return acc;
+      }, {});
+
+      token = cookies['accessToken'];
+    }
+
+    // check if token is blacklisted
+    const blacklistedToken = await Blacklist.findOne({ token });
+    if (blacklistedToken) {
+      return next(createError(401, 'This session has been revoked. Please log in again.'));
+    }
+
+    jwt.verify(token, config.jwtSecret, async (err, decoded) => {
       if (err) {
         return next(createError(401, 'This session has expired. Please Login.'));
       }
@@ -23,7 +44,8 @@ const verifyToken = async (req, res, next) => {
         return next(createError(404, 'User not found.'));
       }
 
-      const { password, verificationToken, isTokenUsed, tokenExpires, otp, otpExpires, ...data } = user._doc; // Exclude sensitive fields
+      const { password, verificationToken, isTokenUsed, refreshToken, tokenExpires, otp, otpExpires, ...data } =
+        user._doc; // Exclude sensitive fields
       req.user = data; // put the user data into req.user
       next();
     });
