@@ -36,7 +36,7 @@ exports.sendOTP = async (email) => {
     const htmlContent = await fs.readFile(templatePath, 'utf8');
 
     // Replace placeholder with actual OTP
-    const emailContent = htmlContent.replace('[OTP PLACEHOLDER]', otp);
+    const emailContent = htmlContent.replace('[OTP_PLACEHOLDER]', otp);
 
     const mailOptions = {
       from: config.gmail.user,
