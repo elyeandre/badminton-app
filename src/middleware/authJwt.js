@@ -2,12 +2,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const createError = require('http-errors');
 const config = require('config');
-const Blacklist = require('../models/Blacklist');
+const { isTokenBlacklisted } = require('../utils/blackListUtils');
 
 const verifyToken = async (req, res, next) => {
   try {
-    // Get the session cookie or Authorization header
-    const authHeader = req.headers['cookie'] || req.header('Authorization')?.replace('Bearer ', '');
+    // Get the session cookie
+    const authHeader = req.headers['cookie'];
 
     // If neither are present, send an Unauthorized error
     if (!authHeader) return next(createError(401, 'Unauthorized'));
@@ -27,7 +27,7 @@ const verifyToken = async (req, res, next) => {
     }
 
     // check if token is blacklisted
-    const blacklistedToken = await Blacklist.findOne({ token });
+    const blacklistedToken = await isTokenBlacklisted(token, 'access');
     if (blacklistedToken) {
       return next(createError(401, 'This session has been revoked. Please log in again.'));
     }
