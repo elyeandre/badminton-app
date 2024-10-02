@@ -56,3 +56,44 @@ exports.sendOTP = async (email) => {
     }
   }
 };
+
+exports.sendForgotPasswordEmail = async (email, resetToken) => {
+  try {
+    // Configure Nodemailer to send the email
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: config.gmail.user,
+        pass: config.gmail.pass
+      }
+    });
+
+    const templatePath = path.join(__dirname, '../../client/html/forgotPassEmailTemplate.html');
+
+    // Use async/await to read the HTML template
+    const htmlContent = await fs.readFile(templatePath, 'utf8');
+
+    // Create a reset link with the reset token
+    const resetLink = `${config.frontendUrl}/reset-password?token=${resetToken}`;
+
+    // Replace placeholder with actual reset link
+    const emailContent = htmlContent.replace('[RESET_LINK_PLACEHOLDER]', resetLink);
+
+    const mailOptions = {
+      from: config.gmail.user,
+      to: email,
+      subject: 'Password Reset Request',
+      html: emailContent
+    };
+
+    // Send the email using your email service
+    const info = await transporter.sendMail(mailOptions);
+    log('Password reset email sent:', info.response);
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      error('Error: HTML template file not found');
+    } else {
+      error('Error in sendForgotPasswordEmail function:', err);
+    }
+  }
+};
