@@ -15,5 +15,6 @@ module.exports = {
   jwtSecret: process.env.JWT_SECRET,
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
   port: process.env.PORT || 3000,
+  frontendUrl: process.env.FRONTEND_URL,
   disableSecurity: process.env.DISABLE_SECURITY
 };
