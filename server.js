@@ -76,12 +76,9 @@ app.use(
 );
 
 // initialize and register all the application routes
-const indexRoutes = require('./src/routes/indexRoutes');
-const authRoutes = require('./src/routes/authRoutes');
-const userRoutes = require('./src/routes/userRoutes');
-indexRoutes(app);
-userRoutes(app);
-authRoutes(app);
+require('./src/routes/indexRoutes')(app);
+require('./src/routes/authRoutes')(app);
+require('./src/routes/userRoutes')(app);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
