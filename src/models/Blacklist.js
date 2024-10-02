@@ -7,6 +7,11 @@ const blacklistSchema = new mongoose.Schema(
       required: true,
       unique: true
     },
+    type: {
+      type: String,
+      enum: ['access', 'refresh'],
+      required: true
+    },
     expiresAt: {
       type: Date,
       required: true
