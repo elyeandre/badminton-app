@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const checkMongoConnection = require('../middleware/checkMongoConnection');
+const { validateRegistration } = require('../middleware/userRegValidator');
+const { validateLogin } = require('../middleware/loginValidator');
+const { validateVerify } = require('../middleware/userVerifyValidator');
 const {
   validateVerify,
   validateLogin,
