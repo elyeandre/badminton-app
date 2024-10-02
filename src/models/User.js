@@ -113,6 +113,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null // store refresh token here
     },
+    resetPasswordToken: {
+      type: String,
+      default: null
+    },
+    resetPasswordExpires: {
+      type: Date,
+      default: null
+    },
     status_owner: {
       type: String,
       enum: ['single', 'married', 'widowed/er', 'separated', 'cohabitant'],
