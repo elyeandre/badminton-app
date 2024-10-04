@@ -38,11 +38,11 @@ let routes = (app) => {
   // handle account deletion
   router.post('/delete', checkMongoConnection, verifyToken, deleteAccount);
 
-  // handle account forgot-password
-  router.post('/forgot-password', checkMongoConnection, validateForgotPassword, forgotPassword);
+  // handle account forgot-password with rate limiting
+  router.post('/forgot-password', checkMongoConnection, limiter, validateForgotPassword, forgotPassword);
 
-  // handle account forgot-password
-  router.post('/reset-password', checkMongoConnection, validateForgotPassword, resetPassword);
+  // handle account reset-password with rate limiting
+  router.post('/reset-password', checkMongoConnection, limiter, validateResetPassword, resetPassword);
 
   app.use('/auth', router);
 };
