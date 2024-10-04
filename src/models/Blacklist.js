@@ -9,7 +9,7 @@ const blacklistSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ['access', 'refresh'],
+      enum: ['access', 'refresh', 'reset'],
       required: true
     },
     expiresAt: {
