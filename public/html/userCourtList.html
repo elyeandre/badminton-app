@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Home</title>
+    <link rel="stylesheet" href="../css/userCourtList.css">
+</head>
+<body>
+    <div id="navbar"></div>
+    <script>
+        fetch('navBarUser.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar').innerHTML = data;
+            });
+    </script>
+    <div class="main-content">
+        <h1>Available Courts</h1>
+
+        <div class="popup-container" id="popupProfile">
+            <div class="popup-header">
+                <!-- Left Section: Logo and Operating Hours -->
+                <div class="left-section">
+                    <label for="pin-image-upload" class="upload-label">
+                        <div class="image-upload-container">
+                            <img id="pin-preview" src="https://via.placeholder.com/150x150.png?text=Logo" alt="Upload Business Logo" />
+                            <input type="file" id="pin-image-upload" accept="image/*" style="display: none;" />
+                        </div>
+                    </label>
+                    
+                    <div class="operating-hours">
+                        <label><strong>Operating Hours:</strong></label>
+                        <div class="time-container">
+                            <label for="to-time">To:</label>
+                            <input type="text" id="to-time" value="9:00 AM" readonly />
+                        </div>
+                        <div class="time-container">
+                            <label for="from-time">From:</label>
+                            <input type="text" id="from-time" value="5:00 PM" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Section: Court Details and Carousel -->
+                <div class="right-section">
+                    <h1>Court Name</h1>
+                    <div class="location-field">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <input type="text" value="Silver Court, Balanga City, Bataaan" readonly />
+                    </div>    
+                    <div class="description-field">
+                        <textarea id="court-description-textarea" readonly placeholder="Court Description">Silvercourt is a premier tennis facility offering modern surfaces and top-notch amenities. It is designed for players seeking a professional-grade experience in a luxurious setting.</textarea>
+                    </div>
+
+                    <!-- Carousel Section -->
+                    <div class="carousel">
+                        <div class="carousel-images">
+                            <img src="../assets/images/s1.webp" alt="Image 1">
+                            <img src="../assets/images/s2.webp" alt="Image 2">
+                            <img src="../assets/images/s3.jpeg" alt="Image 3">
+                        </div>
+                        <button class="carousel-btn prev" onclick="prevSlide()">&#8249;</button>
+                        <button class="carousel-btn next" onclick="nextSlide()">&#8250;</button>
+                    </div>
+                </div>
+            </div>
+            <button class="reserve-btn">Reserve Now</button>
+        </div>    
+    </div>
+    <script src="../js/userCourtList.js"></script>
+</body>
+</html>

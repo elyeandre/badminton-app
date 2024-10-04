@@ -16,22 +16,33 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render();
 
     // Dummy data
-    let operatingHours = { start: 12, end: 22 }; // 7 AM to 10 PM
+    let operatingHours = { start: 9, end: 22 }; // 9 AM to 10 PM
     let availableCourts = 9;
 
-    // Dynamically generate time slots
+    // Dynamically generate time slots with time ranges
     function generateTimeSlots() {
         const timeSlotsContainer = document.getElementById('timeSlots');
         timeSlotsContainer.innerHTML = ''; // Clear existing slots
+
         for (let hour = operatingHours.start; hour < operatingHours.end; hour++) {
+            let nextHour = hour + 1;
+            let amPmStart = hour < 12 ? 'AM' : 'PM';
+            let amPmEnd = nextHour < 12 ? 'AM' : 'PM';
+            
+            // Adjust hour display for 12-hour format
+            let displayHourStart = hour % 12 === 0 ? 12 : hour % 12;
+            let displayHourEnd = nextHour % 12 === 0 ? 12 : nextHour % 12;
+
+            // Create time slot with range
             let timeSlot = document.createElement('div');
             timeSlot.classList.add('time-slot');
-            let amPm = hour < 12 ? 'AM' : 'PM';
-            let displayHour = hour % 12 === 0 ? 12 : hour % 12;
-            timeSlot.textContent = `${displayHour}:00 ${amPm}`;
+            timeSlot.textContent = `${displayHourStart}:00 ${amPmStart} - ${displayHourEnd}:00 ${amPmEnd}`;
+            
+            // Add click event to toggle selection
             timeSlot.addEventListener('click', function () {
                 this.classList.toggle('selected');
             });
+            
             timeSlotsContainer.appendChild(timeSlot);
         }
     }
