@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Court Schedule</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css' rel='stylesheet' />
+    <link rel="stylesheet" href="../css/courtSchedule.css">
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <div id="profileNav" class="profile-nav">            
+            <a href="courtSchedule.html" class="active">Court Schedule</a>
+            <a href="viewUserPayment.html">User Payment</a>
+        </div>
+        <div class="box">
+            <div class="calendar" id="calendarContainer">
+                <div id="calendar"></div>
+            </div>
+            <div class="schedule" id="scheduleDisplay"></div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="../js/sideNavAdmin.js" defer></script>
+    <script src="../js/courtSchedule.js"></script>
+</body>
+</html>
