@@ -27,12 +27,8 @@ const handleFormSubmit = async (event) => {
   event.preventDefault();
 
   const newPassword = getById('new-password').value;
-  const confirmPassword = getById('confirm-password').value;
+  const confirm_password = getById('confirm-password').value;
   const token = new URLSearchParams(window.location.search).get('token'); // get token from URL
-
-  // Reset previous error messages
-  showError('new-password-error', '');
-  showError('confirm-password-error', '');
 
   // simple validation
   if (newPassword.length < 8) {
@@ -40,7 +36,7 @@ const handleFormSubmit = async (event) => {
     return;
   }
 
-  if (newPassword !== confirmPassword) {
+  if (newPassword !== confirm_password) {
     showError('confirm-password-error', 'Passwords do not match.');
     return;
   }
@@ -51,20 +47,20 @@ const handleFormSubmit = async (event) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ token, newPassword }) // send token and new password
+      body: JSON.stringify({ token, newPassword, confirm_password }) // send token and new password
     });
 
     const data = await response.json();
 
     if (data.success) {
-      log('Password reset successful!'); // we can redirect or show a success message here
+      alert('Password reset successfully');
       // Optionally redirect the user or show a success message
       window.location.href = '/login';
     } else {
       showError('new-password-error', data.message); // Show the error message from the server
     }
   } catch (err) {
-    console.error('Error during password reset:', err);
+    error('Error during password reset:', err);
     showError('new-password-error', 'An error occurred while resetting the password.'); // Generic error message
   }
 };
