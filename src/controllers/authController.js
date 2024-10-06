@@ -67,9 +67,10 @@ exports.loginUser = async (req, res, next) => {
     }
 
     let options = {
-      maxAge: new Date(Date.now() + 15 * 60 * 1000), // would expire in 5 minutes
+      maxAge: new Date(Date.now() + 15 * 60 * 1000), // would expire in 15 minutes
       httpOnly: true, // the cookie is only accessible by the web server
-      secure: true,
+      // secure: true,
+      secure: false,
       sameSite: 'Strict'
     };
 
@@ -253,7 +254,8 @@ exports.deleteAccount = async (req, res) => {
 
     let options = {
       httpOnly: true, // the cookie is only accessible by the web server
-      secure: true,
+      // secure: true,
+      secure: false,
       sameSite: 'Strict'
     };
 
@@ -331,7 +333,8 @@ exports.logoutUser = async (req, res, next) => {
 
     let options = {
       httpOnly: true, // the cookie is only accessible by the web server
-      secure: true,
+      // secure: true,
+      secure: false,
       sameSite: 'Strict'
     };
 
@@ -486,7 +489,8 @@ exports.refreshToken = async (req, res, next) => {
 
     let options = {
       httpOnly: true,
-      secure: true,
+      // secure: true,
+      secure: false,
       sameSite: 'Strict'
     };
 
