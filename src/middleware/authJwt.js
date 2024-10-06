@@ -44,9 +44,7 @@ const verifyToken = async (req, res, next) => {
         return next(createError(404, 'User not found.'));
       }
 
-      const { password, verificationToken, isTokenUsed, refreshToken, tokenExpires, otp, otpExpires, ...data } =
-        user._doc; // Exclude sensitive fields
-      req.user = data; // put the user data into req.user
+      req.user = user.toJSON();
       next();
     });
   } catch (err) {

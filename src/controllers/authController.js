@@ -1,25 +1,15 @@
 const User = require('../models/User');
 const { log, error } = console;
-const { generateAccessAndRefreshTokens, generateNewVerificationToken } = require('../utils/generateToken');
+const { generateAccessToken, generateRefreshToken, generateNonce } = require('../utils/generateToken');
 const { addToBlacklist, isTokenBlacklisted } = require('../utils/blackListUtils');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const { Buffer } = require('buffer');
 const { sendOTP, sendForgotPasswordEmail } = require('../services/emailService');
-const crypto = require('crypto');
 
 exports.loginUser = async (req, res, next) => {
   try {
     const { username, password, role } = req.body;
-
-    // check if username and password are provided
-    if (!username || !password || !role) {
-      return res.status(400).json({
-        success: false,
-        code: 400,
-        message: 'username, password and role are required'
-      });
-    }
 
     // find the user by username
     const user = await User.findOne({ username }).select('+password');
@@ -53,19 +43,26 @@ exports.loginUser = async (req, res, next) => {
 
     // if the user is not verified, send verification data
     if (!user.isVerified) {
-      const token = await generateNewVerificationToken(user.email); // generate a new verification token
-      // send OTP
-      await sendOTP(user.email);
+      // generate a unique nonce
+      const nonce = await generateNonce(user.email, 'verification');
 
-      // encode email using base64
-      const base64Email = Buffer.from(user.email).toString('base64');
+      // create a JWT token for verification with email and nonce
+      const generateEmailVerificationToken = (email, nonce) => {
+        return jwt.sign({ email, nonce }, config.get('jwtSecret'), {
+          expiresIn: '20m' // Token valid for 20 minutes or adjust as needed
+        });
+      };
+
+      const token = generateEmailVerificationToken(user.email, nonce);
+
+      await sendOTP(user.email);
 
       return res.status(200).json({
         success: true,
         code: 200,
         message: 'Please verify your account first.',
         action: 'verify',
-        verificationUrl: `/verification?token=${token}&email=${base64Email}`
+        verificationUrl: `/verification?token=${token}`
       });
     }
 
@@ -76,17 +73,17 @@ exports.loginUser = async (req, res, next) => {
       sameSite: 'Strict'
     };
 
-    // Retrieve the logged-in user excluding sensitive information
-    const loggedInUser = await User.findById(user._id).select(
-      '-password -refreshToken -otp -otpExpires -verificationToken -isTokenUsed -tokenExpires'
-    );
-
     // generate access token and refresh token for user
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(user._id);
+    const accessToken = await generateAccessToken(user._id);
+    const refreshToken = await generateRefreshToken(user._id);
 
-    // save the refresh token in the database
-    user.refreshToken = refreshToken;
-    await user.save({ validateBeforeSave: false });
+    // Determine redirect URL based on user role
+    let redirectUrl;
+    if (user.role === 'admin') {
+      redirectUrl = '/admin/dashboard';
+    } else if (user.role === 'player' || user.role === 'coach') {
+      redirectUrl = '/user/dashboard';
+    }
 
     return res
       .status(200)
@@ -94,13 +91,10 @@ exports.loginUser = async (req, res, next) => {
       .cookie('refreshToken', refreshToken, options)
       .json({
         success: true,
-        code: 200,
         action: 'redirect',
-        redirectUrl: `/test/${user.role.toLowerCase()}`,
+        code: 200,
         message: 'You have successfully logged in.',
-        user: loggedInUser,
-        accessToken,
-        refreshToken
+        redirectUrl
       });
   } catch (err) {
     error('Error occurred while logging the user:', err);
@@ -167,9 +161,18 @@ exports.registerUser = async (req, res, next) => {
     // save the user to the database
     await newUser.save();
 
-    const token = await generateNewVerificationToken(email);
+    // generate a unique nonce
+    const nonce = await generateNonce(email, 'verification');
+    // const generateNonce = () => crypto.randomBytes(16).toString('hex');
 
-    const base64Email = Buffer.from(email).toString('base64');
+    // create a JWT token for verification with email and nonce
+    const generateEmailVerificationToken = (email, nonce) => {
+      return jwt.sign({ email, nonce }, config.get('jwtSecret'), {
+        expiresIn: '20m' // Token valid for 20 minutes or adjust as needed
+      });
+    };
+
+    const token = generateEmailVerificationToken(email, nonce);
 
     await sendOTP(email);
 
@@ -179,8 +182,7 @@ exports.registerUser = async (req, res, next) => {
       action: 'redirect',
       code: 201,
       message: 'Thank you for registering with us. Your account has been successfully created.',
-      data: [],
-      redirectUrl: `/verification?token=${token}&email=${base64Email}`
+      redirectUrl: `/verification?token=${token}`
     });
   } catch (err) {
     error('Error registering user:', err);
@@ -355,14 +357,23 @@ exports.logoutUser = async (req, res, next) => {
 };
 
 exports.verifyEmail = async (req, res, next) => {
-  const { email: encodedEmail, otp } = req.body;
+  const { token, otp } = req.body;
 
   try {
-    // decode Base64 email
-    const decodedEmail = Buffer.from(encodedEmail, 'base64').toString();
+    // Check if the token is blacklisted
+    const isVerificationTokenBlacklisted = await isTokenBlacklisted(token, 'verify');
+    if (isVerificationTokenBlacklisted) {
+      return res.status(403).json({
+        success: false,
+        code: 403,
+        message: 'Invalid Token'
+      });
+    }
+    // Verify the token synchronously
+    const decoded = jwt.verify(token, config.get('jwtSecret'));
 
-    // find the user by email
-    const user = await User.findOne({ email: decodedEmail });
+    // Find the user by email
+    const user = await User.findOne({ email: decoded.email });
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -371,50 +382,58 @@ exports.verifyEmail = async (req, res, next) => {
       });
     }
 
-    // convert both OTPs to strings and trim any whitespace
-    const storedOtp = user?.otp.toString().trim();
-    const providedOtp = otp.toString().trim();
+    // Convert both OTPs to strings and trim any whitespace
+    const storedOtp = user.otp?.toString().trim();
+    const providedOtp = otp?.toString().trim();
 
-    // check if the OTP is valid
+    // Check if the OTP is valid
     if (storedOtp !== providedOtp) {
       return res.status(400).json({
         success: false,
         code: 400,
-        data: [],
         message: 'Invalid OTP'
       });
     }
 
-    // check if OTP has expired
+    // Check if OTP has expired
     const currentTime = Date.now();
     if (user.otpExpires && user.otpExpires < currentTime) {
       return res.status(400).json({
         success: false,
         code: 400,
-        data: [],
         message: 'OTP has expired'
       });
     }
 
-    // if OTP is correct and not expired, mark email as verified
+    // Check if the nonce in the token matches the stored nonce
+    if (decoded.nonce !== user.verificationNonce) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'Invalid or expired token'
+      });
+    }
+
+    // Mark email as verified
     user.isVerified = true;
-    user.otp = null; // optionally clear OTP after successful verification
-    user.otpExpires = null; // clear the expiration as well
-    user.verificationToken = null;
-    user.isTokenUsed = true;
-    user.tokenExpires = null;
+    user.otp = null; // Clear OTP after successful verification
+    user.otpExpires = null; // Clear the expiration as well
+    user.verificationNonce = null;
 
     await user.save();
+
+    // Add the token to the blacklist
+    await addToBlacklist(token, 'verify');
 
     return res.status(200).json({
       success: true,
       code: 200,
-      message: 'Email verified sucessfully'
+      message: 'Email verified successfully'
     });
   } catch (err) {
-    error('Error during verification check:', err);
+    console.error('Error during verification check:', err);
     return res.status(500).json({
-      status: 'error',
+      success: false,
       code: 500,
       message: 'Internal Server Error'
     });
@@ -422,10 +441,9 @@ exports.verifyEmail = async (req, res, next) => {
 };
 
 exports.refreshToken = async (req, res, next) => {
-  // retrieve the refresh token from cookies or request body
   const incomingRefreshToken = req.cookies.refreshToken || req.body.refreshToken;
 
-  // if no refresh token is present, deny access with a 401 Unauthorized status
+  // If no refresh token is present, deny access
   if (!incomingRefreshToken) {
     return res.status(401).json({
       success: false,
@@ -435,7 +453,7 @@ exports.refreshToken = async (req, res, next) => {
   }
 
   try {
-    // check if the refresh token is blacklisted
+    // Check if the refresh token is blacklisted
     const isRefreshTokenBlacklisted = await isTokenBlacklisted(incomingRefreshToken, 'refresh');
     if (isRefreshTokenBlacklisted) {
       return res.status(403).json({
@@ -445,57 +463,43 @@ exports.refreshToken = async (req, res, next) => {
       });
     }
 
-    // verify the refresh token
-    const decodedToken = jwt.verify(incomingRefreshToken, config.jwtRefreshSecret);
+    const decoded = jwt.verify(incomingRefreshToken, config.get('jwtRefreshSecret'));
 
-    // find the user associated with the refresh token
-    const user = await User.findById(decodedToken?.id);
-
+    // Find the user associated with the refresh token
+    const user = await User.findById(decoded.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    if (user?.refreshToken !== incomingRefreshToken) {
+    // If refresh token in DB does not match the incoming refresh token
+    if (user.refreshToken !== incomingRefreshToken) {
       return res.status(401).json({ message: 'Refresh token is incorrect' });
     }
 
     const incomingAccessToken = req.cookies.accessToken || req.body.accessToken;
 
-    // check if the access token is blacklisted
+    // Check if the access token is blacklisted
     const isAccessTokenBlacklisted = await isTokenBlacklisted(incomingAccessToken, 'access');
-    if (!isAccessTokenBlacklisted) {
-      if (incomingAccessToken) {
-        await addToBlacklist(incomingAccessToken, 'access');
-      }
+    if (!isAccessTokenBlacklisted && incomingAccessToken) {
+      await addToBlacklist(incomingAccessToken, 'access');
     }
 
     let options = {
-      httpOnly: true, // the cookie is only accessible by the web server
+      httpOnly: true,
       secure: true,
       sameSite: 'Strict'
     };
 
-    if (incomingRefreshToken) {
-      // blacklist the old refresh token (optional)
-      await addToBlacklist(incomingRefreshToken, 'refresh');
-    }
+    // Generate new access token
+    const accessToken = await generateAccessToken(decoded.id);
 
-    // generate access token and refresh token for user
-    const { accessToken, refreshToken } = await generateAccessAndRefreshTokens(decodedToken?.id);
-
-    return res
-      .status(200)
-      .cookie('accessToken', accessToken, options)
-      .cookie('refreshToken', refreshToken, options)
-      .json({
-        success: true,
-        code: 201,
-        message: 'Access token refreshed',
-        accessToken,
-        refreshToken
-      });
+    return res.status(200).cookie('accessToken', accessToken, options).json({
+      success: true,
+      code: 201,
+      message: 'Access token refreshed'
+    });
   } catch (err) {
-    error('Error occurred while creating token:', err);
+    console.error('Error occurred while refreshing token:', err);
     return res.status(500).json({
       status: 'error',
       code: 500,
@@ -505,29 +509,34 @@ exports.refreshToken = async (req, res, next) => {
 };
 
 exports.resetPassword = async (req, res) => {
-  const { token, email, newPassword } = req.body;
-
-  // Validate input
-  if (!token || !email || !newPassword) {
-    return res.status(400).json({
-      success: false,
-      code: 400,
-      message: 'Token, email, and new password are required'
-    });
-  }
+  const { token, newPassword, confirm_password } = req.body;
 
   try {
-    // Decode the base64 email
-    const decodedEmail = Buffer.from(email, 'base64').toString();
+    // Check if the refresh token is blacklisted
+    const isResetPasswordTokenBlacklisted = await isTokenBlacklisted(token, 'reset');
+    if (isResetPasswordTokenBlacklisted) {
+      return res.status(403).json({
+        success: false,
+        code: 403,
+        message: 'Reset Password token is blacklisted'
+      });
+    }
 
-    // Find user by email and verify token
-    const user = await User.findOne({
-      email: decodedEmail,
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() } // Check if the token has not expired
-    });
+    // verify the JWT token
+    const decoded = jwt.verify(token, config.get('jwtSecret'));
+    // find the user by ID from the decoded token
+    const user = await User.findById(decoded.id).select('+password');
 
     if (!user) {
+      return res.status(404).json({
+        success: false,
+        code: 404,
+        message: 'User not found'
+      });
+    }
+
+    // check if the nonce in the token matches the stored nonce
+    if (decoded.nonce !== user.resetPasswordNonce) {
       return res.status(400).json({
         success: false,
         code: 400,
@@ -535,11 +544,33 @@ exports.resetPassword = async (req, res) => {
       });
     }
 
-    // Update user's password
-    user.password = newPassword; // Ensure password is hashed in your User model
-    user.resetPasswordToken = undefined; // Clear the reset token
-    user.resetPasswordExpires = undefined; // Clear the expiration
+    // check if the reset password nonce has expired
+    if (Date.now() > user.resetPasswordExpires) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'Reset password link has expired'
+      });
+    }
+
+    // check if the new password is the same as the old password
+    const isSamePassword = await user.comparePassword(newPassword);
+    if (isSamePassword) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'New password cannot be the same as the old password'
+      });
+    }
+
+    // update user's password
+    user.confirm_password = confirm_password;
+    user.password = newPassword;
+    user.resetPasswordNonce = null; // Clear the nonce
+    user.resetPasswordExpires = null; // Clear the expiration
     await user.save();
+
+    await addToBlacklist(token, 'reset');
 
     return res.status(200).json({
       success: true,
@@ -547,7 +578,7 @@ exports.resetPassword = async (req, res) => {
       message: 'Password has been reset successfully'
     });
   } catch (err) {
-    error('Error during reset password:', err);
+    console.error('Error during reset password:', err);
     return res.status(500).json({
       success: false,
       code: 500,
@@ -558,11 +589,8 @@ exports.resetPassword = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
   const { email: encodedEmail } = req.body;
-
-  // decode Base64 email
   const decodedEmail = Buffer.from(encodedEmail, 'base64').toString();
 
-  // check if email is provided
   if (!decodedEmail) {
     return res.status(400).json({
       success: false,
@@ -572,7 +600,6 @@ exports.forgotPassword = async (req, res) => {
   }
 
   try {
-    // find user by email
     const user = await User.findOne({ email: decodedEmail });
     if (!user) {
       return res.status(404).json({
@@ -582,15 +609,19 @@ exports.forgotPassword = async (req, res) => {
       });
     }
 
-    // generate a unique reset token
-    const resetToken = crypto.randomBytes(32).toString('hex');
+    // generate a unique nonce
+    const nonce = await generateNonce(user.email, 'passwordReset');
 
-    // set token and expiration in user document
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour expiration
+    // create a JWT containing the nonce and user ID
+    const resetToken = jwt.sign(
+      { id: user._id, nonce: nonce },
+      config.get('jwtSecret'),
+      { expiresIn: '10m' } // Token expires in 10 min
+    );
+
     await user.save();
 
-    // Send email with the reset link
+    // Send email with the reset link containing the JWT
     await sendForgotPasswordEmail(decodedEmail, resetToken);
 
     return res.status(200).json({
@@ -599,7 +630,7 @@ exports.forgotPassword = async (req, res) => {
       message: 'Reset password link has been sent to your email.'
     });
   } catch (err) {
-    error('Error during forgot password:', err);
+    console.error('Error during forgot password:', err);
     return res.status(500).json({
       success: false,
       code: 500,

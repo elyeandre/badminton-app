@@ -5,7 +5,8 @@ const {
   validateVerify,
   validateLogin,
   validateRegistration,
-  validateForgotPassword
+  validateForgotPassword,
+  validateResetPassword
 } = require('../middleware/validator');
 const verifyToken = require('../middleware/authJwt');
 const {
@@ -18,6 +19,7 @@ const {
   forgotPassword,
   resetPassword
 } = require('../controllers/authController');
+const { limiter } = require('../middleware/rateLimiter');
 
 let routes = (app) => {
   // handle the verification
