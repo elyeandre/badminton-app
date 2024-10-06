@@ -10,6 +10,7 @@ let routes = (app) => {
   router.get('/admin', verifyToken, roleChecker(['admin']), async (req, res, next) => {
     try {
       const user = await User.findById(req.user._id); // Use req.user.id
+  router.get('/me', verifyToken, getCurrentUser);
 
       const { password, verificationToken, isTokenUsed, tokenExpires, otp, otpExpires, ...data } = user._doc; // Exclude sensitive fields
 
