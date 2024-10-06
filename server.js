@@ -6,9 +6,9 @@ const cors = require('cors');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 const helmet = require('helmet');
+const killPort = require('kill-port');
 const path = require('path');
 const createError = require('http-errors');
-const { log, error } = console;
 
 const config = require('config');
 
@@ -64,6 +64,17 @@ if (!disableSecurity) {
 
 // middleware to parse JSON bodies from incoming requests
 app.use(express.json());
+// custom middleware to handle JSON parsing errors
+app.use((err, req, res, next) => {
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({
+      success: false,
+      code: 400,
+      message: 'Invalid JSON format. Please check your request body.'
+    });
+  }
+  next(); // Pass to the next middleware or route handler if no error
+});
 // middleware to parse URL-encoded bodies (e.g., form submissions)
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -77,12 +88,9 @@ app.use(
 );
 
 // initialize and register all the application routes
-const indexRoutes = require('./src/routes/indexRoutes');
-const userRoutes = require('./src/routes/userRoutes');
-const testRoutes = require('./src/routes/testEndpoints');
-indexRoutes(app);
-userRoutes(app);
-testRoutes(app);
+require('./src/routes/indexRoutes')(app);
+require('./src/routes/authRoutes')(app);
+require('./src/routes/userRoutes')(app);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -113,21 +121,32 @@ const server = app.listen(config.get('port'), config.get('host'), () => {
 });
 
 // handle graceful shutdown
-process.on('SIGINT', async () => {
+process.on('SIGINT', shutdownHandler);
+process.on('SIGTERM', shutdownHandler);
+
+async function shutdownHandler() {
   console.log('Shutting down server...');
 
-  // close server connections
-  server.close(async () => {
+  // Close server connections
+  await server.close(async () => {
     console.log('Closed out remaining connections.');
 
-    // close MongoDB connection
+    // Close MongoDB connection
     try {
       await mongoose.connection.close();
       console.log('MongoDB connection closed.');
     } catch (error) {
       console.error('Error while closing MongoDB connection:', error);
     }
+    // Kill the port
+    const PORT = config.get('port');
+    try {
+      await killPort(PORT, 'tcp');
+      console.log(`Successfully killed processes running on port ${PORT}`);
+    } catch (error) {
+      console.error(`Error killing port ${PORT}:`, error);
+    }
 
     process.exit(0);
   });
-});
+}

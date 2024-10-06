@@ -1,5 +1,6 @@
 require('dotenv').config();
 const path = require('path');
+const config = require('config');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { loadCSS, extractCSS } = require('./webpack.parts');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -13,14 +14,18 @@ const pageTitles = {
   index: 'Welcome',
   signin: 'Sign In',
   signup: 'Sign Up',
-  verification: 'Email Verification'
+  verification: 'Email Verification',
+  resetpassword: 'Reset Password',
+  home: 'Welcome',
+  userprofile: 'Edit Profile'
 };
 
 // Page-specific stylesheets and scripts
 const pageAssets = {
   index: {
     styles: [],
-    scripts: []
+    scripts: [],
+    hasNavbar: false
   },
   signin: {
     styles: [
@@ -31,15 +36,33 @@ const pageAssets = {
       'https://code.jquery.com/jquery-3.5.1.slim.min.js',
       'https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js',
       'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'
-    ]
+    ],
+    hasNavbar: false
   },
   signup: {
     styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
-    scripts: []
+    scripts: [],
+    hasNavbar: false
   },
   verification: {
     styles: [],
-    scripts: []
+    scripts: [],
+    hasNavbar: false
+  },
+  resetpassword: {
+    styles: [],
+    scripts: [],
+    hasNavbar: false
+  },
+  home: {
+    styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
+    scripts: [],
+    hasNavbar: true
+  },
+  userprofile: {
+    styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
+    scripts: [],
+    hasNavbar: true
   }
 };
 
@@ -52,21 +75,21 @@ const htmlPlugins = pages.map((page) => {
   // Read the content of each file
   const bodyContent = fs.readFileSync(filePath, 'utf-8');
 
-  // Get styles and scripts for the page
-  const styles = pageAssets[page]?.styles || [];
-  const scripts = pageAssets[page]?.scripts || [];
+  // Get styles, scripts, and navbar flag for the page
+  const { styles = [], scripts = [], hasNavbar = false } = pageAssets[page] || {};
 
   const chunks = [page];
 
   return new HtmlWebpackPlugin({
     template: './client/views/template.ejs', // Template for all HTML pages
     filename: `./${page}.html`, // Output file for each page
-    domain: 'badminton-app-sooty.vercel.app',
+    domain: config.get('frontendUrl'),
     bodyContent, // Inject the body content dynamically
     inject: 'body',
     title: pageTitles[page], // Inject title
     styles, // Pass styles to inject into the template
     scripts, // Pass scripts to inject into the template
+    hasNavbar, // // Enable the navbar
     chunks, // Specify the chunk for this page
     minify: {
       collapseWhitespace: true,
@@ -84,11 +107,15 @@ module.exports = () => {
       index: './client/js/pages/index/index.js',
       signin: './client/js/pages/signIn/signIn.js',
       signup: './client/js/pages/signUp/signUp.js',
-      verification: './client/js/pages/verification/verification.js'
+      verification: './client/js/pages/verification/verification.js',
+      resetpassword: './client/js/pages/resetpassword/resetPassword.js',
+      home: './client/js/pages/home/home.js',
+      userprofile: './client/js/pages/userprofile/userprofile.js'
     },
     output: {
       filename: '[name].[contenthash].js',
       path: path.resolve(__dirname, 'build'),
+      publicPath: '/',
       assetModuleFilename: '[path][name][ext]',
       clean: true
     },

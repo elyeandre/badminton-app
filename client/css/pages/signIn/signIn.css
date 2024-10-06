@@ -127,7 +127,7 @@ form .forgot-pass a:hover {
 }
 
 .login-form button:hover {
-  background-color: #0c7b93 !important;
+  background-color: #397cf7 !important;
 }
 
 .login-form button i {
@@ -153,22 +153,128 @@ form .forgot-pass a:hover {
 }
 
 /*for forgot password modal*/
-.login-form input[type='text'],
-.login-form input[type='password'],
-.login-form input[type='email'],
-.login-form select {
-  height: 45px;
+.modal {
+  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.4);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  height: 100%;
+  left: 0;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
   width: 100%;
-  padding-left: 10px;
-  outline: none;
+  z-index: 1;
+}
+.modal-content {
+  background-color: #fff;
+  border: 1px solid #888;
+  border-radius: 5px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+  margin: 15% auto;
+  max-width: 370px;
+  padding: 20px;
+  text-align: center;
+  width: 90%;
+  position: relative;
+}
+.close-button {
+  color: #aaa;
+  position: absolute;
+  top: 2px;
+  right: 15px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.close-button:focus,
+.close-button:hover {
+  color: #000;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+h1 {
+  color: #333;
+  font-size: 30px;
+  font-weight: 600;
+  margin-top: 20px;
+  white-space: nowrap;
+}
+.data label {
+  color: #2e2e2e;
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 20px;
+}
+.data input {
+  background-color: #f1f4fb;
+  border: 1px solid #f1f4fb;
+  border-radius: 5px;
+  box-sizing: border-box;
+  color: #000;
   font-size: 14px;
   font-weight: 400;
-  background-color: #f1f4fb;
-  color: #000;
-  border-radius: 5px;
-  border: 1px solid #f1f4fb;
+  height: 45px;
   margin: 8px 0;
-  box-sizing: border-box;
+  outline: none;
+  padding-left: 10px;
+  width: 100%;
+}
+.data input:focus {
+  border: 0.8px solid #000;
+}
+.modal .submit {
+  align-items: center;
+  background-color: #142850;
+  border: none;
+  border-radius: 5px;
+  color: #f1f1f1;
+  cursor: pointer;
+  display: flex;
+  font-size: 17px;
+  font-weight: 400;
+  height: 45px;
+  justify-content: center;
+  margin: 25px auto;
+  max-width: 150px;
+  outline: none;
+  text-transform: uppercase;
+  transition: all 0.1s linear;
+  width: 100%;
+}
+.submit:hover {
+  background-color: #397cf7 !important;
+}
+/* Error message styles */
+.error-message {
+  display: none;
+  color: #d9534f;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+/* Smooth transition for hiding and showing the error message */
+.error-message.show {
+  display: block;
+  animation: fadein 0.5s;
+}
+
+/* Fade-in effect */
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .login-form input[type='text']:focus,
@@ -257,4 +363,19 @@ form .forgot-pass a:hover {
 .description-container h5 {
   margin-top: 50px;
   text-align: center;
+}
+
+.modal form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+  opacity: 0.7;
+  pointer-events: none;
+}
+.login-form form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+  opacity: 0.7;
+  pointer-events: none;
 }

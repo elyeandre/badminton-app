@@ -1,22 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const checkMongoConnection = require('../middleware/checkMongoConnection');
-const { registerUser } = require('../controllers/userController');
-const { validateRegistration } = require('../middleware/userRegValidator');
-const { validateLogin } = require('../middleware/loginValidator');
-const { validateVerify } = require('../middleware/userVerifyValidator');
-const { verifyEmail } = require('../controllers/verificationController');
-const { loginUser } = require('../controllers/authController');
+const path = require('path');
+const roleChecker = require('../middleware/roleChecker');
+const verifyToken = require('../middleware/authJwt');
+const { getCurrentUser } = require('../controllers/userController');
+const serveFile = require('../utils/fileUtils');
 
 let routes = (app) => {
-  // handle the verification
-  router.post('/verify', checkMongoConnection, validateVerify, verifyEmail);
+  router.get('/me', verifyToken, getCurrentUser);
 
-  // handle Registration
-  router.post('/register', checkMongoConnection, validateRegistration, registerUser);
-
-  // handle login
-  router.post('/login', checkMongoConnection, validateLogin, loginUser);
+  router.get('/dashboard', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
+    const filePath = path.resolve(__dirname, '../../build/home.html');
+    serveFile(filePath, res, next);
+  });
+  router.get('/edit-profile', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
+    const filePath = path.resolve(__dirname, '../../build/userprofile.html');
+    serveFile(filePath, res, next);
+  });
 
   app.use('/user', router);
 };

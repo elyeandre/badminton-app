@@ -85,16 +85,8 @@ const userSchema = new mongoose.Schema(
         message: 'Role must be either Admin, Player, or Coach.'
       }
     },
-    verificationToken: {
+    verificationNonce: {
       type: String,
-      default: null
-    },
-    isTokenUsed: {
-      type: Boolean,
-      default: false
-    },
-    tokenExpires: {
-      type: Date,
       default: null
     },
     isVerified: {
@@ -107,6 +99,14 @@ const userSchema = new mongoose.Schema(
     },
     otpExpires: {
       type: Date,
+      default: null
+    },
+    refreshToken: {
+      type: String,
+      default: null // store refresh token here
+    },
+    resetPasswordNonce: {
+      type: String,
       default: null
     },
     status_owner: {
@@ -128,9 +128,31 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// Apply toJSON transformation to exclude sensitive fields
+userSchema.set('toJSON', {
+  virtuals: true, // Include virtual fields
+  transform: function (doc, ret, options) {
+    // Remove fields like password, otp, refreshToken, etc.
+
+    delete ret.password;
+    delete ret.verificationToken;
+    delete ret.isTokenUsed;
+    delete ret.refreshToken;
+    delete ret.tokenExpires;
+    delete ret.otp;
+    delete ret.otpExpires;
+    delete ret.__v;
+    delete ret._id;
+    delete ret.verificationNonce;
+    delete ret.resetPasswordNonce;
+
+    // return only specific fields or modify structure
+    return ret;
+  }
+});
+
 userSchema.pre('validate', function (next) {
   const lowercaseFields = ['gender', 'role', 'status_owner'];
-
   lowercaseFields.forEach((field) => {
     if (this[field]) {
       this[field] = this[field].toLowerCase();
@@ -151,7 +173,6 @@ userSchema.pre('save', async function (next) {
 
 // method to compare password
 userSchema.methods.comparePassword = async function (candidatePassword) {
-  console.log(this.password);
   return await bcrypt.compare(candidatePassword, this.password);
 };
 
@@ -172,16 +193,23 @@ userSchema.pre('validate', function (next) {
   next();
 });
 
-// method to generate jwt token
-userSchema.methods.generateAccessJWT = function () {
-  let payload = {
+userSchema.methods.generateToken = function (type) {
+  const payload = {
     id: this._id,
-    email: this.email,
     role: this.role
   };
-  return jwt.sign(payload, config.jwtSecret, {
-    expiresIn: '5m'
-  });
+
+  if (type === 'access') {
+    // Generate an access token (short-lived)
+    return jwt.sign(payload, config.jwtSecret, { expiresIn: '15m', algorithm: 'HS256' });
+  }
+
+  if (type === 'refresh') {
+    // Generate a refresh token (long-lived)
+    return jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '14', algorithm: 'HS256' });
+  }
+
+  throw new Error('Invalid token type');
 };
 
 const User = mongoose.model('User', userSchema);

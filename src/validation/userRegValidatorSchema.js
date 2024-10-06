@@ -2,12 +2,18 @@ const Joi = require('joi');
 
 // define the registration validation schema
 const registrationSchema = Joi.object({
-  first_name: Joi.string().trim().alphanum().min(2).max(30).required().messages({
-    'string.empty': 'First name is required.',
-    'string.min': 'First name must be at least 2 characters long.',
-    'string.max': 'First name cannot be longer than 30 characters.',
-    'string.alphanum': 'First name must only contain alphanumeric characters.'
-  }),
+  first_name: Joi.string()
+    .trim()
+    .pattern(/^[a-zA-Z\s]+$/) // allows letters and spaces
+    .min(2)
+    .max(30)
+    .required()
+    .messages({
+      'string.empty': 'First name is required.',
+      'string.min': 'First name must be at least 2 characters long.',
+      'string.max': 'First name cannot be longer than 30 characters.',
+      'string.pattern.base': 'First name must only contain alphabetic characters and spaces.'
+    }),
   middle_name: Joi.string().trim().allow(''), // optional middle name
   last_name: Joi.string().trim().min(2).max(30).required().messages({
     'string.empty': 'Last name is required.',
