@@ -76,3 +76,22 @@ h1 {
 .submit:hover {
   background-color: #397cf7 !important;
 }
+
+/* Error message styles */
+.error-message {
+  display: none;
+  color: #d9534f;
+  background-color: #f2dede;
+  border: 1px solid #ebccd1;
+  padding: 10px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+/* Smooth transition for hiding and showing the error message */
+.error-message.show {
+  display: block;
+  animation: fadein 0.5s;
+}
