@@ -1,12 +1,13 @@
-const CryptoJS = require('crypto-js');
+const crypto = require('crypto');
 const User = require('../models/User');
+const { log, error } = console;
 
 /**
- * Generates access and refresh tokens for a user and saves the refresh token in the database.
- * @param {String} userId - The ID of the user for whom to generate tokens.
- * @returns {Object} - Contains the generated access and refresh tokens.
+ * Generates an access token for a user.
+ * @param {String} userId - The ID of the user for whom to generate the access token.
+ * @returns {String} - The generated access token.
  */
-const generateAccessAndRefreshTokens = async (userId) => {
+const generateAccessToken = async (userId) => {
   try {
     // Find the user by ID in the database
     const user = await User.findById(userId);
@@ -15,18 +16,45 @@ const generateAccessAndRefreshTokens = async (userId) => {
       throw new Error('User not found');
     }
 
-    // Generate an access token and a refresh token
-    const { accessToken, refreshToken } = user.generateTokens();
+    // Generate an access token
+    const accessToken = user.generateToken('access');
+
+    // Return the generated access token
+    return accessToken;
+  } catch (err) {
+    // Handle any errors that occur during the process
+    error('Error generating access token:', err.message);
+    return null; // Return null instead of throwing an error
+  }
+};
+
+/**
+ * Generates a refresh token for a user and saves it in the database.
+ * @param {String} userId - The ID of the user for whom to generate the refresh token.
+ * @returns {String} - The generated refresh token.
+ */
+const generateRefreshToken = async (userId) => {
+  try {
+    // Find the user by ID in the database
+    const user = await User.findById(userId);
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Generate a refresh token
+    const refreshToken = user.generateToken('refresh');
 
     // Save the refresh token to the user in the database
     user.refreshToken = refreshToken;
     await user.save({ validateBeforeSave: false });
 
-    // Return the generated tokens
-    return { accessToken, refreshToken };
-  } catch (error) {
+    // Return the generated refresh token
+    return refreshToken;
+  } catch (err) {
     // Handle any errors that occur during the process
-    throw new Error(error.message);
+    error('Error generating refresh token:', err.message);
+    return null; // Return null instead of throwing an error
   }
 };
 
@@ -35,24 +63,30 @@ const generateAccessAndRefreshTokens = async (userId) => {
  * @param {string} email - The user's email.
  * @returns {Promise<string>} - A promise that resolves with the new token after it's updated in the database.
  */
-const generateNewVerificationToken = async (email) => {
-  const randomBytes = CryptoJS.lib.WordArray.random(32); // Generate 32 random bytes
-  const token = randomBytes.toString(); // Convert to a string
+const generateNonce = async (email, purpose) => {
+  const nonce = crypto.randomBytes(16).toString('hex');
 
-  await User.updateOne(
-    { email },
-    {
-      verificationToken: token,
-      tokenExpires: Date.now() + 3600000, // 1-hour expiry
-      isTokenUsed: false // Ensure the token is marked as unused
-    }
-  );
+  let updateFields = {};
 
-  return token; // Return the generated token
+  switch (purpose) {
+    case 'verification':
+      updateFields = { verificationNonce: nonce };
+      break;
+    case 'passwordReset':
+      updateFields = { resetPasswordNonce: nonce };
+      break;
+    // Add more cases for other purposes if needed
+    default:
+      throw new Error('Invalid purpose provided for nonce generation');
+  }
+
+  await User.updateOne({ email }, updateFields);
+  return nonce;
 };
 
-// Export both functions for use in other parts of your application
+// Export all functions for use in other parts of your application
 module.exports = {
-  generateAccessAndRefreshTokens,
-  generateNewVerificationToken
+  generateAccessToken,
+  generateRefreshToken,
+  generateNonce
 };
