@@ -231,8 +231,13 @@ form button i {
 }
 
 .error-message {
-  color: red;
   font-size: 12px;
+  color: transparent;
+}
+
+.error-message.show {
+  color: red;
+  visibility: visible;
 }
 
 .container {
@@ -301,4 +306,10 @@ form button i {
   display: block;
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
+}
+.signup-form form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  color: #666;
+  opacity: 0.7;
 }
