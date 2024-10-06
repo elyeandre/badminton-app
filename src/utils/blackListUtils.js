@@ -1,30 +1,39 @@
 const jwt = require('jsonwebtoken');
 const Blacklist = require('../models/Blacklist');
 const config = require('config');
+const { log, error } = console;
 
 /**
  * Adds a token to the blacklist with an expiration date.
  *
  * @param {string} token - The token to be blacklisted.
  * @param {string} type - The type of the token ('access' or 'refresh').
- * @returns {Promise<void>}
  */
+
 async function addToBlacklist(token, type) {
-  // Determine the appropriate secret based on the token type
-  const secret = type === 'access' ? config.jwtSecret : config.jwtRefreshSecret;
+  const tokenSecrets = {
+    access: config.jwtSecret,
+    refresh: config.jwtRefreshSecret
+    // We can add more token types if needed, e.g., 'verify', 'reset'
+  };
 
-  const decoded = jwt.decode(token, secret); // Decode the token using the appropriate secret
+  // Determine the secret based on the type, default to `jwtSecret` if not found
+  const secret = tokenSecrets[type] || config.jwtSecret;
 
-  let expiresAt;
-  if (decoded && decoded.exp) {
-    expiresAt = new Date(decoded.exp * 1000); // JWT exp is in seconds
-  } else {
-    throw new Error('Invalid token or token does not have an expiration date.');
+  try {
+    const decoded = jwt.verify(token, secret);
+
+    let expiresAt;
+    if (decoded && decoded.exp) {
+      expiresAt = new Date(decoded.exp * 1000); // JWT exp is in seconds
+    }
+
+    // Create the blacklist entry with the expiration date
+    await Blacklist.create({ token, type, expiresAt });
+  } catch (err) {
+    error('Error blacklisting token:', err.message);
   }
-
-  await Blacklist.create({ token, type, expiresAt });
 }
-
 /**
  * Checks if a token is blacklisted and removes it if expired.
  *
