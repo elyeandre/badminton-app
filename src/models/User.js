@@ -85,16 +85,8 @@ const userSchema = new mongoose.Schema(
         message: 'Role must be either Admin, Player, or Coach.'
       }
     },
-    verificationToken: {
+    verificationNonce: {
       type: String,
-      default: null
-    },
-    isTokenUsed: {
-      type: Boolean,
-      default: false
-    },
-    tokenExpires: {
-      type: Date,
       default: null
     },
     isVerified: {
@@ -113,12 +105,8 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null // store refresh token here
     },
-    resetPasswordToken: {
+    resetPasswordNonce: {
       type: String,
-      default: null
-    },
-    resetPasswordExpires: {
-      type: Date,
       default: null
     },
     status_owner: {
@@ -139,6 +127,29 @@ const userSchema = new mongoose.Schema(
     timestamps: true
   }
 );
+
+// Apply toJSON transformation to exclude sensitive fields
+userSchema.set('toJSON', {
+  virtuals: true, // Include virtual fields
+  transform: function (doc, ret, options) {
+    // Remove fields like password, otp, refreshToken, etc.
+
+    delete ret.password;
+    delete ret.verificationToken;
+    delete ret.isTokenUsed;
+    delete ret.refreshToken;
+    delete ret.tokenExpires;
+    delete ret.otp;
+    delete ret.otpExpires;
+    delete ret.__v;
+    delete ret._id;
+    delete ret.verificationNonce;
+    delete ret.resetPasswordNonce;
+
+    // return only specific fields or modify structure
+    return ret;
+  }
+});
 
 userSchema.pre('validate', function (next) {
   const lowercaseFields = ['gender', 'role', 'status_owner'];
@@ -182,19 +193,23 @@ userSchema.pre('validate', function (next) {
   next();
 });
 
-userSchema.methods.generateTokens = function () {
+userSchema.methods.generateToken = function (type) {
   const payload = {
     id: this._id,
     role: this.role
   };
 
-  // generate Access Token (short-lived)
-  const accessToken = jwt.sign(payload, config.jwtSecret, { expiresIn: '5m', algorithm: 'HS256' });
+  if (type === 'access') {
+    // Generate an access token (short-lived)
+    return jwt.sign(payload, config.jwtSecret, { expiresIn: '15m', algorithm: 'HS256' });
+  }
 
-  // generate Refresh Token (long-lived)
-  const refreshToken = jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '7d', algorithm: 'HS256' });
+  if (type === 'refresh') {
+    // Generate a refresh token (long-lived)
+    return jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '14', algorithm: 'HS256' });
+  }
 
-  return { accessToken, refreshToken };
+  throw new Error('Invalid token type');
 };
 
 const User = mongoose.model('User', userSchema);
