@@ -14,12 +14,27 @@ const registrationSchema = Joi.object({
       'string.max': 'First name cannot be longer than 30 characters.',
       'string.pattern.base': 'First name must only contain alphabetic characters and spaces.'
     }),
-  middle_name: Joi.string().trim().allow(''), // optional middle name
-  last_name: Joi.string().trim().min(2).max(30).required().messages({
-    'string.empty': 'Last name is required.',
-    'string.min': 'Last name must be at least 2 characters long.',
-    'string.max': 'Last name cannot be longer than 30 characters.'
-  }),
+  middle_name: Joi.string()
+    .trim()
+    .max(30)
+    .pattern(/^[A-Za-z]+$/, 'alphabetic') // Only alphabetic characters
+    .allow('') // Optional middle name
+    .messages({
+      'string.max': 'Middle name cannot be longer than 30 characters.',
+      'string.pattern.base': 'Middle name must only contain alphabetic characters.'
+    }),
+  last_name: Joi.string()
+    .trim()
+    .pattern(/^[a-zA-Z\s]+$/) // allows letters and spaces
+    .min(2)
+    .max(30)
+    .required()
+    .messages({
+      'string.empty': 'Last name is required.',
+      'string.min': 'Last name must be at least 2 characters long.',
+      'string.max': 'Last name cannot be longer than 30 characters.',
+      'string.pattern.base': 'Last name must only contain alphabetic characters and spaces.'
+    }),
   email: Joi.string()
     .email()
     .lowercase() // Ensure email is lowercase
@@ -37,10 +52,18 @@ const registrationSchema = Joi.object({
       'string.email': 'Please enter a valid email address.',
       'any.invalid': 'Email must be from Gmail, Yahoo, or Googlemail.'
     }),
-  username: Joi.string().trim().min(4).required().messages({
-    'string.empty': 'Username is required.',
-    'string.min': 'Username must be at least 4 characters long.'
-  }),
+  username: Joi.string()
+    .trim()
+    .min(4)
+    .max(30)
+    .pattern(/^[A-Za-z0-9]+$/, 'letters and numbers') // Only letters and numbers
+    .required()
+    .messages({
+      'string.empty': 'Username is required.',
+      'string.min': 'Username must be at least 4 characters long.',
+      'string.max': 'Username must be at most 30 characters long.',
+      'string.pattern.base': 'Username can only contain letters and numbers.'
+    }),
   password: Joi.string()
     .min(8)
     .required()
