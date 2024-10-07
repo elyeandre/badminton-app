@@ -5,11 +5,16 @@ const roleChecker = require('../middleware/roleChecker');
 const verifyToken = require('../middleware/authJwt');
 const { getCurrentUser } = require('../controllers/userController');
 const serveFile = require('../utils/fileUtils');
+const { validateUserId, validateUserInfo } = require('../middleware/validator');
+const validateUpdateFields = require('../middleware/validateUpdateField');
 
 let routes = (app) => {
   router.get('/me', verifyToken, getCurrentUser);
 
+  router.get('/get-user/:id', verifyToken, validateUserId, getUserById);
+
   router.put('/update', verifyToken, validateUpdateFields, validateUserInfo, updateUserInfo);
+
   router.get('/dashboard', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/home.html');
     serveFile(filePath, res, next);
