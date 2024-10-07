@@ -13,7 +13,7 @@ const getAll = (selector) => doc.querySelectorAll(selector);
 const get = (selector) => doc.querySelector(selector);
 
 // start session checks on page load
-startSessionChecks();
+// startSessionChecks();
 
 // initialize input fields and store them in a variable
 const userProfileFields = {
@@ -27,7 +27,8 @@ const userProfileFields = {
   email: getById('email'),
   status: getById('status'),
   municipality: getById('municipality'),
-  userType: getById('user-type')
+  userType: getById('user-type'),
+  profilePic: getById('profilePic')
 };
 
 function capitalizeFirstLetter(string) {
@@ -62,6 +63,7 @@ function fetchUserProfile() {
       userProfileFields.status.value = data.status || 'Single';
       userProfileFields.municipality.value = data.municipality || '';
       userProfileFields.userType.value = data.role ? capitalizeFirstLetter(data.role) : '';
+      userProfileFields.profilePic.src = data.profile_photo || '/assets/images/pic_placeholder.png';
     })
     .catch((err) => {
       error('Error fetching user profile:', err);
