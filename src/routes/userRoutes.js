@@ -9,6 +9,7 @@ const serveFile = require('../utils/fileUtils');
 let routes = (app) => {
   router.get('/me', verifyToken, getCurrentUser);
 
+  router.put('/update', verifyToken, validateUpdateFields, validateUserInfo, updateUserInfo);
   router.get('/dashboard', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/home.html');
     serveFile(filePath, res, next);
