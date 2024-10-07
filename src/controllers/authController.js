@@ -6,6 +6,7 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 const { Buffer } = require('buffer');
 const { sendOTP, sendForgotPasswordEmail } = require('../services/emailService');
+const { deleteFromR2 } = require('../services/r2Service');
 
 exports.loginUser = async (req, res, next) => {
   try {
@@ -66,13 +67,7 @@ exports.loginUser = async (req, res, next) => {
       });
     }
 
-    let options = {
-      maxAge: new Date(Date.now() + 15 * 60 * 1000), // would expire in 15 minutes
-      httpOnly: true, // the cookie is only accessible by the web server
-      // secure: true,
-      secure: false,
-      sameSite: 'Strict'
-    };
+    const cookieOptions = config.get('cookieOptions');
 
     // generate access token and refresh token for user
     const accessToken = await generateAccessToken(user._id);
@@ -88,8 +83,8 @@ exports.loginUser = async (req, res, next) => {
 
     return res
       .status(200)
-      .cookie('accessToken', accessToken, options)
-      .cookie('refreshToken', refreshToken, options)
+      .cookie('accessToken', accessToken, cookieOptions)
+      .cookie('refreshToken', refreshToken, cookieOptions)
       .json({
         success: true,
         action: 'redirect',
@@ -149,9 +144,6 @@ exports.registerUser = async (req, res, next) => {
       municipality,
       contact_number,
       status_owner,
-      verificationToken: null,
-      isTokenUsed: false,
-      tokenExpires: null,
       isVerified: false,
       otp: null, // initialize OTP as null
       otpExpires: null, // initialize OTP expiration
@@ -238,13 +230,13 @@ exports.deleteAccount = async (req, res) => {
     }
 
     // assume the user's ID is stored in req.user after authentication
-    const userId = req.user._id;
+    const userId = req.user.id;
 
-    // find the user by ID and delete the account
-    const deletedUser = await User.findByIdAndDelete(userId);
+    // Find the user by ID
+    const user = await User.findById(userId);
 
-    // check if the user was found and deleted
-    if (!deletedUser) {
+    // Check if the user was found
+    if (!user) {
       return res.status(404).json({
         success: false,
         code: 404,
@@ -252,19 +244,23 @@ exports.deleteAccount = async (req, res) => {
       });
     }
 
-    let options = {
-      httpOnly: true, // the cookie is only accessible by the web server
-      // secure: true,
-      secure: false,
-      sameSite: 'Strict'
-    };
+    // if user has a profile photo, delete it from Cloudflare R2
+    if (user.profile_photo) {
+      const fileName = user.profile_photo.split('/').pop();
+      await deleteFromR2(fileName);
+    }
+
+    // find the user by ID and delete the account
+    await User.findByIdAndDelete(userId);
+
+    const { maxAge, ...cookieOptions } = config.get('cookieOptions');
 
     // clear request cookie on client
     return res
       .status(200)
       .setHeader('Clear-Site-Data', '"cookies"')
-      .clearCookie('accessToken', options)
-      .clearCookie('refreshToken', options)
+      .clearCookie('accessToken', cookieOptions)
+      .clearCookie('refreshToken', cookieOptions)
       .json({
         success: true,
         code: 200,
@@ -324,26 +320,21 @@ exports.logoutUser = async (req, res, next) => {
 
     // find the user and remove the refresh token
     await User.findByIdAndUpdate(
-      req.user._id,
+      req.user.id,
       {
         $set: { refreshToken: null }
       },
       { new: true }
     );
 
-    let options = {
-      httpOnly: true, // the cookie is only accessible by the web server
-      // secure: true,
-      secure: false,
-      sameSite: 'Strict'
-    };
+    const { maxAge, ...cookieOptions } = config.get('cookieOptions');
 
     // clear request cookie on client
     return res
       .status(200)
       .setHeader('Clear-Site-Data', '"cookies"')
-      .clearCookie('accessToken', options)
-      .clearCookie('refreshToken', options)
+      .clearCookie('accessToken', cookieOptions)
+      .clearCookie('refreshToken', cookieOptions)
       .json({
         success: true,
         code: 200,
@@ -487,17 +478,12 @@ exports.refreshToken = async (req, res, next) => {
       await addToBlacklist(incomingAccessToken, 'access');
     }
 
-    let options = {
-      httpOnly: true,
-      // secure: true,
-      secure: false,
-      sameSite: 'Strict'
-    };
+    const { maxAge, ...cookieOptions } = config.get('cookieOptions');
 
     // Generate new access token
     const accessToken = await generateAccessToken(decoded.id);
 
-    return res.status(200).cookie('accessToken', accessToken, options).json({
+    return res.status(200).cookie('accessToken', accessToken, cookieOptions).json({
       success: true,
       code: 201,
       message: 'Access token refreshed'
