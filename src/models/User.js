@@ -11,7 +11,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       minlength: [2, 'First name must be at least 2 characters long']
     },
-    // TODO: Unsure if middleName should be required, as not everyone has a middle name.
     middle_name: {
       type: String,
       trim: true,
@@ -109,6 +108,10 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null
     },
+    profile_photo: {
+      type: String,
+      default: '/assets/images/blank-profile.png'
+    },
     status_owner: {
       type: String,
       enum: ['single', 'married', 'widowed/er', 'separated', 'cohabitant'],
@@ -124,7 +127,8 @@ const userSchema = new mongoose.Schema(
     }
   },
   {
-    timestamps: true
+    timestamps: true,
+    strict: 'throw'
   }
 );
 
@@ -135,10 +139,7 @@ userSchema.set('toJSON', {
     // Remove fields like password, otp, refreshToken, etc.
 
     delete ret.password;
-    delete ret.verificationToken;
-    delete ret.isTokenUsed;
     delete ret.refreshToken;
-    delete ret.tokenExpires;
     delete ret.otp;
     delete ret.otpExpires;
     delete ret.__v;
@@ -149,6 +150,14 @@ userSchema.set('toJSON', {
     // return only specific fields or modify structure
     return ret;
   }
+});
+
+// add a pre-save hook to set isVerified to false when the email is updated
+userSchema.pre('save', function (next) {
+  if (this.isModified('email')) {
+    this.isVerified = false; // Set isVerified to false
+  }
+  next();
 });
 
 userSchema.pre('validate', function (next) {
@@ -206,7 +215,7 @@ userSchema.methods.generateToken = function (type) {
 
   if (type === 'refresh') {
     // Generate a refresh token (long-lived)
-    return jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '14', algorithm: 'HS256' });
+    return jwt.sign(payload, config.jwtRefreshSecret, { expiresIn: '14d', algorithm: 'HS256' });
   }
 
   throw new Error('Invalid token type');
