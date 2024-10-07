@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const { log, error } = console;
 const config = require('config');
+const { uploadToR2, deleteFromR2 } = require('../services/r2Service');
 
 exports.getCurrentUser = async (req, res) => {
   try {
