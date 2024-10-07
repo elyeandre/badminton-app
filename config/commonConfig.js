@@ -16,5 +16,15 @@ module.exports = {
   jwtRefreshSecret: process.env.JWT_REFRESH_SECRET,
   port: process.env.PORT || 3000,
   frontendUrl: process.env.FRONTEND_URL,
-  disableSecurity: process.env.DISABLE_SECURITY
+  disableSecurity: process.env.DISABLE_SECURITY,
+  cookieOptions: {
+    maxAge: 15 * 60 * 1000, // 15 minutes in milliseconds
+    httpOnly: true,
+    secure: process.env.DISABLE_SECURITY,
+    sameSite: 'Strict'
+  },
+  r2: {
+    authKey: process.env.R2_AUTH_KEY, // Store your custom auth key
+    uploadUrl: process.env.R2_UPLOAD_URL // Store your R2 upload URL
+  }
 };

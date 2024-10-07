@@ -9,6 +9,7 @@ const helmet = require('helmet');
 const killPort = require('kill-port');
 const path = require('path');
 const createError = require('http-errors');
+const fileUpload = require('express-fileupload');
 
 const config = require('config');
 
@@ -64,6 +65,8 @@ if (!disableSecurity) {
 
 // middleware to parse JSON bodies from incoming requests
 app.use(express.json());
+// Middleware to handle file uploads
+app.use(fileUpload());
 // custom middleware to handle JSON parsing errors
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
@@ -91,6 +94,12 @@ app.use(
 require('./src/routes/indexRoutes')(app);
 require('./src/routes/authRoutes')(app);
 require('./src/routes/userRoutes')(app);
+
+//  handle unregistered route for all HTTP Methods
+app.all('*', function (req, res, next) {
+  // Forward to next closest middleware
+  next();
+});
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

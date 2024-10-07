@@ -3,6 +3,8 @@ const { registrationSchema } = require('../validation/userRegValidatorSchema');
 const { loginSchema } = require('../validation/loginValidatorSchema');
 const { resetPasswordSchema } = require('../validation/resetPassValidatorSchema');
 const { forgotPasswordSchema } = require('../validation/forgotPassValidatorSchema');
+const { userIdSchema } = require('../validation/userIdValidatorSchema');
+const { updateSchema } = require('../validation/userUpdateValidatorSchema');
 
 /**
  * Middleware to validate user verification input.
@@ -87,6 +89,39 @@ const validateResetPassword = (req, res, next) => {
   }
   next();
 };
+/**
+ * Middleware to validate user ID input.
+ */
+const validateUserId = (req, res, next) => {
+  const { error } = userIdSchema.validate(req.params, { abortEarly: false }); // Validate user ID from request parameters
+
+  if (error) {
+    return res.status(400).json({
+      errors: error.details.map((err) => ({
+        message: err.message,
+        path: err.path[0]
+      }))
+    });
+  }
+  next();
+};
+
+/**
+ * Middleware to user update input.
+ */
+const validateUserInfo = (req, res, next) => {
+  const { error } = updateSchema.validate(req.body, { abortEarly: false }); // Validate user ID from request parameters
+
+  if (error) {
+    return res.status(400).json({
+      errors: error.details.map((err) => ({
+        message: err.message,
+        path: err.path[0]
+      }))
+    });
+  }
+  next();
+};
 
 // Export all validation middleware functions
 module.exports = {
@@ -94,5 +129,7 @@ module.exports = {
   validateRegistration,
   validateLogin,
   validateForgotPassword,
-  validateResetPassword
+  validateResetPassword,
+  validateUserId,
+  validateUserInfo
 };
