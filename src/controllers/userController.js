@@ -1,4 +1,5 @@
 const User = require('../models/User');
+const { assignFileAccess } = require('../utils/assignFileAccess');
 const { log, error } = console;
 const { uploadToR2, deleteFromR2, getFileFromR2 } = require('../services/r2Service');
 const mongoose = require('mongoose');
@@ -95,6 +96,15 @@ exports.updateUserInfo = async (req, res) => {
       // upload the new file to Cloudflare R2
       const uploadResult = await uploadToR2(profile_photo.data, profile_photo.name);
       fileUrl = uploadResult.fileUrl; // Store the new file URL
+      // assign access permissions for the new profile photo
+      const accessibleUsers = [userId]; // User who uploaded should have access
+
+      const file = new File({
+        fileName: uploadResult.fileName,
+        owner: userId // The ID of the user who owns this file
+      });
+
+      await assignFileAccess(file, userId, [], accessibleUsers);
     }
 
     // Update user's fields
