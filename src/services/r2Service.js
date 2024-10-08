@@ -45,7 +45,7 @@ const deleteFromR2 = async (fileName) => {
     });
 
     if (!response.ok) {
-      throw new Error(`File deletion failed with status ${response.status}`);
+      error(`File deletion failed with status ${response.status}`);
     }
 
     return { message: 'File deleted successfully' };
