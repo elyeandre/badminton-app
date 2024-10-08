@@ -19,7 +19,9 @@ const {
   forgotPassword,
   resetPassword
 } = require('../controllers/authController');
-const { limiter } = require('../middleware/rateLimiter');
+const { createRateLimiter } = require('../middleware/rateLimiter');
+
+const limiter = createRateLimiter(15 * 60 * 1000, 15);
 
 let routes = (app) => {
   // handle the verification
