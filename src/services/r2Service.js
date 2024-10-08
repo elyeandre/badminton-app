@@ -1,6 +1,7 @@
 const config = require('config');
 const { randomBytes } = require('crypto');
 const { log, error } = console;
+const File = require('../models/File');
 
 // function to upload a file to Cloudflare R2
 const uploadToR2 = async (fileData, originalFileName) => {
@@ -25,7 +26,7 @@ const uploadToR2 = async (fileData, originalFileName) => {
     if (!response.ok) {
       error(`File upload failed with status ${response.status}`);
     }
-    return { fileUrl: uploadUrl };
+    return { fileUrl: uploadUrl, fileName: randomFileName };
   } catch (err) {
     error('File upload failed:', err);
   }
@@ -49,6 +50,9 @@ const deleteFromR2 = async (fileName) => {
     }
 
     return { message: 'File deleted successfully' };
+    await File.deleteOne({ fileName }); // Adjust the query based on your schema
+
+    return { message: 'File deleted successfully from R2 and database' };
   } catch (err) {
     error('File deletion failed:', err);
   }
