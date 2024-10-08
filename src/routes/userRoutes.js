@@ -7,6 +7,9 @@ const { getCurrentUser, getUserById, updateUserInfo, serveData } = require('../c
 const serveFile = require('../utils/fileUtils');
 const { validateUserId, validateUserInfo } = require('../middleware/validator');
 const validateUpdateFields = require('../middleware/validateUpdateField');
+const { createRateLimiter } = require('../middleware/rateLimiter');
+
+const limiter = createRateLimiter(15 * 60 * 1000, 100);
 
 let routes = (app) => {
   router.get('/me', verifyToken, getCurrentUser);
@@ -14,7 +17,7 @@ let routes = (app) => {
   router.get('/get-user/:id', verifyToken, validateUserId, getUserById);
 
   // route to serve files from R2
-  router.get('/data/:filename', verifyToken, serveData);
+  router.get('/data/:filename', verifyToken, limiter, serveData);
 
   router.put('/update', verifyToken, validateUpdateFields, validateUserInfo, updateUserInfo);
 
