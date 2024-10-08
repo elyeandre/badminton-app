@@ -49,7 +49,6 @@ const deleteFromR2 = async (fileName) => {
       error(`File deletion failed with status ${response.status}`);
     }
 
-    return { message: 'File deleted successfully' };
     await File.deleteOne({ fileName }); // Adjust the query based on your schema
 
     return { message: 'File deleted successfully from R2 and database' };
