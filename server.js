@@ -13,6 +13,8 @@ const fileUpload = require('express-fileupload');
 
 const config = require('config');
 
+const MAX_FILE_SIZE = config.get('maxFileSize');
+
 // database connection
 const connectDB = require('./config/db');
 connectDB(config);
@@ -66,7 +68,13 @@ if (!disableSecurity) {
 // middleware to parse JSON bodies from incoming requests
 app.use(express.json());
 // Middleware to handle file uploads
-app.use(fileUpload());
+app.use(
+  fileUpload({
+    limits: { fileSize: MAX_FILE_SIZE },
+    responseOnLimit: 'File size exceeds the maximum limit.'
+  })
+);
+
 // custom middleware to handle JSON parsing errors
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
