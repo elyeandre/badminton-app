@@ -3,7 +3,7 @@ const router = express.Router();
 const path = require('path');
 const roleChecker = require('../middleware/roleChecker');
 const verifyToken = require('../middleware/authJwt');
-const { getCurrentUser, getUserById, updateUserInfo } = require('../controllers/userController');
+const { getCurrentUser, getUserById, updateUserInfo, serveData } = require('../controllers/userController');
 const serveFile = require('../utils/fileUtils');
 const { validateUserId, validateUserInfo } = require('../middleware/validator');
 const validateUpdateFields = require('../middleware/validateUpdateField');
@@ -12,6 +12,9 @@ let routes = (app) => {
   router.get('/me', verifyToken, getCurrentUser);
 
   router.get('/get-user/:id', verifyToken, validateUserId, getUserById);
+
+  // route to serve files from R2
+  router.get('/data/:filename', verifyToken, serveData);
 
   router.put('/update', verifyToken, validateUpdateFields, validateUserInfo, updateUserInfo);
 

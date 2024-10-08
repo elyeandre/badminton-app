@@ -54,7 +54,32 @@ const deleteFromR2 = async (fileName) => {
   }
 };
 
+// function to download a file from Cloudflare R2
+const getFileFromR2 = async (fileName) => {
+  try {
+    const fileUrl = `${config.get('r2').uploadUrl}/${fileName}`;
+
+    const fileData = await fetch(fileUrl, {
+      method: 'GET',
+      headers: {
+        'X-Custom-Auth-Key': config.get('r2').authKey
+      }
+    });
+
+    if (!fileData.ok) {
+      error(`File download failed with status ${response.status}`);
+    }
+
+    // return the response body as a readable stream
+    return fileData.body;
+  } catch (err) {
+    error('Error downloading file:', err);
+    return null;
+  }
+};
+
 module.exports = {
   uploadToR2,
-  deleteFromR2
+  deleteFromR2,
+  getFileFromR2
 };

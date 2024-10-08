@@ -1,7 +1,10 @@
 const User = require('../models/User');
 const { log, error } = console;
-const { uploadToR2, deleteFromR2 } = require('../services/r2Service');
+const { uploadToR2, deleteFromR2, getFileFromR2 } = require('../services/r2Service');
 const mongoose = require('mongoose');
+const { pipeline } = require('stream');
+const { promisify } = require('util');
+const pipelineAsync = promisify(pipeline);
 
 exports.getCurrentUser = async (req, res) => {
   try {
@@ -132,6 +135,35 @@ exports.updateUserInfo = async (req, res) => {
         message: 'Invalid fields in the request.'
       });
     }
+    return res.status(500).json({
+      status: 'error',
+      code: 500,
+      message: 'Internal Server Error'
+    });
+  }
+};
+exports.serveData = async (req, res) => {
+  const { filename } = req.params;
+
+  try {
+    // fetch file stream from R2
+    const fileStream = await getFileFromR2(filename);
+
+    if (!fileStream) {
+      return res.status(404).json({
+        status: 'error',
+        message: 'File not found'
+      });
+    }
+
+    // set content headers
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+
+    // pipe file stream to response
+    await pipelineAsync(fileStream, res);
+  } catch (err) {
+    error('Error fetching file:', err);
     return res.status(500).json({
       status: 'error',
       code: 500,
