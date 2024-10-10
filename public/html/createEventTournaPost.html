@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create a Post</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.1.5/sweetalert2.min.css">
+    <link rel="stylesheet" href="../css/createEventTournaPost.css">
+    <script src="../js/sideNavAdmin.js" defer></script>
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <div id="profileNav" class="profile-nav">
+            <a href="createAnnouncementAdmin.html" class="active"><i class="fas fa-plus"></i> Create</a>
+            <a href="manageAnnouncements.html">Announcements</a>
+            <a href="manageEvents.html">Events</a>
+            <a href="manageTournaments.html">Tournaments</a>
+        </div>
+
+        <div class="content-section">
+            <div class="caa-wrapper">
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+                            <h1>Create a Post</h1>
+                            <div class="form-wrapper">
+                                <form id="announcementForm" method="POST" action="createAnnouncementAdmin.html" enctype="multipart/form-data" class="form">
+                                    <div class="form-group">
+                                        <label for="typeSelector">Select Type:</label>
+                                        <select id="typeSelector" name="typeSelector" onchange="showFormFields()">
+                                            <option value="" disabled selected>Select Type</option>
+                                            <option value="announcement">Announcement</option>
+                                            <option value="event">Event</option>
+                                            <option value="tournament">Tournament</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Announcement Fields -->
+                                    <div id="announcementFields" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="title">Heading:</label>
+                                            <input type="text" id="title" name="title" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="content">Content:</label>
+                                            <textarea id="content" name="content" required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="image">Upload Images:</label>
+                                            <div class="input-group">
+                                                <input type="file" id="imageInput" name="image[]" accept="image/*" style="display: none;" multiple>
+                                                <span class="input-group-btn">
+                                                    <button id="uploadButton" type="button" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
+                                                </span>
+                                            </div>
+                                            <input type="hidden" id="imageData" name="imageData">
+                                            <div id="imagePreviewContainer"></div>
+                                        </div>
+                                        <div class="save-button-container">
+                                            <input type="hidden" name="formSubmitted" value="1">
+                                            <button type="submit" id="submitFormButton" class="btn btn-success">Post Now</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Event Fields -->
+                                    <div id="eventFields" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="eventName">Event Name:</label>
+                                            <input type="text" id="eventName" name="eventName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="eventDate">Event Date:</label>
+                                            <input type="date" id="eventDate" name="eventDate" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="content">Content:</label>
+                                            <textarea id="content" name="content" required></textarea>
+                                        </div>
+                                        <div class="other-container">
+                                            <div class="switch-container">
+                                                <label class="switch" for="registrationSwitchEvent">
+                                                    <input type="checkbox" id="registrationSwitchEvent">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <label for="registrationSwitchEvent">Registration</label>
+                                            </div>
+                                            <div class="fields" id="registrationFieldsEvent">
+                                                <label>Start:</label>
+                                                <input type="date" id="startDateEvent" name="startDateEvent">
+                                                <label>End:</label>
+                                                <input type="date" id="endDateEvent" name="endDateEvent">
+                                            </div>
+                                            <div class="switch-container">
+                                                <label class="switch" for="feeSwitchEvent">
+                                                    <input type="checkbox" id="feeSwitchEvent">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <label for="feeSwitchEvent">Fee</label>
+                                            </div>
+                                            <div class="fields" id="feeFieldsEvent">
+                                                <label>Amount:</label>
+                                                <input type="number" id="feeAmountEvent" name="feeAmountEvent">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="image">Upload Images:</label>
+                                            <div class="input-group">
+                                                <input type="file" id="imageInput" name="image[]" accept="image/*" style="display: none;" multiple>
+                                                <span class="input-group-btn">
+                                                    <button id="uploadButton" type="button" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
+                                                </span>
+                                            </div>
+                                            <input type="hidden" id="imageData" name="imageData">
+                                            <div id="imagePreviewContainer"></div>
+                                        </div>
+                                        <div class="save-button-container">
+                                            <input type="hidden" name="formSubmitted" value="1">
+                                            <button type="submit" id="submitFormButton" class="btn btn-success">Post Now</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tournament Fields -->
+                                    <div id="tournamentFields" style="display: none;">
+                                        <div class="form-group">
+                                            <label for="tournamentName">Tournament Name:</label>
+                                            <input type="text" id="tournamentName" name="tournamentName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="tournamentDate">Tournament Date:</label>
+                                            <input type="date" id="tournamentDate" name="tournamentDate" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="tournamentContent">Tournament Content:</label>
+                                            <textarea id="tournamentContent" name="tournamentContent" required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="qualification">Qualification:</label>
+                                            <div id="qualificationFields">
+                                                <div class="qualification-input">
+                                                    <input type="text" name="qualification[]" class="form-control">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="addQualificationField()">Add Qualification</button>
+                                        </div>
+                                        <div class="other-container">
+                                            <div class="switch-container">
+                                                <label class="switch" for="registrationSwitchTournament">
+                                                    <input type="checkbox" id="registrationSwitchTournament">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <label for="registrationSwitchTournament">Registration</label>
+                                            </div>
+                                            <div class="fields" id="registrationFieldsTournament">
+                                                <label>Start:</label>
+                                                <input type="date" id="startDateTournament" name="startDateTournament">
+                                                <label>End:</label>
+                                                <input type="date" id="endDateTournament" name="endDateTournament">
+                                            </div>
+                                            <div class="switch-container">
+                                                <label class="switch" for="feeSwitchTournament">
+                                                    <input type="checkbox" id="feeSwitchTournament">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <label for="feeSwitchTournament">Fee</label>
+                                            </div>
+                                            <div class="fields" id="feeFieldsTournament">
+                                                <label>Amount:</label>
+                                                <input type="number" id="feeAmountTournament" name="feeAmountTournament">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="image">Upload Images:</label>
+                                            <div class="input-group">
+                                                <input type="file" id="imageInput" name="image[]" accept="image/*" style="display: none;" multiple>
+                                                <span class="input-group-btn">
+                                                    <button id="uploadButton" type="button" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
+                                                </span>
+                                            </div>
+                                            <input type="hidden" id="imageData" name="imageData">
+                                            <div id="imagePreviewContainer"></div>
+                                        </div>
+                                        <div class="save-button-container">
+                                            <input type="hidden" name="formSubmitted" value="1">
+                                            <button type="submit" id="submitFormButton" class="btn btn-success">Post Now</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="../js/createEventTournaPost.js"></script>
+    </section>
+</body>
+</html>
