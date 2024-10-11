@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const jwt = require('jsonwebtoken');
+const Court = require('./Court');
 
 const userSchema = new mongoose.Schema(
   {
@@ -124,8 +125,32 @@ const userSchema = new mongoose.Schema(
         },
         message: 'Status is only allowed for Admins.'
       }
+    court: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Court',
+      default: function () {
+        return this.role === 'admin' ? null : undefined; // Allow empty for admin
+      }
+    },
+    hasRegisteredCourt: {
+      type: Boolean,
+      default: function () {
+        return this.role === 'admin' ? false : undefined; // Allow empty for admin
+      }
+    },
+    courtRegistrationNonce: {
+      type: String,
+      default: function () {
+        return this.role === 'admin' ? null : undefined; // Allow empty for admin
+      }
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+      select: false // Ensure it's hidden in queries
     }
   },
+
   {
     timestamps: true,
     strict: 'throw'
