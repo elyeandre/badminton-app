@@ -84,6 +84,11 @@
     <%- require('./partials/navBarUser.ejs')() %>
     <% } %>
 
+  <% if (htmlWebpackPlugin.options.hasSidebar) { %>
+      <!-- Sidebar -->
+    <%- require('./partials/sideNavAdmin.ejs')() %>
+    <% } %>
+
     <!-- Body content -->
     <%- htmlWebpackPlugin.options.bodyContent.replace(/<body[^>]*>/gi, '').replace(/<\/body>/gi, '') %>
 
