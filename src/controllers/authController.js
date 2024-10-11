@@ -2,6 +2,7 @@ const User = require('../models/User');
 const { log, error } = console;
 const { generateAccessToken, generateRefreshToken, generateNonce } = require('../utils/generateToken');
 const { addToBlacklist, isTokenBlacklisted } = require('../utils/blackListUtils');
+const { handleMultipleFileUploads, handleFileUpload } = require('../utils/fileUpload');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const { Buffer } = require('buffer');
@@ -622,6 +623,11 @@ exports.forgotPassword = async (req, res) => {
     });
   } catch (err) {
     console.error('Error during forgot password:', err);
+      businessLogoUrl = await handleFileUpload(req.files.business_logo, decoded.id);
+      courtImageUrls = await handleMultipleFileUploads(req.files.court_images, decoded.id);
+      facilityImageUrls = await handleMultipleFileUploads(req.files.facility_images, decoded.id);
+          documentUrls[key] = await Promise.all(file.map((f) => handleFileUpload(f, decoded.id)));
+          documentUrls[key] = await handleFileUpload(file, decoded.id);
     return res.status(500).json({
       success: false,
       code: 500,
