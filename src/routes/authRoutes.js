@@ -40,7 +40,7 @@ let routes = (app) => {
   router.post('/refresh', checkMongoConnection, refreshToken);
 
   // handle account deletion
-  router.post('/delete', checkMongoConnection, verifyToken, deleteAccount);
+  router.delete('/delete', checkMongoConnection, verifyToken, deleteAccount);
 
   // handle account forgot-password with rate limiting
   router.post('/forgot-password', checkMongoConnection, limiter, validateForgotPassword, forgotPassword);
