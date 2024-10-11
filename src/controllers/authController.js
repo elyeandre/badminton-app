@@ -7,7 +7,7 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 const { Buffer } = require('buffer');
 const { sendOTP, sendForgotPasswordEmail } = require('../services/emailService');
-const { deleteFromR2 } = require('../services/r2Service');
+const { deleteUserFilesAndProfilePhoto } = require('../utils/fileCleanup');
 
 exports.loginUser = async (req, res, next) => {
   try {
@@ -235,6 +235,8 @@ exports.deleteAccount = async (req, res) => {
 
     // Find the user by ID
     const user = await User.findById(userId);
+
+    await deleteUserFilesAndProfilePhoto(userId); // Delete files associated with the admin
 
     // Check if the user was found
     if (!user) {
