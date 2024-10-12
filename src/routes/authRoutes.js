@@ -6,7 +6,8 @@ const {
   validateLogin,
   validateRegistration,
   validateForgotPassword,
-  validateResetPassword
+  validateResetPassword,
+  validateCourtRegistration
 } = require('../middleware/validator');
 const verifyToken = require('../middleware/authJwt');
 const {
@@ -17,7 +18,8 @@ const {
   verifyEmail,
   deleteAccount,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  registerCourt
 } = require('../controllers/authController');
 const { createRateLimiter } = require('../middleware/rateLimiter');
 
@@ -33,6 +35,8 @@ let routes = (app) => {
   // handle login
   router.post('/login', checkMongoConnection, validateLogin, loginUser);
 
+  // handle court registration
+  router.post('/register/courts', checkMongoConnection, validateCourtRegistration, registerCourt);
   // handle logout
   router.post('/logout', checkMongoConnection, verifyToken, logoutUser);
 
@@ -40,7 +44,7 @@ let routes = (app) => {
   router.post('/refresh', checkMongoConnection, refreshToken);
 
   // handle account deletion
-  router.post('/delete', checkMongoConnection, verifyToken, deleteAccount);
+  router.delete('/delete', checkMongoConnection, verifyToken, deleteAccount);
 
   // handle account forgot-password with rate limiting
   router.post('/forgot-password', checkMongoConnection, limiter, validateForgotPassword, forgotPassword);

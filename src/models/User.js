@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const config = require('config');
 const jwt = require('jsonwebtoken');
+const Court = require('./Court');
+const File = require('./File');
+const { deleteUserFilesAndProfilePhoto } = require('../utils/adminUtils');
 
 const userSchema = new mongoose.Schema(
   {
@@ -124,13 +127,70 @@ const userSchema = new mongoose.Schema(
         },
         message: 'Status is only allowed for Admins.'
       }
+    },
+    court: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Court',
+      default: function () {
+        return this.role === 'admin' ? null : undefined; // Allow empty for admin
+      }
+    },
+    hasRegisteredCourt: {
+      type: Boolean,
+      default: function () {
+        return this.role === 'admin' ? false : undefined; // Allow empty for admin
+      }
+    },
+    courtRegistrationNonce: {
+      type: String,
+      default: function () {
+        return this.role === 'admin' ? null : undefined; // Allow empty for admin
+      }
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+      select: false // Ensure it's hidden in queries
     }
   },
+
   {
     timestamps: true,
     strict: 'throw'
   }
 );
+userSchema.post('findOneAndDelete', async function (doc) {
+  if (doc) {
+    try {
+      // Delete all files owned by the user
+      await File.deleteMany({ owner: doc._id });
+      console.log(`Removed all files for user: ${doc._id}`);
+    } catch (error) {
+      console.error(`Error removing files for user ${doc._id}:`, error);
+    }
+
+    try {
+      // If the user is an admin with a court, remove the associated court
+      if (doc.court) {
+        await Court.findByIdAndDelete(doc.court);
+        console.log(`Court associated with user ${doc._id} deleted`);
+      }
+    } catch (error) {
+      console.error(`Error removing court for user ${doc._id}:`, error);
+    }
+  }
+});
+
+// Mongoose pre-save middleware to check if user is admin
+userSchema.pre('save', function (next) {
+  if (this.role === 'admin') {
+    this.isAdmin = true;
+  } else {
+    this.isAdmin = false;
+  }
+
+  next();
+});
 
 // Apply toJSON transformation to exclude sensitive fields
 userSchema.set('toJSON', {

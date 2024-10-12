@@ -5,6 +5,7 @@ const { resetPasswordSchema } = require('../validation/resetPassValidatorSchema'
 const { forgotPasswordSchema } = require('../validation/forgotPassValidatorSchema');
 const { userIdSchema } = require('../validation/userIdValidatorSchema');
 const { updateSchema } = require('../validation/userUpdateValidatorSchema');
+const { courtRegistrationSchema } = require('../validation/courtRegValidatorSchema');
 
 /**
  * Middleware to validate user verification input.
@@ -123,6 +124,23 @@ const validateUserInfo = (req, res, next) => {
   next();
 };
 
+/**
+ * Middleware to validate court registration input.
+ */
+const validateCourtRegistration = (req, res, next) => {
+  const { error } = courtRegistrationSchema.validate(req.body, { abortEarly: false }); // Validate court registration from request body
+
+  if (error) {
+    return res.status(400).json({
+      errors: error.details.map((err) => ({
+        message: err.message,
+        path: err.path[0]
+      }))
+    });
+  }
+  next();
+};
+
 // Export all validation middleware functions
 module.exports = {
   validateVerify,
@@ -131,5 +149,6 @@ module.exports = {
   validateForgotPassword,
   validateResetPassword,
   validateUserId,
-  validateUserInfo
+  validateUserInfo,
+  validateCourtRegistration
 };

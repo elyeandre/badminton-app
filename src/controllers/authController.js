@@ -1,12 +1,14 @@
 const User = require('../models/User');
+const Court = require('../models/Court');
 const { log, error } = console;
 const { generateAccessToken, generateRefreshToken, generateNonce } = require('../utils/generateToken');
 const { addToBlacklist, isTokenBlacklisted } = require('../utils/blackListUtils');
+const { handleMultipleFileUploads, handleFileUpload } = require('../utils/fileUpload');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 const { Buffer } = require('buffer');
 const { sendOTP, sendForgotPasswordEmail } = require('../services/emailService');
-const { deleteFromR2 } = require('../services/r2Service');
+const { deleteUserFilesAndProfilePhoto } = require('../utils/fileCleanup');
 
 exports.loginUser = async (req, res, next) => {
   try {
@@ -42,7 +44,80 @@ exports.loginUser = async (req, res, next) => {
       });
     }
 
-    // if the user is not verified, send verification data
+    // if the user is an admin
+    if (user.role === 'admin') {
+      // if the admin is not verified
+      if (!user.isVerified) {
+        // check if the admin has registered a court
+        if (!user.hasRegisteredCourt) {
+          // Generate a unique nonce for verification
+          const nonce = await generateNonce(user.email, 'verification');
+
+          // create a JWT token for verification with email and nonce
+          const generateEmailVerificationToken = (email, nonce) => {
+            return jwt.sign({ email, nonce }, config.get('jwtSecret'), {
+              expiresIn: '20m' // Token valid for 20 minutes
+            });
+          };
+
+          const token = generateEmailVerificationToken(user.email, nonce);
+
+          // Generate a unique nonce for court registration
+          const courtRegNonce = await generateNonce(user.email, 'courtRegistration');
+          const generateAdminToken = (userId, role, nonce) => {
+            return jwt.sign({ id: userId, role, nonce }, config.get('jwtSecret'), {
+              expiresIn: '1h' // Token valid for 1 hour
+            });
+          };
+
+          const adminToken = generateAdminToken(user._id, user.role, courtRegNonce);
+
+          return res.status(200).json({
+            success: true,
+            code: 200,
+            message: 'Please verify your account first.',
+            action: 'verify',
+            verificationUrl: `/verification?token=${token}&next=${encodeURIComponent(
+              `/register/courts?token=${adminToken}`
+            )}`
+          });
+        }
+      }
+
+      // If the admin is verified but has not registered a court
+      if (!user.hasRegisteredCourt) {
+        // generate a unique nonce for court registration
+        const courtRegNonce = await generateNonce(user.email, 'courtRegistration');
+        const adminToken = jwt.sign({ id: user._id, role: user.role, nonce: courtRegNonce }, config.get('jwtSecret'), {
+          expiresIn: '1h'
+        });
+
+        return res.status(200).json({
+          success: true,
+          code: 200,
+          action: 'incomplete',
+          message: 'You are verified but need to complete court registration first.',
+          redirectUrl: `/register/courts?token=${adminToken}`
+        });
+      }
+    }
+
+    // If the user is not an admin
+    if (!user.isVerified) {
+      const nonce = await generateNonce(user.email, 'verification');
+      const token = generateEmailVerificationToken(user.email, nonce);
+      await sendOTP(user.email);
+
+      return res.status(200).json({
+        success: true,
+        code: 200,
+        message: 'Please verify your account first.',
+        action: 'verify',
+        verificationUrl: `/verification?token=${token}`
+      });
+    }
+
+    // if the user is not verified and is not an admin, send verification data
     if (!user.isVerified) {
       // generate a unique nonce
       const nonce = await generateNonce(user.email, 'verification');
@@ -76,7 +151,7 @@ exports.loginUser = async (req, res, next) => {
     // Determine redirect URL based on user role
     let redirectUrl;
     if (user.role === 'admin') {
-      redirectUrl = '/admin/dashboard';
+      redirectUrl = '/user/admin/dashboard';
     } else if (user.role === 'player' || user.role === 'coach') {
       redirectUrl = '/user/dashboard';
     }
@@ -148,7 +223,7 @@ exports.registerUser = async (req, res, next) => {
       otp: null, // initialize OTP as null
       otpExpires: null, // initialize OTP expiration
       role,
-      ...(role === 'Admin' && { status_owner })
+      ...(role === 'admin' && { status_owner })
     });
 
     // save the user to the database
@@ -169,13 +244,37 @@ exports.registerUser = async (req, res, next) => {
 
     await sendOTP(email);
 
+    if (newUser.isAdmin) {
+      // Generate a separate token for the admin to be used in /register/court
+      // generate a unique nonce
+      const courtRegNounce = await generateNonce(email, 'courtRegistration');
+
+      log(courtRegNounce);
+
+      const generateAdminToken = (userId, role, nonce) => {
+        return jwt.sign({ id: userId, role: role, nonce: nonce }, config.get('jwtSecret'), {
+          expiresIn: '1h'
+        });
+      };
+
+      const adminToken = generateAdminToken(newUser._id, newUser.role, courtRegNounce);
+
+      return res.status(201).json({
+        success: true,
+        action: 'redirect',
+        code: 201,
+        message: 'Thank you for registering with us. Your account has been sucessfully created.',
+        redirectUrl: `/verification?token=${token}&next=${encodeURIComponent(`/register/courts?token=${adminToken}`)}`
+      });
+    }
+
     // verification page with  token
     return res.status(201).json({
       success: true,
       action: 'redirect',
       code: 201,
       message: 'Thank you for registering with us. Your account has been successfully created.',
-      redirectUrl: `/verification?token=${token}`
+      redirectUrl: `/verification?token=${token}&next=${encodeURIComponent('/login')}`
     });
   } catch (err) {
     error('Error registering user:', err);
@@ -235,6 +334,8 @@ exports.deleteAccount = async (req, res) => {
     // Find the user by ID
     const user = await User.findById(userId);
 
+    await deleteUserFilesAndProfilePhoto(userId); // Delete files associated with the admin
+
     // Check if the user was found
     if (!user) {
       return res.status(404).json({
@@ -242,12 +343,6 @@ exports.deleteAccount = async (req, res) => {
         code: 404,
         message: 'User not found'
       });
-    }
-
-    // if user has a profile photo, delete it from Cloudflare R2
-    if (user.profile_photo) {
-      const fileName = user.profile_photo.split('/').pop();
-      await deleteFromR2(fileName);
     }
 
     // find the user by ID and delete the account
@@ -351,7 +446,12 @@ exports.logoutUser = async (req, res, next) => {
 };
 
 exports.verifyEmail = async (req, res, next) => {
-  const { token, otp } = req.body;
+  const token = req.headers.authorization?.split(' ')[1];
+  const { otp } = req.body;
+
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
 
   try {
     // Check if the token is blacklisted
@@ -489,7 +589,7 @@ exports.refreshToken = async (req, res, next) => {
       message: 'Access token refreshed'
     });
   } catch (err) {
-    console.error('Error occurred while refreshing token:', err);
+    error('Error occurred while refreshing token:', err);
     return res.status(500).json({
       status: 'error',
       code: 500,
@@ -499,7 +599,17 @@ exports.refreshToken = async (req, res, next) => {
 };
 
 exports.resetPassword = async (req, res) => {
-  const { token, newPassword, confirm_password } = req.body;
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      code: 401,
+      message: 'No token provided'
+    });
+  }
+
+  const { newPassword, confirm_password } = req.body;
 
   try {
     // Check if the refresh token is blacklisted
@@ -508,7 +618,7 @@ exports.resetPassword = async (req, res) => {
       return res.status(403).json({
         success: false,
         code: 403,
-        message: 'Reset Password token is blacklisted'
+        message: 'Invalid token'
       });
     }
 
@@ -568,7 +678,7 @@ exports.resetPassword = async (req, res) => {
       message: 'Password has been reset successfully'
     });
   } catch (err) {
-    console.error('Error during reset password:', err);
+    error('Error during reset password:', err);
     return res.status(500).json({
       success: false,
       code: 500,
@@ -621,7 +731,241 @@ exports.forgotPassword = async (req, res) => {
       resetToken
     });
   } catch (err) {
-    console.error('Error during forgot password:', err);
+    error('Error during forgot password:', err);
+    return res.status(500).json({
+      success: false,
+      code: 500,
+      message: 'Internal Server Error'
+    });
+  }
+};
+
+exports.registerCourt = async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      code: 401,
+      message: 'No token provided'
+    });
+  }
+
+  try {
+    // Check if the token is blacklisted
+    const isResetPasswordTokenBlacklisted = await isTokenBlacklisted(token, 'courtAccess');
+    if (isResetPasswordTokenBlacklisted) {
+      return res.status(403).json({
+        success: false,
+        code: 403,
+        message: 'Invalid token'
+      });
+    }
+
+    // Verify the JWT token
+    const decoded = jwt.verify(token, config.get('jwtSecret'));
+
+    // Find the admin user
+    const user = await User.findById(decoded.id).select('+isAdmin');
+
+    if (!user) {
+      return res.status(403).json({
+        success: false,
+        code: 403,
+        message: 'User not found'
+      });
+    }
+
+    if (!user.isAdmin) {
+      return res.status(403).json({
+        success: false,
+        code: 403,
+        message: 'Only admins can register courts.'
+      });
+    }
+
+    // Check if the admin has already registered a court
+    if (user.hasRegisteredCourt) {
+      return res.status(403).json({
+        success: false,
+        code: 403,
+        message: 'Court has already been registered'
+      });
+    }
+
+    // Extract court registration data from the request body
+    const { business_name, contact_number, business_email, hourly_rate, paypal_email, description } = req.body;
+
+    const operating_hours = {
+      from: req.body['operating_hours_from'],
+      to: req.body['operating_hours_to']
+    };
+
+    log(req.body);
+
+    // Validate required fields
+    if (!business_name || !contact_number || !business_email || !hourly_rate || !paypal_email || !description) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'All fields must be filled out'
+      });
+    }
+
+    // Validate operating hours
+    if (!operating_hours.from || !operating_hours.to) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'Operating hours must be provided'
+      });
+    }
+
+    // Check if required files are provided
+    if (!req.files.business_logo) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'Business logo is required'
+      });
+    }
+
+    if (!req.files['court_image[]'] || req.files['court_image[]'].length === 0) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'At least one court image is required'
+      });
+    }
+
+    if (!req.files['facility_image[]'] || req.files['facility_image[]'].length === 0) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'At least one facility image is required'
+      });
+    }
+
+    // Validate documents
+    const documentKeys = [
+      'business_permit',
+      'dti',
+      'bir',
+      'sanitary_permit',
+      'barangay_clearance',
+      'non_coverage',
+      'dole_registration'
+    ];
+
+    for (const key of documentKeys) {
+      const documentKey = `documents[${key}]`; // Format the document key
+
+      if (!req.files[documentKey]) {
+        return res.status(400).json({
+          success: false,
+          code: 400,
+          message: `${key.replace(/_/g, ' ')} is required`
+        });
+      }
+    }
+
+    // Initialize URLs
+    let businessLogoUrl,
+      courtImageUrls = [],
+      facilityData = [],
+      documentUrls = {}; // Change to an object to store URLs by key
+
+    // Upload facility name and match with facility names
+    let facilityNames = req.body['facility_name[]'];
+
+    if (typeof facilityNames === 'string') {
+      facilityNames = [facilityNames]; // Convert to array
+    }
+    log(facilityNames);
+    //  handle cases where facilityNames might be empty after this
+    if (!facilityNames || facilityNames.length === 0) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'At least one facility name is required.'
+      });
+    }
+
+    // handle the facility images and names validation
+    const facilityImages = req.files['facility_image[]'];
+
+    let facilityImageArray = Array.isArray(facilityImages) ? facilityImages : [facilityImages];
+
+    if (facilityImageArray.length !== facilityNames.length) {
+      return res.status(400).json({
+        success: false,
+        code: 400,
+        message: 'Each facility name must have a corresponding facility image.'
+      });
+    }
+
+    for (let i = 0; i < facilityImages.length; i++) {
+      const imageUrl = await handleFileUpload(facilityImages[i], decoded.id);
+      facilityData.push({
+        name: facilityNames[i],
+        image: imageUrl
+      });
+    }
+
+    // Upload business logo
+    businessLogoUrl = await handleFileUpload(req.files.business_logo, decoded.id);
+
+    // Upload court images (multiple)
+    // courtImageUrls = await handleMultipleFileUploads(req.files.court_images, decoded.id);
+    courtImageUrls = await handleMultipleFileUploads(req.files['court_image[]'], decoded.id);
+
+    // Upload documents (multiple)
+    for (const key of documentKeys) {
+      const documentKey = `documents[${key}]`; // Format the document key
+      const file = req.files[documentKey];
+
+      if (Array.isArray(file)) {
+        // Handle multiple files
+        documentUrls[key] = await Promise.all(file.map((f) => handleFileUpload(f, decoded.id)));
+      } else {
+        // Handle single file
+        documentUrls[key] = await handleFileUpload(file, decoded.id);
+      }
+    }
+
+    // Create a new court document
+    const newCourt = new Court({
+      business_name,
+      contact_number,
+      business_email,
+      operating_hours,
+      hourly_rate,
+      paypal_email,
+      description,
+      business_logo: businessLogoUrl,
+      court_images: courtImageUrls,
+      facilities: facilityData,
+      documents: documentUrls // Store all document URLs directly
+    });
+
+    const savedCourt = await newCourt.save();
+
+    // Update the user's document to link the court
+    user.court = savedCourt._id;
+    user.hasRegisteredCourt = true;
+    user.courtRegistrationNonce = null; // Optionally reset the nonce
+    await user.save();
+
+    // Blacklist the token after successful court registration
+    await addToBlacklist(token, 'courtAccess');
+
+    return res.status(201).json({
+      success: true,
+      code: 201,
+      message: 'Court registered successfully'
+    });
+  } catch (err) {
+    error('Error during court registration:', err);
     return res.status(500).json({
       success: false,
       code: 500,

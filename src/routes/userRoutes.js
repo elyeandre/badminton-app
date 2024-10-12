@@ -22,8 +22,13 @@ let routes = (app) => {
 
   router.put('/update', verifyToken, validateUpdateFields, validateUserInfo, updateUserInfo);
 
+  router.get('/admin/dashboard', verifyToken, roleChecker(['admin']), (req, res, next) => {
+    const filePath = path.resolve(__dirname, '../../build/admindash.html');
+    serveFile(filePath, res, next);
+  });
+
   router.get('/dashboard', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
-    const filePath = path.resolve(__dirname, '../../build/home.html');
+    const filePath = path.resolve(__dirname, '../../build/userdash.html');
     serveFile(filePath, res, next);
   });
   router.get('/edit-profile', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {

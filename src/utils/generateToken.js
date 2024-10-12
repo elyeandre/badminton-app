@@ -75,6 +75,9 @@ const generateNonce = async (email, purpose) => {
     case 'passwordReset':
       updateFields = { resetPasswordNonce: nonce };
       break;
+    case 'courtRegistration':
+      updateFields = { courtRegistrationNonce: nonce };
+      break;
     // Add more cases for other purposes if needed
     default:
       throw new Error('Invalid purpose provided for nonce generation');

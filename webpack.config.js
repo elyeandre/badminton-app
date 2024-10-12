@@ -16,8 +16,10 @@ const pageTitles = {
   signup: 'Sign Up',
   verification: 'Email Verification',
   resetpassword: 'Reset Password',
-  home: 'Welcome',
-  userprofile: 'Edit Profile'
+  userdash: 'Welcome',
+  userprofile: 'Edit Profile',
+  courtregistration: 'Court Registration',
+  admindash: 'Welcome'
 };
 
 // Page-specific stylesheets and scripts
@@ -25,7 +27,8 @@ const pageAssets = {
   index: {
     styles: [],
     scripts: [],
-    hasNavbar: false
+    hasNavbar: false,
+    hasSidebar: false
   },
   signin: {
     styles: [
@@ -37,32 +40,53 @@ const pageAssets = {
       'https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js',
       'https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js'
     ],
-    hasNavbar: false
+    hasNavbar: false,
+    hasSidebar: false
   },
   signup: {
     styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
     scripts: [],
-    hasNavbar: false
+    hasNavbar: false,
+    hasSidebar: false
   },
   verification: {
     styles: [],
     scripts: [],
-    hasNavbar: false
+    hasNavbar: false,
+    hasSidebar: false
   },
   resetpassword: {
     styles: [],
     scripts: [],
-    hasNavbar: false
+    hasNavbar: false,
+    hasSidebar: false
   },
-  home: {
+  userdash: {
     styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
     scripts: [],
-    hasNavbar: true
+    hasNavbar: true,
+    hasSidebar: false
   },
   userprofile: {
     styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
     scripts: [],
-    hasNavbar: true
+    hasNavbar: true,
+    hasSidebar: false
+  },
+  courtregistration: {
+    styles: [],
+    scripts: [],
+    hasNavbar: false,
+    hasSidebar: false
+  },
+  admindash: {
+    styles: [
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+      'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
+    ],
+    scripts: [],
+    hasNavbar: false,
+    hasSidebar: true
   }
 };
 
@@ -76,7 +100,7 @@ const htmlPlugins = pages.map((page) => {
   const bodyContent = fs.readFileSync(filePath, 'utf-8');
 
   // Get styles, scripts, and navbar flag for the page
-  const { styles = [], scripts = [], hasNavbar = false } = pageAssets[page] || {};
+  const { styles = [], scripts = [], hasNavbar = false, hasSidebar = false } = pageAssets[page] || {};
 
   const chunks = [page];
 
@@ -89,7 +113,8 @@ const htmlPlugins = pages.map((page) => {
     title: pageTitles[page], // Inject title
     styles, // Pass styles to inject into the template
     scripts, // Pass scripts to inject into the template
-    hasNavbar, // // Enable the navbar
+    hasNavbar, // Enable the navbar
+    hasSidebar, // Enable the sidenavadmin
     chunks, // Specify the chunk for this page
     minify: {
       collapseWhitespace: true,
@@ -109,8 +134,10 @@ module.exports = () => {
       signup: './client/js/pages/signUp/signUp.js',
       verification: './client/js/pages/verification/verification.js',
       resetpassword: './client/js/pages/resetpassword/resetPassword.js',
-      home: './client/js/pages/home/home.js',
-      userprofile: './client/js/pages/userprofile/userprofile.js'
+      userdash: './client/js/pages/userdash/userdash.js',
+      userprofile: './client/js/pages/userprofile/userprofile.js',
+      courtregistration: './client/js/pages/courtregistration/courtRegistration.js',
+      admindash: './client/js/pages/admindash/admindash.js'
     },
     output: {
       filename: '[name].[contenthash].js',

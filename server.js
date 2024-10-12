@@ -10,6 +10,7 @@ const killPort = require('kill-port');
 const path = require('path');
 const createError = require('http-errors');
 const fileUpload = require('express-fileupload');
+const { startTokenCleanupCronJob } = require('./src/utils/tokenCleanupCron.js');
 
 const config = require('config');
 
@@ -135,6 +136,9 @@ app.use(function (err, req, res, next) {
 
 const server = app.listen(config.get('port'), config.get('host'), () => {
   console.log(`Server is running at http://${config.get('host')}:${config.get('port')}`);
+
+  // start the token cleanup cron job
+  startTokenCleanupCronJob();
 });
 
 // handle graceful shutdown

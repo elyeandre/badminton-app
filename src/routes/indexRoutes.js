@@ -3,7 +3,7 @@ const router = express.Router();
 const path = require('path');
 const serveFile = require('../utils/fileUtils');
 const checkMongoConnection = require('../middleware/checkMongoConnection');
-const { checkResetToken, checkVerificationToken } = require('../middleware/tokenValidation');
+const { checkResetToken, checkVerificationToken, checkCourtAccess } = require('../middleware/tokenValidation');
 const checkAuth = require('../middleware/checkAuth');
 const verifyToken = require('../middleware/authJwt');
 
@@ -20,6 +20,12 @@ let routes = (app) => {
   // serve the registration page
   router.get('/register', checkAuth, checkMongoConnection, (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/signup.html');
+    serveFile(filePath, res, next);
+  });
+
+  // serve the court registration page
+  router.get('/register/courts', checkCourtAccess, checkMongoConnection, (req, res, next) => {
+    const filePath = path.resolve(__dirname, '../../build/courtregistration.html');
     serveFile(filePath, res, next);
   });
 

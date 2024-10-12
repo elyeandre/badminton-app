@@ -7,7 +7,7 @@ const getById = (id) => doc.getElementById(id);
 const getAll = (selector) => doc.querySelectorAll(selector);
 const get = (selector) => doc.querySelector(selector);
 
-// function to show error messages
+// Function to show error messages
 const showError = (errorElementId, message) => {
   const errorElement = getById(errorElementId);
   errorElement.textContent = message;
@@ -22,7 +22,7 @@ const showError = (errorElementId, message) => {
   }, 2000);
 };
 
-// function to handle form submission
+// Function to handle form submission
 const handleFormSubmit = async (event) => {
   event.preventDefault();
 
@@ -30,7 +30,7 @@ const handleFormSubmit = async (event) => {
   const confirm_password = getById('confirm-password').value;
   const token = new URLSearchParams(window.location.search).get('token'); // get token from URL
 
-  // simple validation
+  // Simple validation
   if (newPassword.length < 8) {
     showError('new-password-error', 'Password must be at least 8 characters long.');
     return;
@@ -45,9 +45,10 @@ const handleFormSubmit = async (event) => {
     const response = await fetch('/auth/reset-password', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}` // Pass the token in the Authorization header
       },
-      body: JSON.stringify({ token, newPassword, confirm_password }) // send token and new password
+      body: JSON.stringify({ newPassword, confirm_password })
     });
 
     const data = await response.json();
@@ -65,7 +66,7 @@ const handleFormSubmit = async (event) => {
   }
 };
 
-// attach event listener to the form
+// Attach event listener to the form
 doc.addEventListener('DOMContentLoaded', () => {
   const form = getById('changePassForm');
 
