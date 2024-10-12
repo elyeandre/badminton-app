@@ -3,7 +3,7 @@ const { uploadToR2 } = require('../services/r2Service');
 const { assignFileToAdmin } = require('./adminUtils');
 const File = require('../models/File');
 
-const MAX_SIZE = 20 * 1024 * 1024; // 20MB file size limit
+const MAX_SIZE = 80 * 1024 * 1024; // 20MB file size limit
 
 async function handleFileUpload(file, adminId) {
   if (file.size > MAX_SIZE) {
