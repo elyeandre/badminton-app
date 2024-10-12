@@ -1,3 +1,5 @@
+let sessionCheckIntervalId = null;
+
 // function to check session validity and refresh token if necessary
 export function checkSessionValidity() {
   fetch('/ping', {
@@ -54,7 +56,7 @@ window.fetch = new Proxy(originalFetch, {
 // Function to validate session and navigate
 export function validateSessionAndNavigate(url) {
   // attempt to fetch a protected resource (e.g., profile data) to see if the session is valid
-  fetch('/user/me', {
+  fetch('/ping', {
     method: 'GET',
     credentials: 'include' // Ensures cookies are sent
   })
@@ -93,7 +95,14 @@ export function validateSessionAndNavigate(url) {
 
 // Function to start session checks
 export function startSessionChecks() {
-  setInterval(checkSessionValidity, 40000); // Check session validity every minute
+  // Clear any existing interval before starting a new one
+  if (sessionCheckIntervalId) {
+    clearInterval(sessionCheckIntervalId);
+  }
+
+  // Set up a new interval to check session validity every 40 seconds
+  sessionCheckIntervalId = setInterval(checkSessionValidity, 40000);
+
   document.addEventListener('DOMContentLoaded', () => {
     checkSessionValidity(); // Initial session check on page load
   });
