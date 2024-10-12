@@ -13,7 +13,7 @@ const getAll = (selector) => doc.querySelectorAll(selector);
 const get = (selector) => doc.querySelector(selector);
 
 // start session checks on page load
-// startSessionChecks();
+startSessionChecks();
 
 // initialize input fields and store them in a variable
 const userProfileFields = {

@@ -4,12 +4,11 @@ const doc = document;
 const { log, error } = console;
 
 const getById = (id) => doc.getElementById(id);
-const getAll = (selector) => doc.querySelectorAll(selector);
 const get = (selector) => doc.querySelector(selector);
 
 doc.addEventListener('DOMContentLoaded', function () {
   const verificationForm = getById('verification-form');
-  const token = new URLSearchParams(window.location.search).get('token'); // get token from URL
+  const next = new URLSearchParams(window.location.search).get('next');
   const verificationError = getById('verification-code-error');
 
   verificationForm.addEventListener('submit', async (e) => {
@@ -17,56 +16,52 @@ doc.addEventListener('DOMContentLoaded', function () {
     const formData = new FormData(e.target);
     const otp = formData.get('verification_code').trim();
 
-    await verifyOTP(token, otp);
+    await verifyOTP(otp);
   });
 
-  const verifyOTP = async (token, otp) => {
+  const verifyOTP = async (otp) => {
     try {
+      const token = new URLSearchParams(window.location.search).get('token'); // get token from URL
+
       const response = await fetch('/auth/verify', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json'
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}` // Set the token in the Authorization header
         },
-        body: JSON.stringify({ token, otp })
+        body: JSON.stringify({ otp })
       });
 
       const result = await response.json();
-      if (response.status === 200) {
+      if (response.ok) {
         alert('Email verified successfully!');
-        window.location.href = '/login';
+        window.location.href = next || '/login';
       } else {
         error(result.message);
-        if (result.message && result.message === 'Invalid OTP') {
-          verificationError.innerText = 'Invalid OTP';
-          verificationError.classList.add('show');
-
-          setTimeout(() => {
-            verificationError.classList.remove('show');
-          }, 2000);
-        } else if (result.errors && result.errors[0].message === 'OTP must be exactly 6 digits long.') {
-          verificationError.innerText = result.errors[0].message;
-          verificationError.classList.add('show');
-
-          setTimeout(() => {
-            verificationError.classList.remove('show');
-          }, 2000);
-        } else {
-          verificationError.innerText = 'Verification failed. Please try again.';
-          verificationError.classList.add('show');
-
-          setTimeout(() => {
-            verificationError.classList.remove('show');
-          }, 2000);
-        }
+        handleError(result);
       }
     } catch (err) {
       error('Verification error:', err);
-      verificationError.innerText = err.message;
-      verificationError.classList.add('show');
-
-      setTimeout(() => {
-        verificationError.classList.remove('show');
-      }, 2000);
+      showError('An unexpected error occurred. Please try again.');
     }
+  };
+
+  const handleError = (result) => {
+    if (result.message) {
+      showError(result.message);
+    } else if (result.errors && result.errors[0]?.message) {
+      showError(result.errors[0].message);
+    } else {
+      showError('Verification failed. Please try again.');
+    }
+  };
+
+  const showError = (message) => {
+    verificationError.innerText = message;
+    verificationError.classList.add('show');
+
+    setTimeout(() => {
+      verificationError.classList.remove('show');
+    }, 2000);
   };
 });
