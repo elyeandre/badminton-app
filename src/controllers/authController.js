@@ -625,11 +625,129 @@ exports.forgotPassword = async (req, res) => {
     });
   } catch (err) {
     console.error('Error during forgot password:', err);
+exports.registerCourt = async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided' });
+  }
+
+  try {
+    // Check if the token is blacklisted
+    const isResetPasswordTokenBlacklisted = await isTokenBlacklisted(token, 'courtAccess');
+    if (isResetPasswordTokenBlacklisted) {
+      return res.status(403).json({ error: 'Invalid token' });
+    }
+
+    // Verify the JWT token
+    const decoded = jwt.verify(token, config.get('jwtSecret'));
+
+    // Find the admin user
+    const user = await User.findById(decoded.id).select('+isAdmin');
+
+    if (!user) {
+      return res.status(403).json({ error: 'User not found' });
+    }
+
+    if (!user.isAdmin) {
+      return res.status(403).json({ error: 'Only admins can register courts.' });
+    }
+
+    // Check if the admin has already registered a court
+    if (user.hasRegisteredCourt) {
+      return res.status(400).json({ error: 'Court has already been registered.' });
+    }
+
+    // Extract court registration data from the request body
+    const { business_name, contact_number, business_email, hourly_rate, paypal_email, description } = req.body;
+
+    const operating_hours = {
+      from: req.body['operating_hours.from'],
+      to: req.body['operating_hours.to']
+    };
+
+    log(req.body);
+
+    // Initialize URLs
+    let businessLogoUrl,
+      courtImageUrls = [],
+      facilityImageUrls = [],
+      documentUrls = {}; // Change to an object to store URLs by key
+
+    // Upload business logo
+    if (req.files.business_logo) {
       businessLogoUrl = await handleFileUpload(req.files.business_logo, decoded.id);
+    }
+
+    // Upload court images (multiple)
+    if (req.files.court_images) {
       courtImageUrls = await handleMultipleFileUploads(req.files.court_images, decoded.id);
+    }
+
+    // Upload facility images (multiple)
+    if (req.files.facility_images) {
       facilityImageUrls = await handleMultipleFileUploads(req.files.facility_images, decoded.id);
+    }
+
+    // Upload documents (multiple)
+    const documentKeys = [
+      'business_permit',
+      'dti',
+      'bir',
+      'sanitary_permit',
+      'barangay_clearance',
+      'non_coverage',
+      'dole_registration'
+    ];
+
+    for (const key of documentKeys) {
+      const documentKey = `documents[${key}]`; // Format the document key
+
+      if (req.files[documentKey]) {
+        const file = req.files[documentKey];
+
+        if (Array.isArray(file)) {
+          // Handle multiple files
           documentUrls[key] = await Promise.all(file.map((f) => handleFileUpload(f, decoded.id)));
+        } else {
+          // Handle single file
           documentUrls[key] = await handleFileUpload(file, decoded.id);
+        }
+      } else {
+        console.log(`No file provided for document: ${key}`);
+        documentUrls[key] = ''; // Assign empty string if no file was uploaded for that key
+      }
+    }
+
+    // Create a new court document
+    const newCourt = new Court({
+      business_name,
+      contact_number,
+      business_email,
+      operating_hours,
+      hourly_rate,
+      paypal_email,
+      description,
+      business_logo: businessLogoUrl,
+      court_images: courtImageUrls,
+      facility_images: facilityImageUrls,
+      documents: documentUrls // Store all document URLs directly
+    });
+
+    const savedCourt = await newCourt.save();
+
+    // Update the user's document to link the court
+    user.court = savedCourt._id;
+    user.hasRegisteredCourt = true;
+    user.courtRegistrationNonce = null; // Optionally reset the nonce
+    await user.save();
+
+    // Blacklist the token after successful court registration
+    await addToBlacklist(token, 'courtAccess');
+
+    return res.status(201).json({ message: 'Court registered successfully', court: savedCourt });
+  } catch (err) {
+    console.error(err);
     return res.status(500).json({
       success: false,
       code: 500,

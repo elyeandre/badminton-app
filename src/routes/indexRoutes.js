@@ -23,6 +23,12 @@ let routes = (app) => {
     serveFile(filePath, res, next);
   });
 
+  // serve the court registration page
+  router.get('/register/courts', checkCourtAccess, checkMongoConnection, (req, res, next) => {
+    const filePath = path.resolve(__dirname, '../../build/courtregistration.html');
+    serveFile(filePath, res, next);
+  });
+
   // serve the reset-password page
   router.get('/reset-password', checkMongoConnection, checkResetToken, async (req, res, next) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
