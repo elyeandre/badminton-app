@@ -12,7 +12,23 @@ const fileType = require('file-type-cjs');
 
 exports.getCurrentUser = async (req, res) => {
   try {
-    res.json(req.user);
+    let user = await User.findById(req.user.id).select('+isAdmin'); // Select the isAdmin field
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        code: 404,
+        message: 'User not found'
+      });
+    }
+
+    // if the user is an admin, populate the court field
+    if (user.isAdmin) {
+      user = await user.populate('court');
+    }
+
+    // Send the user object, with court info if admin
+    res.json(user);
   } catch (err) {
     error('Error occurred while fetching current user:', err);
     return res.status(500).json({

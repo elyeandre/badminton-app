@@ -3,7 +3,7 @@ const router = express.Router();
 const path = require('path');
 const serveFile = require('../utils/fileUtils');
 const checkMongoConnection = require('../middleware/checkMongoConnection');
-const { checkResetToken, checkVerificationToken } = require('../middleware/tokenValidation');
+const { checkResetToken, checkVerificationToken, checkCourtAccess } = require('../middleware/tokenValidation');
 const checkAuth = require('../middleware/checkAuth');
 const verifyToken = require('../middleware/authJwt');
 

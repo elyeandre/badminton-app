@@ -16,8 +16,9 @@ const pageTitles = {
   signup: 'Sign Up',
   verification: 'Email Verification',
   resetpassword: 'Reset Password',
-  home: 'Welcome',
-  userprofile: 'Edit Profile'
+  userdash: 'Welcome',
+  userprofile: 'Edit Profile',
+  courtregistration: 'Court Registration',
   admindash: 'Welcome'
 };
 
@@ -60,16 +61,30 @@ const pageAssets = {
     hasNavbar: false,
     hasSidebar: false
   },
-  home: {
+  userdash: {
     styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
     scripts: [],
-    hasNavbar: true
+    hasNavbar: true,
+    hasSidebar: false
   },
   userprofile: {
     styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
     scripts: [],
     hasNavbar: true,
     hasSidebar: false
+  },
+  courtregistration: {
+    styles: [],
+    scripts: [],
+    hasNavbar: false,
+    hasSidebar: false
+  },
+  admindash: {
+    styles: [
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+      'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
+    ],
+    scripts: [],
     hasNavbar: false,
     hasSidebar: true
   }
@@ -119,8 +134,10 @@ module.exports = () => {
       signup: './client/js/pages/signUp/signUp.js',
       verification: './client/js/pages/verification/verification.js',
       resetpassword: './client/js/pages/resetpassword/resetPassword.js',
-      home: './client/js/pages/home/home.js',
-      userprofile: './client/js/pages/userprofile/userprofile.js'
+      userdash: './client/js/pages/userdash/userdash.js',
+      userprofile: './client/js/pages/userprofile/userprofile.js',
+      courtregistration: './client/js/pages/courtregistration/courtRegistration.js',
+      admindash: './client/js/pages/admindash/admindash.js'
     },
     output: {
       filename: '[name].[contenthash].js',
