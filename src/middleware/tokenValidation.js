@@ -44,9 +44,56 @@ const checkResetToken = async (req, res, next) => {
       // Attach user ID to request object for further use
       req.userId = decoded.id;
       next(); // Call the next middleware or route handler
-    } catch (error) {
-      console.error('Error during user lookup:', error);
+    } catch (err) {
+      error('Error during user lookup:', err);
       return res.redirect('/login'); // Redirect if an error occurs
+    }
+  });
+};
+
+// middleware to check if the user has permission to access /register/court
+const checkCourtAccess = async (req, res, next) => {
+  const token = req.query.token; // get the token from query parameters or headers
+
+  if (!token) {
+    return res.redirect('/login'); // redirect if no token is provided
+  }
+
+  const isBlacklistedToken = await isTokenBlacklisted(token, 'courtAccess');
+  if (isBlacklistedToken) {
+    return res.redirect('/login'); // redirect if token is blacklisted
+  }
+
+  // verify the token
+  jwt.verify(token, config.get('jwtSecret'), async (err, decoded) => {
+    if (err) {
+      return res.redirect('/login'); // redirect if token is invalid
+    }
+
+    try {
+      // Fetch the user by ID from the token
+      const user = await User.findById(decoded.id).select('+isAdmin');
+      if (!user) {
+        return res.redirect('/login'); // redirect if user is not found
+      }
+
+      // Check if the court registration nonce matches
+      if (decoded.nonce !== user.courtRegistrationNonce) {
+        return res.redirect('/login'); // redirect if nonce does not match
+      }
+
+      // Check if the user has permission (we can customize this condition)
+      if (!user.isAdmin || user.hasRegisteredCourt) {
+        return res.redirect('/login'); // redirect if already registered
+      }
+
+      // Attach user ID to request for further processing
+      req.userId = decoded.id;
+
+      next(); // Call the next middleware or route handler
+    } catch (err) {
+      error('Error during user lookup:', err);
+      return res.redirect('/login'); // redirect on error
     }
   });
 };
@@ -73,7 +120,6 @@ const checkVerificationToken = async (req, res, next) => {
     // check if the user exists
     try {
       const user = await User.findOne({ email: decoded.email }); // Fetch user by ID
-      log(user);
       if (!user) {
         return res.redirect('/login'); // redirect if user is not found
       }
@@ -84,8 +130,8 @@ const checkVerificationToken = async (req, res, next) => {
       }
 
       next(); // Call the next middleware or route handler
-    } catch (error) {
-      console.error('Error during user lookup:', error);
+    } catch (err) {
+      error('Error during user lookup:', err);
       return res.redirect('/login'); // Redirect if an error occurs
     }
   });
@@ -93,5 +139,6 @@ const checkVerificationToken = async (req, res, next) => {
 
 module.exports = {
   checkResetToken,
-  checkVerificationToken
+  checkVerificationToken,
+  checkCourtAccess
 };

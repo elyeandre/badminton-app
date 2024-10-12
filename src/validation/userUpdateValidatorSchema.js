@@ -70,7 +70,9 @@ const updateSchema = Joi.object({
     .messages({
       'string.pattern.base': 'Please enter a valid contact number.'
     }),
-  profile_photo: Joi.string().uri(), // Assuming this is the file URL after upload
+
+  profile_photo: Joi.object().unknown(true),
+
   role: Joi.forbidden().messages({
     'any.unknown': 'You are not allowed to update the role.'
   }),

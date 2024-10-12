@@ -47,8 +47,19 @@ const courtRegistrationSchema = new mongoose.Schema({
     type: [String],
     default: []
   },
-  facility_images: {
-    type: [String],
+  facilities: {
+    type: [
+      {
+        image: {
+          type: String,
+          default: ''
+        },
+        name: {
+          type: String,
+          default: ''
+        }
+      }
+    ],
     default: []
   },
   paypal_email: {
@@ -57,32 +68,32 @@ const courtRegistrationSchema = new mongoose.Schema({
   },
   documents: {
     business_permit: {
-      type: String,
-      default: ''
+      type: [String], // Changed to array of strings
+      default: []
     },
     dti: {
-      type: String,
-      default: ''
+      type: [String], // Changed to array of strings
+      default: []
     },
     bir: {
-      type: String,
-      default: ''
+      type: [String], // Changed to array of strings
+      default: []
     },
     sanitary_permit: {
-      type: String,
-      default: ''
+      type: [String],
+      default: []
     },
     barangay_clearance: {
-      type: String,
-      default: ''
+      type: [String],
+      default: []
     },
     non_coverage: {
-      type: String,
-      default: ''
+      type: [String],
+      default: []
     },
     dole_registration: {
-      type: String,
-      default: ''
+      type: [String],
+      default: []
     }
   },
   description: {

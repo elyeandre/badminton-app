@@ -5,6 +5,7 @@ const { resetPasswordSchema } = require('../validation/resetPassValidatorSchema'
 const { forgotPasswordSchema } = require('../validation/forgotPassValidatorSchema');
 const { userIdSchema } = require('../validation/userIdValidatorSchema');
 const { updateSchema } = require('../validation/userUpdateValidatorSchema');
+const { courtRegistrationSchema } = require('../validation/courtRegValidatorSchema');
 
 /**
  * Middleware to validate user verification input.
@@ -148,5 +149,6 @@ module.exports = {
   validateForgotPassword,
   validateResetPassword,
   validateUserId,
-  validateUserInfo
+  validateUserInfo,
+  validateCourtRegistration
 };
