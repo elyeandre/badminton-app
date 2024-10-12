@@ -1,5 +1,5 @@
 import '../../../css/components/navBarUser.css';
-import '../../../css/pages/userdash/userdash.css';
+import '../../../css/pages/userdash/userDash.css';
 import { startSessionChecks, validateSessionAndNavigate } from '../../../utils/sessionUtils.js';
 import { setupLogoutListener } from '../../global/logout.js';
 
