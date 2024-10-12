@@ -123,6 +123,9 @@ const sendLoginRequest = async (username, password, role) => {
       if (result.action === 'verify') {
         // redirect to verification page
         window.location.href = result.verificationUrl;
+      } else if (result.action === 'incomplete') {
+        // redirect to court registration page
+        window.location.href = result.redirectUrl;
       } else if (result.action === 'redirect') {
         // redirect to the role-specific page
         window.location.href = result.redirectUrl;
