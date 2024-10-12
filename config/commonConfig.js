@@ -20,7 +20,7 @@ module.exports = {
   cookieOptions: {
     maxAge: 15 * 60 * 1000, // 15 minutes in milliseconds
     httpOnly: true,
-    secure: process.env.DISABLE_SECURITY,
+    secure: process.env.DISABLE_SECURITY === 'false',
     sameSite: 'Strict'
   },
   r2: {
