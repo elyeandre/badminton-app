@@ -1,6 +1,7 @@
 import { fileTypeFromBlob } from 'file-type';
-
+import L from 'leaflet';
 import '../../../css/pages/courtregistration/courtRegistration.css';
+import '/leaflet.css';
 
 const doc = document;
 const { log, error } = console;
@@ -181,6 +182,10 @@ const spinner = getById('spinner');
 
 getById('courtRegistrationForm').addEventListener('submit', async (event) => {
   event.preventDefault();
+  if (!isLocationPinned) {
+    alert('Please confirm your location before submitting the form.');
+    return;
+  }
 
   // show spinner
   spinner.style.display = 'flex';
@@ -263,3 +268,83 @@ function clearForm() {
 }
 
 clearForm();
+
+// initialize the modal and map
+const mapContainer = getById('map');
+const confirmLocationBtn = getById('confirmLocation');
+const courtLatInput = getById('courtLat');
+const courtLngInput = getById('courtLng');
+let map,
+  marker,
+  bataanBoundaryLayer,
+  isLocationPinned = false;
+
+// define custom icon for the marker
+const myIcon = L.icon({
+  iconUrl: '/images/marker-icon.png',
+  iconRetinaUrl: '/images/marker-icon-2x.png',
+  shadowUrl: '/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34]
+});
+
+// Initialize the map
+if (!map) {
+  map = L.map('map').setView([14.68, 120.5], 13); // Center in Bataan, Philippines
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // load the GeoJSON file for Bataan
+  fetch(
+    'https://raw.githubusercontent.com/faeldon/philippines-json-maps/master/2023/geojson/provdists/lowres/municities-provdist-300800000.0.001.json'
+  )
+    .then((response) => response.json())
+    .then((geojsonData) => {
+      bataanBoundaryLayer = L.geoJSON(geojsonData, {
+        style: function () {
+          return { color: '#ff7800', fillOpacity: 0.1, weight: 2 };
+        }
+      }).addTo(map);
+
+      map.fitBounds(bataanBoundaryLayer.getBounds());
+      map.setMaxBounds(bataanBoundaryLayer.getBounds());
+
+      map.setMinZoom(10);
+      map.setMaxZoom(18);
+
+      map.on('drag', function () {
+        map.panInsideBounds(bataanBoundaryLayer.getBounds(), { animate: false });
+      });
+
+      map.on('click', function (e) {
+        const results = leafletPip.pointInLayer([e.latlng.lng, e.latlng.lat], bataanBoundaryLayer);
+
+        if (results.length > 0) {
+          if (marker) {
+            marker.setLatLng(e.latlng);
+          } else {
+            marker = L.marker(e.latlng, { icon: myIcon }).addTo(map);
+          }
+        } else {
+          alert('Please select a location within Bataan, Philippines.');
+        }
+      });
+    });
+}
+
+// handle location confirmation
+confirmLocationBtn.addEventListener('click', function (event) {
+  event.preventDefault();
+  if (marker) {
+    const latlng = marker.getLatLng();
+    console.log('Selected location:', latlng);
+    isLocationPinned = true;
+    courtLatInput.value = latlng.lat;
+    courtLngInput.value = latlng.lng;
+    alert('Location successfully confirmed!');
+  } else {
+    alert('Please pin a location before confirming.');
+  }
+});

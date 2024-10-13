@@ -75,7 +75,7 @@ const pageAssets = {
   },
   courtregistration: {
     styles: [],
-    scripts: [],
+    scripts: ['https://unpkg.com/@mapbox/leaflet-pip@1.1.0/leaflet-pip.js'],
     hasNavbar: false,
     hasSidebar: false
   },
@@ -211,7 +211,10 @@ module.exports = () => {
     ],
     resolve: {
       roots: [path.resolve(__dirname, 'public'), path.resolve(__dirname, 'public/assets/images')],
-      extensions: ['.json', '.js']
+      extensions: ['.json', '.js'],
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      }
     },
     optimization: {
       minimize: true,
