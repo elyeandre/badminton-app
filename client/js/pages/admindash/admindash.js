@@ -120,11 +120,31 @@ const fetchUserData = async () => {
 
     if (data.court) {
       listCourtAssets(data.court); // Populate court documents and images
+
+      // Automatically get coordinates and open Google Maps
+      if (data.court.location) {
+        const { coordinates } = data.court.location; // Extract coordinates
+        log(coordinates);
+        openGoogleMapsWithCoordinates(coordinates); // Open Google Maps
+      }
     }
   } catch (err) {
     error('Error fetching user data:', err);
   }
 };
 
+// Function to open Google Maps with provided coordinates
+const openGoogleMapsWithCoordinates = (coordinates) => {
+  const [longitude, latitude] = coordinates; // Destructure coordinates array
+
+  // Construct the Google Maps URL
+  const url = `https://www.google.com/maps/@${latitude},${longitude},15z`;
+
+  // Open the URL in a new tab
+  window.open(url, '_blank');
+};
+
 // Run the function on page load
-window.addEventListener('DOMContentLoaded', fetchUserData);
+window.addEventListener('DOMContentLoaded', () => {
+  fetchUserData(); // Fetch user data and handle locations automatically
+});
