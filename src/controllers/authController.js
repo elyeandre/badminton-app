@@ -794,7 +794,16 @@ exports.registerCourt = async (req, res) => {
     }
 
     // Extract court registration data from the request body
-    const { business_name, contact_number, business_email, hourly_rate, paypal_email, description } = req.body;
+    const {
+      business_name,
+      contact_number,
+      business_email,
+      hourly_rate,
+      paypal_email,
+      description,
+      court_latitude,
+      court_longitude
+    } = req.body;
 
     const operating_hours = {
       from: req.body['operating_hours_from'],
@@ -942,6 +951,10 @@ exports.registerCourt = async (req, res) => {
       hourly_rate,
       paypal_email,
       description,
+      location: {
+        type: 'Point',
+        coordinates: [parseFloat(court_longitude), parseFloat(court_latitude)] // [longitude, latitude]
+      },
       business_logo: businessLogoUrl,
       court_images: courtImageUrls,
       facilities: facilityData,

@@ -442,3 +442,29 @@ input[type='file'] {
     transform: rotate(360deg);
   }
 }
+
+#map-container {
+  margin-bottom: 20px;
+}
+
+.btn-confirm {
+  background-color: #f1f1f1;
+  border-radius: 5px;
+  color: #000;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 13px;
+  height: 30px;
+  width: 150px;
+}
+
+.btn-confirm:hover {
+  background-color: #397cf7;
+  color: #fff;
+  border-color: #397cf7;
+}

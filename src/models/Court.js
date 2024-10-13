@@ -99,8 +99,18 @@ const courtRegistrationSchema = new mongoose.Schema({
   description: {
     type: String,
     default: ''
+  },
+  location: {
+    type: { type: String, enum: ['Point'], required: true }, // GeoJSON type
+    coordinates: {
+      type: [Number], // Array of [longitude, latitude]
+      required: true
+    }
   }
 });
+
+// create a compound index for geospatial queries
+courtRegistrationSchema.index({ location: '2dsphere' });
 
 const Court = mongoose.model('Court', courtRegistrationSchema);
 module.exports = Court;

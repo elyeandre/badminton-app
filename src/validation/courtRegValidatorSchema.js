@@ -119,7 +119,21 @@ const courtRegistrationSchema = Joi.object({
   'documents[sanitary_permit]': Joi.object().unknown(true),
   'documents[barangay_clearance]': Joi.object().unknown(true),
   'documents[non_coverage]': Joi.object().unknown(true),
-  'documents[dole_registration]': Joi.object().unknown(true)
+  'documents[dole_registration]': Joi.object().unknown(true),
+  court_latitude: Joi.number().required().min(-90).max(90).messages({
+    'number.base': 'Court latitude must be a number.',
+    'number.empty': 'Court latitude is required.',
+    'number.min': 'Court latitude must be between -90 and 90.',
+    'number.max': 'Court latitude must be between -90 and 90.',
+    'any.required': 'Court latitude is required.'
+  }),
+  court_longitude: Joi.number().required().min(-180).max(180).messages({
+    'number.base': 'Court longitude must be a number.',
+    'number.empty': 'Court longitude is required.',
+    'number.min': 'Court longitude must be between -180 and 180.',
+    'number.max': 'Court longitude must be between -180 and 180.',
+    'any.required': 'Court longitude is required.'
+  })
 });
 
 module.exports = {
