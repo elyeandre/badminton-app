@@ -130,12 +130,12 @@ tbody tr:last-child td {
     border-bottom: 1px solid #e0e0e0;
 }
 
-tbody td input {
-    width: 100%;
-    border: none;
-    background-color: transparent;
-    font-size: 14px;
-    text-align: center;
+tbody tr:nth-child(odd) {
+    background-color: #f9f9f9; /* Light gray for odd rows */
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fff; /* White for even rows */
 }
 
 /* View Schedule Button */
