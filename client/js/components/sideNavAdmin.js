@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const links = document.querySelectorAll('.sidebar .nav-list li a');
   // Get the current page URL
   const currentUrl = window.location.href;
+import { capitalizeFirstLetter, fetchUserData } from '../../utils/userData.js';
 
   // Loop through all links and add the 'active' class to the matching one
   links.forEach((link) => {
