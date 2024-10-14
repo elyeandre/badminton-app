@@ -28,7 +28,6 @@ body {
     width: calc(100% - 250px);
 }
 
-/* Profile Navigation */
 .profile-nav {
     display: flex;
     justify-content: space-around;
@@ -59,7 +58,6 @@ body {
     background-color: #f1f1f1;
 }
 
-/* Updated Box Styles */
 .box {
     background-color: #fff;
     border-radius: 8px;
@@ -80,7 +78,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #eee; /* Button background color */
+    background-color: #eee;
     display: flex;
     align-items: center;
     font-weight: 500;
@@ -95,7 +93,6 @@ body {
     color: #fff;
 }
 
-/* Table Styles */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -131,14 +128,35 @@ tbody tr:last-child td {
 }
 
 tbody tr:nth-child(odd) {
-    background-color: #f9f9f9; /* Light gray for odd rows */
+    background-color: #f9f9f9;
 }
 
 tbody tr:nth-child(even) {
-    background-color: #fff; /* White for even rows */
+    background-color: #fff;
 }
 
-/* View Schedule Button */
+.search-field {
+    padding: 10px 20px;
+    margin-right: 10px;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.search-field:focus {
+    outline-color: #000;
+}
+
+.search-field label {
+    margin-right: 10px;
+}
+
 .view-schedule-button {
     padding: 5px 15px;
     background-color: green;
@@ -155,54 +173,63 @@ tbody tr:nth-child(even) {
 .edit-icon, .save-icon {
     cursor: pointer;
     margin-left: 5px;
-    font-size: 16px;
 }
+
 .save-icon {
     display: none;
 }
+
 .payment-status-dropdown {
     display: none;
 }
+
 .filter-container {
     display: flex;
     align-items: center;
-    margin-bottom: 15px; /* Space below the filter */
+    margin-bottom: 15px;
 }
+
 .filter-container label {
-    margin-right: 10px; /* Space between label and dropdown */
+    margin-right: 10px;
 }
+
 .filter-container select {
     padding: 10px 20px;
     color: #000;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    background-color: #eee; /* Button background color */
+    background-color: #eee;
     display: flex;
     align-items: center;
     font-weight: 500;
 }
+
 .filter-container button {
-    margin-left: 10px; /* Add space between the buttons */
+    margin-left: 10px;
 }
+
 th {
-    position: relative; /* To position sort icons */
+    position: relative;
 }
+
 .sort-icon {
     position: absolute;
-    right: 5px; /* Position to the right of the header */
+    right: 5px;
     top: 50%;
     transform: translateY(-50%);
     font-size: 14px;
     cursor: pointer;
 }
+
 .sort-icon.asc::after {
-    content: " \f0de"; /* Font Awesome arrow down */
+    content: " \f0de";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
 }
+
 .sort-icon.desc::after {
-    content: " \f0e2"; /* Font Awesome arrow up */
+    content: " \f0e2";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
 }

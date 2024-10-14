@@ -135,6 +135,23 @@ tbody tr:nth-child(even) {
     background-color: #fff;
 }
 
+.search-field {
+    padding: 10px 20px;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #eee;
+    display: flex;
+    align-items: center;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.search-field:focus {
+    outline-color: #000;
+}
+
 .view-schedule-button {
     padding: 5px 15px;
     background-color: green;

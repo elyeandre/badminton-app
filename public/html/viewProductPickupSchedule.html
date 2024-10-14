@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <title>Schedule</title>
-    <link rel="stylesheet" href="../css/viewCourtSchedule.css">
+    <link rel="stylesheet" href="../css/viewProductPickupSchedule.css">
     <script src="../js/sideNavAdmin.js" defer></script>
 </head>
 <body>
@@ -13,22 +13,16 @@
     <section class="home-section">
         <h1>View Schedule</h1>
         <div id="profileNav" class="profile-nav">
-            <a href="viewCourtSchedule.html" class="active">Court Reservations</a>
+            <a href="viewCourtSchedule.html">Court Reservations</a>
             <a href="viewEventTournaSchedule.html">Events & Tournaments</a>
             <a href="viewTainingSchedule.html">Training Sessions</a>
-            <a href="viewProductPickupSchedule.html">Product Pickup</a>
+            <a href="viewProductPickupSchedule.html" class="active">Product Pickup</a>
         </div>
 
         <div class="box">
             <div class="filter-container">
                 <label for="search">Search:</label>
                 <input type="text" id="search" class="search-field" placeholder="Search by name..." onkeyup="searchTable()" />
-                <label for="filter">Sort by:</label>
-                <select id="filter">
-                    <option value="day">Day</option>
-                    <option value="week">Week</option>
-                    <option value="month">Month</option>
-                </select>
                 <button class="filter-button">
                     History <i class="fas fa-history"></i>
                 </button>
@@ -45,36 +39,32 @@
                             <i class="fas fa-sort sort-icon" onclick="toggleSort('name')"></i>
                         </th>
                         <th>
-                            Date
-                            <i class="fas fa-sort sort-icon" onclick="toggleSort('date')"></i>
+                            Pickup Date
+                            <i class="fas fa-sort sort-icon" onclick="toggleSort('pickup_date')"></i>
                         </th>
                         <th>
-                            From
-                            <i class="fas fa-sort sort-icon" onclick="toggleSort('from')"></i>
+                            Pickup Time
+                            <i class="fas fa-sort sort-icon" onclick="toggleSort('pickup_time')"></i>
                         </th>
                         <th>
-                            To
+                            Products
                         </th>
-                        <th>Court Reserved</th>
+                        <th>
+                            Total Payment
+                        </th>
                         <th>
                             Status
                             <i class="fas fa-sort sort-icon" onclick="toggleSort('status')"></i>
-                        </th>
-                        <th>Total Bill</th>
-                        <th>
-                            Payment Status
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Charlie Brown</td>
+                        <td>John Doe</td>
                         <td>2024-10-05</td>
                         <td>10:00 AM</td>
-                        <td>12:00 PM</td>
-                        <td>Court 1</td>
-                        <td>Confirmed</td>
-                        <td>$100.00</td>
+                        <td>Basketball, Tennis</td>
+                        <td>$50.00</td>
                         <td>
                             <span class="payment-status-text">Paid</span>
                             <select class="payment-status-dropdown">
@@ -83,36 +73,32 @@
                                 <option value="Cancelled">Cancelled</option>
                             </select>
                             <i class="fas fa-edit edit-icon" onclick="editPaymentStatus(this)"></i>
-                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)"></i>
+                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)" style="display: none;"></i>
                         </td>
                     </tr>
                     <tr>
-                        <td>Lucy Van Pelt</td>
+                        <td>Jane Smith</td>
                         <td>2024-10-08</td>
                         <td>11:00 AM</td>
-                        <td>02:00 PM</td>
-                        <td>Court 2</td>
-                        <td>Pending</td>
-                        <td>$150.00</td>
+                        <td>Soccer</td>
+                        <td>$30.00</td>
                         <td>
-                            <span class="payment-status-text">Unpaid</span>
+                            <span class="payment-status-text">Pending</span>
                             <select class="payment-status-dropdown">
                                 <option value="Paid">Paid</option>
                                 <option value="Unpaid">Unpaid</option>
                                 <option value="Cancelled">Cancelled</option>
                             </select>
                             <i class="fas fa-edit edit-icon" onclick="editPaymentStatus(this)"></i>
-                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)"></i>
+                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)" style="display: none;"></i>
                         </td>
                     </tr>
                     <tr>
-                        <td>KC Cruz</td>
+                        <td>Mark Johnson</td>
                         <td>2024-11-08</td>
                         <td>01:30 PM</td>
-                        <td>03:00 PM</td>
-                        <td>Court 3</td>
-                        <td>Cancelled</td>
-                        <td>$0.00</td>
+                        <td>Volleyball</td>
+                        <td>$40.00</td>
                         <td>
                             <span class="payment-status-text">Cancelled</span>
                             <select class="payment-status-dropdown">
@@ -121,35 +107,47 @@
                                 <option value="Cancelled">Cancelled</option>
                             </select>
                             <i class="fas fa-edit edit-icon" onclick="editPaymentStatus(this)"></i>
-                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)"></i>
+                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)" style="display: none;"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Emily Davis</td>
+                        <td>2024-11-12</td>
+                        <td>09:00 AM</td>
+                        <td>Tennis</td>
+                        <td>$60.00</td>
+                        <td>
+                            <span class="payment-status-text">Paid</span>
+                            <select class="payment-status-dropdown">
+                                <option value="Paid">Paid</option>
+                                <option value="Unpaid">Unpaid</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <i class="fas fa-edit edit-icon" onclick="editPaymentStatus(this)"></i>
+                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)" style="display: none;"></i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Chris Lee</td>
+                        <td>2024-11-20</td>
+                        <td>03:00 PM</td>
+                        <td>Basketball</td>
+                        <td>$55.00</td>
+                        <td>
+                            <span class="payment-status-text">Confirmed</span>
+                            <select class="payment-status-dropdown">
+                                <option value="Paid">Paid</option>
+                                <option value="Unpaid">Unpaid</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                            <i class="fas fa-edit edit-icon" onclick="editPaymentStatus(this)"></i>
+                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)" style="display: none;"></i>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </section>
-    <script src="../js/viewCourtSchedule.js"></script>
-    <script>
-        function searchTable() {
-            const input = document.getElementById('search').value.toLowerCase();
-            const table = document.querySelector('table tbody');
-            const rows = table.getElementsByTagName('tr');
-
-            for (let i = 0; i < rows.length; i++) {
-                const cells = rows[i].getElementsByTagName('td');
-                let rowVisible = false;
-
-                for (let j = 0; j < cells.length; j++) {
-                    const cellValue = cells[j].textContent.toLowerCase();
-                    if (cellValue.includes(input)) {
-                        rowVisible = true;
-                        break;
-                    }
-                }
-
-                rows[i].style.display = rowVisible ? '' : 'none';
-            }
-        }
-    </script>
+    <script src="../js/viewProductPickupSchedule.js"></script>
 </body>
 </html>
