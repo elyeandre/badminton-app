@@ -183,6 +183,16 @@ tbody tr:nth-child(even) {
     display: none;
 }
 
+.actions-column {
+    width: 30px;
+    text-align: center;
+}
+
+.actions-column .edit-icon,
+.actions-column .save-icon {
+    margin-left: 5px;
+}
+
 .filter-container {
     display: flex;
     align-items: center;

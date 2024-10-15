@@ -52,18 +52,15 @@
                             From
                             <i class="fas fa-sort sort-icon" onclick="toggleSort('from')"></i>
                         </th>
-                        <th>
-                            To
-                        </th>
+                        <th>To</th>
                         <th>Court Reserved</th>
                         <th>
                             Status
                             <i class="fas fa-sort sort-icon" onclick="toggleSort('status')"></i>
                         </th>
                         <th>Total Bill</th>
-                        <th>
-                            Payment Status
-                        </th>
+                        <th>Payment Status</th>
+                        <th class="actions-column"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -82,9 +79,9 @@
                                 <option value="Unpaid">Unpaid</option>
                                 <option value="Cancelled">Cancelled</option>
                             </select>
-                            <i class="fas fa-edit edit-icon" onclick="editPaymentStatus(this)"></i>
-                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)"></i>
                         </td>
+                        <td class="actions-column">
+                            <i class="fas fa-edit edit-icon" onclick="editReservation(this)"></i>
                     </tr>
                     <tr>
                         <td>Lucy Van Pelt</td>
@@ -101,8 +98,9 @@
                                 <option value="Unpaid">Unpaid</option>
                                 <option value="Cancelled">Cancelled</option>
                             </select>
-                            <i class="fas fa-edit edit-icon" onclick="editPaymentStatus(this)"></i>
-                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)"></i>
+                        </td>
+                        <td class="actions-column">
+                            <i class="fas fa-edit edit-icon" onclick="editReservation(this)"></i>
                         </td>
                     </tr>
                     <tr>
@@ -120,8 +118,9 @@
                                 <option value="Unpaid">Unpaid</option>
                                 <option value="Cancelled">Cancelled</option>
                             </select>
-                            <i class="fas fa-edit edit-icon" onclick="editPaymentStatus(this)"></i>
-                            <i class="fas fa-save save-icon" onclick="savePaymentStatus(this)"></i>
+                        </td>
+                        <td class="actions-column">
+                            <i class="fas fa-edit edit-icon" onclick="editReservation(this)"></i>
                         </td>
                     </tr>
                 </tbody>
@@ -150,6 +149,35 @@
                 rows[i].style.display = rowVisible ? '' : 'none';
             }
         }
+
+        function editReservation(editIcon) {
+    const row = editIcon.closest('tr');
+    const paymentStatusCell = row.querySelector('td:nth-child(8)'); // The 8th cell is the Payment Status
+
+    const paymentStatusText = paymentStatusCell.querySelector('.payment-status-text');
+    const paymentStatusDropdown = paymentStatusCell.querySelector('.payment-status-dropdown');
+
+    if (editIcon.classList.contains('fa-edit')) {
+        // Switch from edit mode to save mode
+        paymentStatusText.style.display = 'none'; // Hide text
+        paymentStatusDropdown.style.display = 'inline'; // Show dropdown
+        editIcon.classList.remove('fa-edit');
+        editIcon.classList.add('fa-save');
+    } else if (editIcon.classList.contains('fa-save')) {
+        // Save the changes
+        const selectedValue = paymentStatusDropdown.value;
+        paymentStatusText.textContent = selectedValue; // Update text to selected value
+        paymentStatusText.style.display = 'inline'; // Show updated text
+        paymentStatusDropdown.style.display = 'none'; // Hide dropdown
+
+        // Switch back to edit mode
+        editIcon.classList.remove('fa-save');
+        editIcon.classList.add('fa-edit');
+        
+        // Here you can add additional functionality, e.g., saving the updated status to a database
+    }
+}
+
     </script>
 </body>
 </html>

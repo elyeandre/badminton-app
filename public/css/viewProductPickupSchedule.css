@@ -137,6 +137,7 @@ tbody tr:nth-child(even) {
 
 .search-field {
     padding: 10px 20px;
+    margin-right: 10px;
     color: #000;
     border: none;
     border-radius: 5px;
@@ -150,6 +151,10 @@ tbody tr:nth-child(even) {
 
 .search-field:focus {
     outline-color: #000;
+}
+
+.search-field label {
+    margin-right: 10px;
 }
 
 .view-schedule-button {
@@ -176,6 +181,20 @@ tbody tr:nth-child(even) {
 
 .payment-status-dropdown {
     display: none;
+}
+
+.pickup-status-dropdown {
+    display: none;
+}
+
+.actions-column {
+    width: 30px;
+    text-align: center;
+}
+
+.actions-column .edit-icon,
+.actions-column .save-icon {
+    margin-left: 5px;
 }
 
 .filter-container {
