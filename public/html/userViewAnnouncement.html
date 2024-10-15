@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>View Announcement</title>
+    <link rel="stylesheet" href="../css/userViewAnnouncement.css">
+</head>
+<body>
+    <div id="navbar"></div>
+    <script>
+        fetch('navBarUser.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar').innerHTML = data;
+            });
+    </script>
+    <div class="main-content">
+        <h1>News Feed</h1>
+        <div class="container">
+            <div class="box1">
+                <div class="filter-header">Filter</div>
+                <div class="selected-filters" id="selected-filters"></div>
+
+                <div class="filter-section">
+                    <div class="filter-header">Date Posted</div>
+                    <label><input type="checkbox" value="Date 1" onclick="toggleFilter(this)"> Date 1</label>
+                    <label><input type="checkbox" value="Date 2" onclick="toggleFilter(this)"> Date 2</label>
+                    <label><input type="checkbox" value="Date 3" onclick="toggleFilter(this)"> Date 3</label>
+                    <label><input type="checkbox" value="Date 4" onclick="toggleFilter(this)"> Date 4</label>
+                </div>
+
+                <div class="filter-section">
+                    <div class="filter-header">Category</div>
+                    <label><input type="checkbox" value="Announcement" onclick="toggleFilter(this)"> Announcement</label>
+                    <label><input type="checkbox" value="Event" onclick="toggleFilter(this)"> Event</label>
+                    <label><input type="checkbox" value="Tournament" onclick="toggleFilter(this)"> Tournament</label>
+                </div>
+            </div>
+
+            <div class="box2">
+                <div class="box">
+                    <div class="post-card">
+                        <i class="fas fa-ellipsis-v three-dots"></i>
+                        
+                        <div class="user-info">
+                            <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-pic">
+                            <div class="name-and-time">
+                                <span class="name">Name</span>
+                                <span class="time">01/01/2003 3:00pm</span>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <h2>Title</h2>
+                        <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        
+                        <div class="post-images">
+                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 1">
+                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 2">
+                        </div>
+                        <hr>
+                        <div class="view-more">
+                            <button>Join</button>
+                        </div>
+                    </div>
+
+                    <div class="post-card">
+                        <i class="fas fa-ellipsis-v three-dots"></i>
+                        
+                        <div class="user-info">
+                            <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-pic">
+                            <div class="name-and-time">
+                                <span class="name">Name</span>
+                                <span class="time">01/01/2003 3:00pm</span>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <h2>Title</h2>
+                        <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        
+                        <div class="post-images">
+                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 1">
+                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 2">
+                        </div>
+                        <hr>
+                        <div class="view-more">
+                            <button id="joinBtn">Join</button>
+                        </div>
+                    </div>
+
+                    <div class="post-card">
+                        <i class="fas fa-ellipsis-v three-dots"></i>
+                        
+                        <div class="user-info">
+                            <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-pic">
+                            <div class="name-and-time">
+                                <span class="name">Name</span>
+                                <span class="time">01/01/2003 3:00pm</span>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        <h2>Title</h2>
+                        <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        
+                        <div class="post-images">
+                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 1">
+                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 2">
+                        </div>
+                        <hr>
+                        <div class="view-more">
+                            <button id="joinBtn">Join</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="joinModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Thank you for showing your interest!</h2>
+            <p>To join this tournament, you must pay a reservation to proceed with your registration. By clicking the Pay Now button, you will be redirected to our partnered online payment system.</p>
+            <button>Pay Now</button>
+        </div>
+    </div>
+    <script src="../js/userViewAnnouncement.js"></script>
+</body>
+</html>

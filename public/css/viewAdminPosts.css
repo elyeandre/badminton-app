@@ -95,9 +95,10 @@ body {
 }
 
 .box {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: space-between;
     width: 100%;
 }
 
@@ -106,8 +107,8 @@ body {
     border: 1px solid #ddd;
     border-radius: 8px;
     padding: 20px;
-    width: 100%;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    width: calc(50% - 20px);
+    box-sizing: border-box;
     position: relative;
     font-size: 1em;
 }
@@ -119,7 +120,7 @@ body {
 }
 
 .post-card .time {
-    font-size: 1em;
+    font-size: 0.7em; 
     color: #777;
     margin-top: 5px;
     margin-bottom: 10px;
@@ -127,17 +128,17 @@ body {
 
 .post-card p.body-text {
     color: #555;
-    font-size: 1em;
-    margin-bottom: 15px;
+    font-size: 0.9em;
+    margin: 0;
+    margin-bottom: 8px;
 }
-
 .post-images img {
     width: 190px;
     height: 160px;
 }
-
 .view-more button {
-    padding: 10px 15px;
+    width: 80px;
+    padding: 10px;
     margin-top: 10px;
     background-color: #142850;
     color: #fff;
@@ -146,7 +147,6 @@ body {
     font-size: 0.9em;
     cursor: pointer;
 }
-
 .view-more button:hover {
     background-color: #397CF7;
 }
@@ -158,4 +158,27 @@ body {
     font-size: 1.2em;
     color: #333;
     cursor: pointer;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.profile-pic {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+
+.name-and-time {
+    display: flex;
+    flex-direction: column;
+}
+
+.name {
+    font-size: 1.1em;
+    font-weight: bold;
 }
