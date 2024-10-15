@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.home-section {
+    position: relative;
+    background: #fff;
+    top: 0;
+    left: 78px;
+    width: calc(100% - 78px);
+    transition: all 0.5s ease;
+    min-height: unset;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.content-section {
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    overflow-y: hidden;
+}
+
+.sidebar.open ~ .home-section {
+    left: 250px;
+    width: calc(100% - 250px);
+}
+
+.profile-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.profile-nav a {
+    color: #142850;
+    text-decoration: none;
+    padding: 10px 40px;
+    font-weight: 500;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.profile-nav a.active {
+    background-color: #f1f1f1;
+    font-weight: bold;
+    border-bottom: 3px solid #142850;
+}
+
+.profile-nav a:hover {
+    background-color: #f1f1f1;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.filter-buttons button {
+    background-color: #eee;
+    color: #333;
+    border: none;
+    padding: 8px 16px;
+    font-size: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.filter-buttons button:hover {
+    background-color: #397CF7;
+    color: #fff;
+}
+
+.filter-buttons button.active {
+    background-color: #397CF7;
+    color: #fff;
+}
+
+.box {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    width: 100%;
+}
+
+.post-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    position: relative;
+    font-size: 1em;
+}
+
+.post-card h2 {
+    font-size: 1.2em;
+    color: #333;
+    margin: 0;
+}
+
+.post-card .time {
+    font-size: 1em;
+    color: #777;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+.post-card p.body-text {
+    color: #555;
+    font-size: 1em;
+    margin-bottom: 15px;
+}
+
+.post-images img {
+    width: 190px;
+    height: 160px;
+}
+
+.view-more button {
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #142850;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 0.9em;
+    cursor: pointer;
+}
+
+.view-more button:hover {
+    background-color: #397CF7;
+}
+
+.three-dots {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.2em;
+    color: #333;
+    cursor: pointer;
+}
