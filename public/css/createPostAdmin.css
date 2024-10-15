@@ -1,15 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 
 body {
     font-family: 'Poppins', sans-serif;
     background-color: #fff;
+    margin: 0;
     display: flex;
     flex-direction: column;
     height: 100vh;
 }
 
 .home-section {
-    position: fixed;
+    position: relative;
     background: #fff;
     top: 0;
     left: 78px;
@@ -22,11 +23,6 @@ body {
     box-sizing: border-box;
 }
 
-.sidebar.open ~ .home-section {
-    left: 250px;
-    width: calc(100% - 250px);
-}
-
 .content-section {
     justify-content: center;
     align-items: center;
@@ -34,17 +30,58 @@ body {
     width: 100%;
     max-width: 1300px;
     margin: 0 auto;
+    overflow-y: hidden;
 }
 
-.home-section h1 {
-    font-size: 24px;
+.sidebar.open ~ .home-section {
+    left: 250px;
+    width: calc(100% - 250px);
+}
+
+.profile-nav {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    width: 100%;
+    background-color: #fff;
+    border-bottom: 1px solid #ddd;
+    padding: 10px 0;
+    margin-bottom: 20px;
+}
+
+.profile-nav a {
+    color: #142850;
+    text-decoration: none;
+    padding: 10px 40px;
+    font-weight: 500;
+    text-align: center;
+    flex-grow: 1;
+}
+
+.profile-nav a.active {
+    background-color: #f1f1f1;
     font-weight: bold;
+    border-bottom: 3px solid #142850;
+}
+
+.profile-nav a:hover {
+    background-color: #f1f1f1;
+}
+
+.box {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
 }
 
 .caa-wrapper {
     width: 75%;
     height: calc(100vh - 0px);
     overflow-x: hidden;
+    overflow-y: hidden;
+
 }
 
 .container-flex {
@@ -58,12 +95,6 @@ body {
     width: 100%;
     margin: 0 auto;
     margin-bottom: 40px;
-}
-
-.col h1, h1 {
-    font-size: 21px;
-    margin-top: 20px;
-    font-weight: bold;
 }
 
 .form-wrapper {
@@ -89,7 +120,12 @@ label {
     display: block;
 }
 
-.amount-input, select, textarea, input[type="text"], input[type="number"], input[type="date"] {
+.amount-input,
+select,
+textarea,
+input[type="text"],
+input[type="number"],
+input[type="date"] {
     width: 100%;
     padding: 10px;
     border: 1px solid #f1f4fb;
@@ -102,7 +138,12 @@ label {
     box-sizing: border-box;
 }
 
-.amount-input:focus, select:focus, textarea:focus, input[type="text"]:focus, input[type="number"]:focus, input[type="date"]:focus {
+.amount-input:focus,
+select:focus,
+textarea:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus {
     border: 1px solid black;
 }
 

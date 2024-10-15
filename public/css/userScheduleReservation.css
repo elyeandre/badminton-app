@@ -138,6 +138,7 @@ table {
     border-collapse: collapse;
     border: 1px solid #e0e0e0;
 }
+
 thead th {
     padding: 10px;
     background-color: #192850;
@@ -146,28 +147,34 @@ thead th {
     text-align: center;
     border-right: 1px solid #e0e0e0;
 }
+
 thead th:last-child {
     border-right: none;
 }
+
 tbody td {
     padding: 10px;
     text-align: center;
     border-top: 1px solid #e0e0e0;
     border-right: 1px solid #e0e0e0;
 }
+
 tbody tr td:last-child {
     border-right: none;
 }
+
 tbody tr:last-child td {
     border-bottom: 1px solid #e0e0e0;
 }
-tbody td input {
-    width: 100%;
-    border: none;
-    background-color: transparent;
-    font-size: 14px;
-    text-align: center;
+
+tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
 }
+
+tbody tr:nth-child(even) {
+    background-color: #fff;
+}
+
 .image-upload-container {
     display: flex;
     align-items: center;
@@ -196,4 +203,29 @@ tbody td input {
 }
 .cancel-button:hover {
     background-color: #ff6666;
+}
+
+th {
+    position: relative;
+}
+
+.sort-icon {
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.sort-icon.asc::after {
+    content: " \f0de";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+}
+
+.sort-icon.desc::after {
+    content: " \f0e2";
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
 }

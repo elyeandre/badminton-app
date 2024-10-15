@@ -27,16 +27,15 @@
             </div>            
         </div>
         <div style="display: flex; align-items: center;">
-            <button class="history-button" onclick="toggleHistoryTable()">View History</button>
-            <button class="filter-button"><i class="fas fa-filter"></i></button>
+            <button class="history-button" onclick="toggleHistoryTable()">View History <i class="fas fa-history"></i></button>
         </div>
         <div class="reservation-table">
             <table>
                 <thead>
                     <tr>
-                        <th>Court</th>
+                        <th>Court<i class="fas fa-sort sort-icon" onclick="toggleSort('location')"></i></th>
                         <th>Court Number</th>
-                        <th>Date</th>
+                        <th>Date<i class="fas fa-sort sort-icon" onclick="toggleSort('location')"></i></th>
                         <th>Time</th>
                         <th>Status</th>
                         <th>Action</th>
