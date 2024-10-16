@@ -9,6 +9,8 @@ const { promisify } = require('util');
 const pipelineAsync = promisify(pipeline);
 const mime = require('mime-types');
 const fileType = require('file-type-cjs');
+const Court = require('../models/Court');
+const { geocodeAddress } = require('../utils/addressToCoord');
 
 exports.getCurrentUser = async (req, res) => {
   try {
@@ -196,11 +198,12 @@ exports.updateUserInfo = async (req, res) => {
     });
   }
 };
+
 exports.serveData = async (req, res) => {
   const { filename } = req.params;
 
   try {
-    // fetch file stream from R2
+    // Fetch file stream from R2
     const fileStream = await getFileFromR2(filename);
 
     if (!fileStream) {
@@ -213,15 +216,111 @@ exports.serveData = async (req, res) => {
     // Set the correct Content-Type based on the file extension
     const mimeType = mime.lookup(filename) || 'application/octet-stream';
     res.setHeader('Content-Type', mimeType);
-    // enable if we want to directive forces the browser to treat the file as something should be downloaded
-    // res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
 
+    // Set cache headers
+    res.setHeader('Cache-Control', 'public, max-age=3600, must-revalidate');
     res.setHeader('Content-Disposition', `inline; filename="${filename}"`);
 
-    // pipe file stream to response
+    // Pipe the file stream to the response
     await pipelineAsync(fileStream, res);
+
+    // Ensure response is ended properly
+    res.end(); // Call to end the response, though pipeline should handle this.
   } catch (err) {
-    error('Error fetching file:', err);
+    console.error('Error fetching file:', err);
+
+    // Check if headers are already sent
+    if (!res.headersSent) {
+      // Handle specific errors
+      if (err.code === 'ERR_STREAM_PREMATURE_CLOSE') {
+        return res.status(500).json({
+          status: 'error',
+          message: 'File streaming failed due to an internal error.'
+        });
+      }
+
+      // Handle other errors
+      return res.status(500).json({
+        status: 'error',
+        code: 500,
+        message: 'Internal Server Error'
+      });
+    }
+
+    // Log if headers are already sent
+    console.error('Headers already sent, cannot respond with error:', err);
+  }
+};
+
+// controller function to get all available courts
+exports.getAllCourts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // Current page, default is 1
+  const limit = parseInt(req.query.limit) || 10; // Number of items per page, default is 10
+  const skip = (page - 1) * limit; // Calculate how many items to skip
+
+  const query = {};
+
+  // Check for search parameters
+  if (req.query.business_name) {
+    const businessName = req.query.business_name.trim();
+
+    // Minimum length check to avoid meaningless results
+    if (businessName.length >= 3) {
+      // Use a regex to match any part of the business name, case-insensitive
+      query.business_name = { $regex: businessName, $options: 'i' };
+    } else {
+      return res.status(400).json({
+        status: 'error',
+        code: '400',
+        message: 'Search term is too short. Please provide at least 3 characters.'
+      });
+    }
+  }
+  // check for location search (street address)
+  if (req.query.address) {
+    try {
+      // convert the address to coordinates (geocoding)
+      const { latitude, longitude } = await geocodeAddress(req.query.address);
+      console.log(latitude, longitude);
+
+      // use MongoDB's geospatial query to find courts near the location
+      query.location = {
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [longitude, latitude]
+          },
+          $maxDistance: 5000 // 5 kilometers (adjust this as needed)
+        }
+      };
+    } catch (error) {
+      log(error);
+      return res.status(400).json({
+        status: 'error',
+        code: '400',
+        message: 'Invalid address. Could not find location.'
+      });
+    }
+  }
+
+  try {
+    // fetch total number of courts for pagination
+    const totalCourts = await Court.countDocuments({});
+    const courts = await Court.find(query).select('-documents -paypal_email').skip(skip).limit(limit);
+
+    // calculate total pages
+    const totalPages = Math.ceil(totalCourts / limit);
+
+    // return the courts data with pagination info
+    return res.status(200).json({
+      status: 'success',
+      code: 200,
+      totalCourts,
+      totalPages,
+      currentPage: page,
+      courts
+    });
+  } catch (error) {
     return res.status(500).json({
       status: 'error',
       code: 500,

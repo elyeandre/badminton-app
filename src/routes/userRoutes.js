@@ -3,7 +3,13 @@ const router = express.Router();
 const path = require('path');
 const roleChecker = require('../middleware/roleChecker');
 const verifyToken = require('../middleware/authJwt');
-const { getCurrentUser, getUserById, updateUserInfo, serveData } = require('../controllers/userController');
+const {
+  getCurrentUser,
+  getUserById,
+  updateUserInfo,
+  serveData,
+  getAllCourts
+} = require('../controllers/userController');
 const serveFile = require('../utils/fileUtils');
 const { validateUserId, validateUserInfo } = require('../middleware/validator');
 const validateUpdateFields = require('../middleware/validateUpdateField');
@@ -22,8 +28,51 @@ let routes = (app) => {
 
   router.put('/update', verifyToken, validateUpdateFields, validateUserInfo, updateUserInfo);
 
+  router.get('/courts', verifyToken, getAllCourts);
+
   router.get('/admin/dashboard', verifyToken, roleChecker(['admin']), (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/admindash.html');
+    serveFile(filePath, res, next);
+  });
+
+  router.get('/admin/schedule-dashboard', verifyToken, roleChecker(['admin']), (req, res, next) => {
+    const tab = req.query.tab; // get the page from the query parameter
+    let filePath;
+
+    // determine which HTML file to serve based on the query parameter
+    switch (tab) {
+      case 'event-and-tournaments':
+        filePath = path.resolve(__dirname, '../../build/eventtournaments.html');
+        break;
+      case 'training-sessions':
+        // specify the file path for training sessions here
+        filePath = path.resolve(__dirname, '../../build/trainingsessions.html');
+        break;
+      case 'product-pickup':
+        // specify the file path for product pickup here
+        filePath = path.resolve(__dirname, '../../build/productpickup.html');
+        break;
+      default:
+        // default to court reservations
+        filePath = path.resolve(__dirname, '../../build/courtreservations.html');
+        break;
+    }
+
+    serveFile(filePath, res, next);
+  });
+  router.get('/reserve/:type', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
+    const { type } = req.params;
+    let filePath;
+
+    switch (type) {
+      case 'court-list':
+        filePath = path.resolve(__dirname, '../../build/usercourtlist.html');
+        break;
+      case 'map-view':
+        filePath = path.resolve(__dirname, '../../build/map.html');
+        break;
+    }
+
     serveFile(filePath, res, next);
   });
 

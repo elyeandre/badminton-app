@@ -5,7 +5,7 @@ const File = require('../models/File');
 
 const MAX_SIZE = 80 * 1024 * 1024; // 20MB file size limit
 
-async function handleFileUpload(file, adminId) {
+async function handleFileUpload(file, adminId, category) {
   if (file.size > MAX_SIZE) {
     throw new Error('File size exceeds the limit of 20MB.');
   }
@@ -44,17 +44,17 @@ async function handleFileUpload(file, adminId) {
   await fileDocument.save();
 
   // Assign the file to the admin
-  await assignFileToAdmin(fileDocument, adminId); // Pass the file object, not the URL
+  await assignFileToAdmin(fileDocument, adminId, category); // Pass the file object, not the URL
 
   return fileUrl; // Return the file URL
 }
 
-async function handleMultipleFileUploads(files, adminId) {
+async function handleMultipleFileUploads(files, adminId, category) {
   let fileUrls = [];
   const filesArray = Array.isArray(files) ? files : [files]; // Handle single or multiple files
 
   for (const file of filesArray) {
-    const fileUrl = await handleFileUpload(file, adminId);
+    const fileUrl = await handleFileUpload(file, adminId, category);
     fileUrls.push(fileUrl);
   }
 

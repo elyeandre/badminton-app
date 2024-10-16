@@ -14,6 +14,7 @@ let routes = (app) => {
   });
 
   router.get('/ping', verifyToken, (req, res) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.json({ message: 'pong!' });
   });
 

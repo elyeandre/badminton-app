@@ -6,9 +6,25 @@ const { assignFileAccess } = require('./assignFileAccess');
  * @returns {Promise<void>} - A promise that resolves when the operation is complete.
  * @throws {Error} - Throws an error if the assignment fails.
  */
-const assignFileToAdmin = async (file, adminId) => {
+const assignFileToAdmin = async (file, adminId, category) => {
   const accessibleUsers = [adminId]; // User who uploaded should have access
-  await assignFileAccess(file, adminId, [], accessibleUsers);
+  let roleBasedAccess = [];
+  switch (category) {
+    case 'businessLogo':
+      roleBasedAccess = ['admin', 'coach', 'player'];
+      break;
+    case 'courtImage':
+      roleBasedAccess = ['admin', 'coach', 'player'];
+      break;
+    case 'facilityImage':
+      roleBasedAccess = ['admin', 'coach', 'player'];
+      break;
+    default:
+      roleBasedAccess = []; // No specific roles
+      break;
+  }
+
+  await assignFileAccess(file, adminId, roleBasedAccess, accessibleUsers);
 };
 
 module.exports = {

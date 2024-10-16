@@ -4,7 +4,6 @@ const config = require('config');
 const jwt = require('jsonwebtoken');
 const Court = require('./Court');
 const File = require('./File');
-const { deleteUserFilesAndProfilePhoto } = require('../utils/adminUtils');
 
 const userSchema = new mongoose.Schema(
   {

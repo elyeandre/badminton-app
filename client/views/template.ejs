@@ -34,7 +34,7 @@
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:site" content="@badminton-app" />
     <meta name="twitter:creator" content="@badminton-app-devs" />
-    <meta  property="twitter:domain" content="<%= htmlWebpackPlugin.options.domain %>" />
+    <meta property="twitter:domain" content="<%= htmlWebpackPlugin.options.domain %>" />
     <meta
       name="twitter:description"
       content="Manage badminton court reservations, tournaments, and events efficiently with our comprehensive platform.  (っ'ヮ'c)" />
@@ -79,26 +79,26 @@
     <% } %> <% }) %> <% } %>
   </head>
   <body>
-   <% if (htmlWebpackPlugin.options.hasNavbar) { %>
-      <!-- Navbar -->
-    <%- require('./partials/navBarUser.ejs')() %>
-    <% } %>
+    <!-- HTML Preloader -->
+    <div id="preloader" style="display: none">
+      <div class="spinner"></div>
+    </div>
 
-  <% if (htmlWebpackPlugin.options.hasSidebar) { %>
-      <!-- Sidebar -->
-    <%- require('./partials/sideNavAdmin.ejs')() %>
-    <% } %>
+    <% if (htmlWebpackPlugin.options.hasNavbar) { %>
+    <!-- Navbar -->
+    <%- require('./partials/navBarUser.ejs')() %> <% } %> 
+
+    <% if (htmlWebpackPlugin.options.hasSidebar) { %>
+    <!-- Sidebar -->
+    <%- require('./partials/sideNavAdmin.ejs')() %> <% } %>
 
     <!-- Body content -->
-    <%- htmlWebpackPlugin.options.bodyContent.replace(/<body[^>]*>/gi, '').replace(/<\/body>/gi, '') %>
+  <%- htmlWebpackPlugin.options.bodyContent.replace(/<body[^>]*>/gi, '<div id="root">').replace(/<\/body>/gi, '</div>') %>
 
     <!-- Webpack-generated JS -->
-    <% if (htmlWebpackPlugin.options.scripts && htmlWebpackPlugin.options.scripts.length) { %>
-      <% htmlWebpackPlugin.options.scripts.forEach(function(script) { %>
-        <% if (script) { %>
-          <script src="<%= script %>"></script>
-        <% } %>
-      <% }) %>
-    <% } %>
+    <% if (htmlWebpackPlugin.options.scripts && htmlWebpackPlugin.options.scripts.length) { %> <%
+    htmlWebpackPlugin.options.scripts.forEach(function(script) { %> <% if (script) { %>
+    <script src="<%= script %>"></script>
+    <% } %> <% }) %> <% } %>
   </body>
 </html>

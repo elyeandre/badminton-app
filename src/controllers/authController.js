@@ -148,6 +148,18 @@ exports.loginUser = async (req, res, next) => {
     const accessToken = await generateAccessToken(user._id);
     const refreshToken = await generateRefreshToken(user._id);
 
+    // define cookie options for access token (15 minutes)
+    const accessCookieOptions = {
+      ...cookieOptions,
+      maxAge: 15 * 60 * 1000 // 15 minutes
+    };
+
+    // define cookie options for refresh token (7 days)
+    const refreshCookieOptions = {
+      ...cookieOptions,
+      maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days
+    };
+
     // Determine redirect URL based on user role
     let redirectUrl;
     if (user.role === 'admin') {
@@ -158,8 +170,8 @@ exports.loginUser = async (req, res, next) => {
 
     return res
       .status(200)
-      .cookie('accessToken', accessToken, cookieOptions)
-      .cookie('refreshToken', refreshToken, cookieOptions)
+      .cookie('accessToken', accessToken, accessCookieOptions)
+      .cookie('refreshToken', refreshToken, refreshCookieOptions)
       .json({
         success: true,
         action: 'redirect',
@@ -578,7 +590,7 @@ exports.refreshToken = async (req, res, next) => {
       await addToBlacklist(incomingAccessToken, 'access');
     }
 
-    const { maxAge, ...cookieOptions } = config.get('cookieOptions');
+    const cookieOptions = config.get('cookieOptions');
 
     // Generate new access token
     const accessToken = await generateAccessToken(decoded.id);
@@ -914,7 +926,7 @@ exports.registerCourt = async (req, res) => {
     }
 
     for (let i = 0; i < facilityImages.length; i++) {
-      const imageUrl = await handleFileUpload(facilityImages[i], decoded.id);
+      const imageUrl = await handleFileUpload(facilityImages[i], decoded.id, 'facilityImage');
       facilityData.push({
         name: facilityNames[i],
         image: imageUrl
@@ -922,11 +934,11 @@ exports.registerCourt = async (req, res) => {
     }
 
     // Upload business logo
-    businessLogoUrl = await handleFileUpload(req.files.business_logo, decoded.id);
+    businessLogoUrl = await handleFileUpload(req.files.business_logo, decoded.id, 'businessLogo');
 
     // Upload court images (multiple)
     // courtImageUrls = await handleMultipleFileUploads(req.files.court_images, decoded.id);
-    courtImageUrls = await handleMultipleFileUploads(req.files['court_image[]'], decoded.id);
+    courtImageUrls = await handleMultipleFileUploads(req.files['court_image[]'], decoded.id, 'courtImage');
 
     // Upload documents (multiple)
     for (const key of documentKeys) {
