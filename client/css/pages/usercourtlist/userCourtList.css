@@ -42,3 +42,44 @@ body {
 .court-image:hover {
   transform: scale(1.1);
 }
+
+.load-more-button {
+  margin: 20px 0;
+  padding: 12px 24px;
+  background-color: #142850;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.load-more-button:hover {
+  background-color: #397cf7;
+  transform: translateY(-2px);
+}
+
+.load-more-button:active {
+  transform: translateY(0);
+}
+
+.scroll-to-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #142850;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: background-color 0.3s;
+  z-index: 1000;
+}
+
+.scroll-to-top-btn:hover {
+  background-color: #0d193d;
+}
