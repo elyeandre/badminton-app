@@ -8,7 +8,8 @@ const {
   getUserById,
   updateUserInfo,
   serveData,
-  getAllCourts
+  getAllCourts,
+  getCourtById
 } = require('../controllers/userController');
 const serveFile = require('../utils/fileUtils');
 const { validateUserId, validateUserInfo } = require('../middleware/validator');
@@ -30,8 +31,15 @@ let routes = (app) => {
 
   router.get('/courts', verifyToken, getAllCourts);
 
+  router.get('/court/:id', verifyToken, getCourtById);
+
   router.get('/admin/dashboard', verifyToken, roleChecker(['admin']), (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/admindash.html');
+    serveFile(filePath, res, next);
+  });
+
+  router.get('/court-reservation', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
+    const filePath = path.resolve(__dirname, '../../build/usercourtreservation.html');
     serveFile(filePath, res, next);
   });
 

@@ -328,3 +328,39 @@ exports.getAllCourts = async (req, res) => {
     });
   }
 };
+
+exports.getCourtById = async (req, res) => {
+  try {
+    const courtId = req.params.id;
+
+    // check if the courtId is missing
+    if (!courtId) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'Court ID is required'
+      });
+    }
+
+    // find the court by ID
+    const court = await Court.findById(courtId).select('-documents');
+
+    if (!court) {
+      return res.status(404).json({
+        status: 'error',
+        code: 404,
+        message: 'Court not found'
+      });
+    }
+
+    // return the court data
+    res.json(court);
+  } catch (err) {
+    console.error('Error occurred while fetching court by ID:', err);
+    return res.status(500).json({
+      status: 'error',
+      code: 500,
+      message: 'Internal Server Error'
+    });
+  }
+};
