@@ -21,29 +21,26 @@
 
         <div class="box">
             <div class="filter-container">
-                <button class="filter-button">
-                    Print Payment <i class="fas fa-file-alt"></i>
-                </button>
+                <div class="filter-actions">
+                    <label for="search">Search:</label>
+                    <input type="text" id="search" class="search-field" placeholder="Search by name..." onkeyup="searchTable()" />
+                    <button class="filter-button">Print Schedule <i class="fas fa-file-alt"></i></button>
+                </div>
             </div>
 
             <table>
                 <thead>
                     <tr>
-                        <th>
-                            Name
-                            <button onclick="sortTable('name', 'string')" class="sort-button">
-                                <i class="fas fa-sort"></i>
-                            </button>
-                        </th>
+                        <th>Name</th>
                         <th>Account Number</th>
-                        <th>
-                            Date Paid
-                            <button onclick="sortTable('date', 'date')" class="sort-button">
-                                <i class="fas fa-sort"></i>
-                            </button>
-                        </th>
+                        <th>Date Paid</th>
                         <th>Amount</th>
                         <th>Reference Number</th>
+                        <th>Date Reserved</th>
+                        <th>Time Reserved</th>
+                        <th>Court Reserved</th>
+                        <th>Total Bill</th>
+                        <th>Bill Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -54,7 +51,21 @@
                         <td>2024-10-05</td>
                         <td>$150.00</td>
                         <td>REF654321</td>
-                        <td><button class="view-schedule-button">View Schedule</button></td>
+                        <td>2024-10-10</td>
+                        <td>10:00 AM</td>
+                        <td>Court 1</td>
+                        <td>$150.00</td>
+                        <td>Paid</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-button view-schedule" title="View Schedule">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <button class="icon-button edit-status" title="Edit Status">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td>Lucy Van Pelt</td>
@@ -62,7 +73,21 @@
                         <td>2024-10-08</td>
                         <td>$200.00</td>
                         <td>REF123456</td>
-                        <td><button class="view-schedule-button">View Schedule</button></td>
+                        <td>2024-10-15</td>
+                        <td>12:00 PM</td>
+                        <td>Court 2</td>
+                        <td>$200.00</td>
+                        <td>Unpaid</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-button view-schedule" title="View Schedule">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <button class="icon-button edit-status" title="Edit Status">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td>KC Cruz</td>
@@ -70,7 +95,21 @@
                         <td>2024-11-08</td>
                         <td>$175.00</td>
                         <td>REF123435</td>
-                        <td><button class="view-schedule-button">View Schedule</button></td>
+                        <td>2024-11-10</td>
+                        <td>02:00 PM</td>
+                        <td>Court 3</td>
+                        <td>$175.00</td>
+                        <td>Paid</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-button view-schedule" title="View Schedule">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <button class="icon-button edit-status" title="Edit Status">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
