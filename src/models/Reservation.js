@@ -4,40 +4,58 @@ const reservationSchema = new mongoose.Schema(
   {
     user: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // reference to the User who made the reservation
+      ref: 'User',
       required: true
     },
     court: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Court', // reference to the Court being reserved
+      ref: 'Court',
       required: true
     },
     date: {
-      type: Date, // reservation date
-      required: true
+      type: Date,
+      required: true,
+      validate: {
+        validator: function (value) {
+          return value >= new Date();
+        },
+        message: 'Reservation date cannot be in the past'
+      }
     },
     timeSlot: {
       from: {
-        type: String, // start time of the reservation (e.g., '09:00 AM')
-        required: true
+        type: String,
+        required: true,
+        validate: {
+          validator: function (value) {
+            return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] (AM|PM)$/.test(value);
+          },
+          message: 'Invalid start time format'
+        }
       },
       to: {
-        type: String, // end time of the reservation (e.g., '11:00 AM')
-        required: true
+        type: String,
+        required: true,
+        validate: {
+          validator: function (value) {
+            return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] (AM|PM)$/.test(value);
+          },
+          message: 'Invalid end time format'
+        }
       }
     },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'completed', 'cancelled'], // status of the reservation
+      enum: ['pending', 'confirmed', 'completed', 'cancelled'],
       default: 'pending'
     },
     paymentStatus: {
       type: String,
-      enum: ['cancelled', 'paid', 'unpaid', 'pending'], // status of payment for the reservation
+      enum: ['cancelled', 'paid', 'unpaid', 'pending'],
       default: 'pending'
     },
     totalAmount: {
-      type: Number, // total amount for the reservation based on the court's hourly rate
+      type: Number,
       required: true
     },
     paymentMethod: {
@@ -46,7 +64,15 @@ const reservationSchema = new mongoose.Schema(
       default: 'paypal'
     },
     notes: {
-      type: String, // additional notes for the reservation
+      type: String,
+      default: ''
+    },
+    transactionId: {
+      type: String,
+      default: ''
+    },
+    payerEmail: {
+      type: String,
       default: ''
     }
   },
@@ -55,8 +81,16 @@ const reservationSchema = new mongoose.Schema(
   }
 );
 
-// create an index on date and timeSlot to prevent double bookings
+// create an index on court, date, and timeSlot to prevent double bookings
 reservationSchema.index({ court: 1, date: 1, 'timeSlot.from': 1, 'timeSlot.to': 1 }, { unique: true });
+
+// Pre-save hook to confirm reservation on successful payment
+reservationSchema.pre('save', function (next) {
+  if (this.paymentStatus === 'paid') {
+    this.status = 'confirmed';
+  }
+  next();
+});
 
 const Reservation = mongoose.model('Reservation', reservationSchema);
 

@@ -364,3 +364,59 @@ exports.getCourtById = async (req, res) => {
     });
   }
 };
+
+// reservation controller function
+exports.createReservation = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { courtId, date, timeSlot } = req.body;
+
+    // validate the date to ensure no past dates are selected
+    const selectedDate = new Date(date);
+    if (selectedDate < new Date()) {
+      return res.status(400).json({ error: 'Cannot select past dates.' });
+    }
+
+    // check court availability for the selected time slot
+    const existingReservation = await Reservation.findOne({
+      court: courtId,
+      date: selectedDate,
+      'timeSlot.from': timeSlot.from,
+      'timeSlot.to': timeSlot.to
+    });
+
+    if (existingReservation) {
+      return res.status(400).json({ error: 'Selected time slot is not available.' });
+    }
+
+    // retrieve the court's hourly rate
+    const hourlyRate = await getHourlyRate(courtId);
+    if (!hourlyRate) {
+      return res.status(404).json({ error: 'Court not found.' });
+    }
+
+    // calculate the total cost based on the time slot
+    const totalAmount = calculateTotalAmount(hourlyRate, timeSlot);
+
+    // create a new reservation with the user ID attached
+    const newReservation = new Reservation({
+      user: userId, // attach the authenticated user's ID
+      court: courtId,
+      date: selectedDate,
+      timeSlot,
+      totalAmount
+    });
+
+    // save the reservation to the database
+    await newReservation.save();
+
+    // Return success response
+    return res.status(201).json({
+      message: 'Reservation successfully created',
+      reservation: newReservation
+    });
+  } catch (error) {
+    console.error('Error while creating reservation:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};

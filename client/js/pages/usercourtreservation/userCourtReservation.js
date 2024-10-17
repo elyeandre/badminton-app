@@ -150,3 +150,40 @@ doc.addEventListener('DOMContentLoaded', async function () {
     }
   }
 });
+
+let hourlyRate = 200; // Example value, fetched dynamically
+
+let selectedCourts = 0;
+let selectedTimeSlots = [];
+
+// Function to update the total payment display
+function updateTotalPayment() {
+  const selectedHours = selectedTimeSlots.length; // Number of selected hours
+  const totalPayment = selectedHours * selectedCourts * hourlyRate;
+
+  getById('totalPayment').textContent = `Total Payment: ₱${totalPayment}`;
+}
+
+// Event handler for selecting a court
+function selectCourt() {
+  const courtImages = getAll('.court-image');
+  courtImages.forEach((court, index) => {
+    court.addEventListener('click', function () {
+      this.classList.toggle('selected');
+      selectedCourts = getAll('.court-image.selected').length;
+      updateTotalPayment(); // Recalculate total after court selection
+    });
+  });
+}
+
+// Event handler for selecting time slots
+function selectTimeSlots() {
+  const timeSlots = getAll('.time-slot');
+  timeSlots.forEach((slot) => {
+    slot.addEventListener('click', function () {
+      this.classList.toggle('selected');
+      selectedTimeSlots = Array.from(timeSlots).filter((slot) => slot.classList.contains('selected'));
+      updateTotalPayment(); // Recalculate total after time slot selection
+    });
+  });
+}
