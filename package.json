@@ -52,6 +52,7 @@
     "leaflet-control-geocoder": "^2.4.0",
     "mime-types": "^2.1.35",
     "mini-css-extract-plugin": "^2.9.1",
+    "moment-timezone": "^0.5.46",
     "mongoose": "^8.6.3",
     "morgan": "^1.10.0",
     "node-cron": "^3.0.3",
