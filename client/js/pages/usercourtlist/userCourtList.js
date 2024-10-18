@@ -54,8 +54,8 @@ async function displayCourts() {
   const courtsContainer = getById('courts-container');
 
   for (const court of courts) {
-    const courtImage = court.court_images?.[0] // get only the first court image
-      ? `<img src="${court.court_images[0]}" alt="${court.business_name}" class="court-image" />`
+    const courtImage = court.business_logo // get only the first court image
+      ? `<img src="${court.business_logo}" alt="${court.business_name}" class="court-image" />`
       : '<p>No images available</p>';
 
     courtsContainer.innerHTML += `
