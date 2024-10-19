@@ -371,7 +371,7 @@ exports.getCourtById = async (req, res) => {
 };
 
 // reservation controller function
-exports.createReservation = async (req, res) => {
+exports.createReservation = async (req, res, io) => {
   try {
     const userId = req.user.id;
 
@@ -524,6 +524,11 @@ exports.createReservation = async (req, res) => {
     });
 
     await reservation.save();
+
+    io.emit('reservationCreated', {
+      courtId,
+      date
+    });
 
     return res.status(201).json(reservation);
   } catch (err) {

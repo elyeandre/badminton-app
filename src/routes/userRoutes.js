@@ -21,7 +21,7 @@ const { checkFilePermissions } = require('../middleware/checkFilePermission');
 
 const limiter = createRateLimiter(15 * 60 * 1000, 100);
 
-let routes = (app) => {
+let routes = (app, io) => {
   router.get('/me', verifyToken, getCurrentUser);
 
   router.get('/get-user/:id', verifyToken, validateUserId, getUserById);
@@ -93,7 +93,9 @@ let routes = (app) => {
     serveFile(filePath, res, next);
   });
 
-  router.post('/reserve', verifyToken, roleChecker(['player', 'coach']), createReservation);
+  router.post('/reserve', verifyToken, roleChecker(['player', 'coach']), (req, res) => {
+    createReservation(req, res, io);
+  });
 
   router.get('/availability', verifyToken, roleChecker(['player', 'coach']), getAvailability);
 
