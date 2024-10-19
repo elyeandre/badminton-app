@@ -52,9 +52,14 @@ function refreshToken() {
     if (refreshResponse.ok) {
       log('Token refreshed successfully.');
       return;
-    } else {
+    } else if (refreshResponse.status === 401 || refreshResponse.status === 403) {
       error('Failed to refresh token. Redirecting to login...');
+      // Redirect to login or handle logout
+      window.location.href = '/login'; // Redirect to login page
       throw new Error('Refresh token failed');
+    } else {
+      error('Unexpected error while refreshing token.');
+      throw new Error('Unexpected error');
     }
   });
 }

@@ -11,6 +11,7 @@ const { convertTo24Hour } = require('./timeConvertion');
  * @param {Array} selectedCourt - Array of indices representing selected courts.
  * @returns {Boolean} - Returns true if courts are available, otherwise false.
  */
+
 async function isCourtAvailable(courtId, selectedDate, timeSlot, selectedCourt) {
   try {
     // convert selectedDate to UTC and get the start and end of the day

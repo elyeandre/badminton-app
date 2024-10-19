@@ -9,7 +9,9 @@ const {
   updateUserInfo,
   serveData,
   getAllCourts,
-  getCourtById
+  getCourtById,
+  createReservation,
+  getAvailability
 } = require('../controllers/userController');
 const serveFile = require('../utils/fileUtils');
 const { validateUserId, validateUserInfo } = require('../middleware/validator');
@@ -27,7 +29,14 @@ let routes = (app) => {
   // route to serve files from R2
   router.get('/data/:filename', verifyToken, checkFilePermissions, limiter, serveData);
 
-  router.put('/update', verifyToken, validateUpdateFields, validateUserInfo, updateUserInfo);
+  router.put(
+    '/update',
+    verifyToken,
+    roleChecker(['player', 'coach']),
+    validateUpdateFields,
+    validateUserInfo,
+    updateUserInfo
+  );
 
   router.get('/courts', verifyToken, getAllCourts);
 
@@ -83,6 +92,10 @@ let routes = (app) => {
 
     serveFile(filePath, res, next);
   });
+
+  router.post('/reserve', verifyToken, roleChecker(['player', 'coach']), createReservation);
+
+  router.get('/availability', verifyToken, roleChecker(['player', 'coach']), getAvailability);
 
   router.get('/dashboard', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/userdash.html');

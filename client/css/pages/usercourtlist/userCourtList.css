@@ -22,17 +22,21 @@ body {
 .image-container {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  gap: 20px;
+  justify-content: center;
+  width: 100%;
+  padding: 10px;
 }
 
 .image-container a {
-  width: calc(20% - 10px);
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  flex-basis: calc(25% - 20px); /* Ensures 4 items per row with gaps */
+  box-sizing: border-box; /* Makes the width calculation include padding/border */
 }
 
 .court-image {
-  width: 100%;
-  height: auto;
+  width: 200px;
+  height: 120px;
   object-fit: cover;
   border: 2px solid #ccc;
   border-radius: 5px;

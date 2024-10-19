@@ -160,6 +160,8 @@ exports.loginUser = async (req, res, next) => {
       maxAge: 14 * 24 * 60 * 60 * 1000 // 14 days
     };
 
+    log(refreshCookieOptions);
+
     // Determine redirect URL based on user role
     let redirectUrl;
     if (user.role === 'admin') {

@@ -8,19 +8,14 @@ const reservationSchema = new mongoose.Schema(
       required: true
     },
     court: {
+      // Reference to the Court document
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Court',
       required: true
     },
     date: {
       type: Date,
-      required: true,
-      validate: {
-        validator: function (value) {
-          return value >= new Date();
-        },
-        message: 'Reservation date cannot be in the past'
-      }
+      required: true
     },
     timeSlot: {
       from: {
@@ -28,9 +23,9 @@ const reservationSchema = new mongoose.Schema(
         required: true,
         validate: {
           validator: function (value) {
-            return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] (AM|PM)$/.test(value);
+            return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value);
           },
-          message: 'Invalid start time format'
+          message: 'Invalid start time format, must be in 24-hour format (HH:mm)'
         }
       },
       to: {
@@ -38,9 +33,9 @@ const reservationSchema = new mongoose.Schema(
         required: true,
         validate: {
           validator: function (value) {
-            return /^([0-1]?[0-9]|2[0-3]):[0-5][0-9] (AM|PM)$/.test(value);
+            return /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/.test(value);
           },
-          message: 'Invalid end time format'
+          message: 'Invalid end time format, must be in 24-hour format (HH:mm)'
         }
       }
     },
@@ -81,7 +76,7 @@ const reservationSchema = new mongoose.Schema(
   }
 );
 
-// create an index on court, date, and timeSlot to prevent double bookings
+// Create an index on court, date, and timeSlot to prevent double bookings
 reservationSchema.index({ court: 1, date: 1, 'timeSlot.from': 1, 'timeSlot.to': 1 }, { unique: true });
 
 // Pre-save hook to confirm reservation on successful payment

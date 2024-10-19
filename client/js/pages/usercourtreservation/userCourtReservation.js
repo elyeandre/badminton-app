@@ -16,6 +16,10 @@ setupLogoutListener();
 // Start session checks on page load
 startSessionChecks();
 
+let selectedCourts = [];
+let selectedDate = null;
+let reservedDates = [];
+
 // Get address from coordinates
 export async function getAddressFromCoordinates(coordinates) {
   const [lon, lat] = coordinates;
@@ -40,49 +44,38 @@ export async function getAddressFromCoordinates(coordinates) {
   }
 }
 
-// Fetch court data
-async function fetchCourtData(courtId) {
-  try {
-    const response = await fetch(`/user/court/${courtId}`);
-    if (!response.ok) {
-      throw new Error(`Error fetching court data: ${response.status}`);
-    }
-    return await response.json();
-  } catch (err) {
-    error(err);
-    return null;
-  }
-}
-
-// generate time slots based on operating hours
-function generateTimeSlots(operatingHours) {
+// Generate time slots based on availability
+function generateTimeSlots(availabilityData) {
   const timeSlotsContainer = getById('timeSlots');
   timeSlotsContainer.innerHTML = '';
 
-  const startHour = parseTime(operatingHours.from);
-  const endHour = parseTime(operatingHours.to);
+  const availableSlots = availabilityData.courts[0].timeSlot.available;
+  const unavailableSlots = availabilityData.courts[0].timeSlot.unavailable;
 
-  for (let hour = startHour; hour < endHour; hour++) {
-    let nextHour = hour + 1;
-    let amPmStart = hour < 12 ? 'AM' : 'PM';
-    let amPmEnd = nextHour < 12 ? 'AM' : 'PM';
+  // First, display the unavailable time slots
+  unavailableSlots.forEach((slot) => {
+    const timeSlot = document.createElement('div');
+    timeSlot.classList.add('time-slot', 'disabled');
+    timeSlot.textContent = slot;
+    timeSlotsContainer.appendChild(timeSlot);
+  });
 
-    // adjust hour display for 12-hour format
-    let displayHourStart = hour % 12 === 0 ? 12 : hour % 12;
-    let displayHourEnd = nextHour % 12 === 0 ? 12 : nextHour % 12;
-
-    // create time slot with range
-    let timeSlot = doc.createElement('div');
+  // Then, display the available time slots
+  availableSlots.forEach((slot) => {
+    const timeSlot = document.createElement('div');
     timeSlot.classList.add('time-slot');
-    timeSlot.textContent = `${displayHourStart}:00 ${amPmStart} - ${displayHourEnd}:00 ${amPmEnd}`;
+    timeSlot.textContent = slot;
 
-    // add click event to toggle selection
+    // Extract the hour from the time string and set it as a data attribute
+    const hour = parseTime(slot); // Make sure this function returns the correct hour
+    timeSlot.setAttribute('data-hour', hour); // Set data-hour attribute
+
+    // Add click event for available slots
     timeSlot.addEventListener('click', function () {
       this.classList.toggle('selected');
     });
-
     timeSlotsContainer.appendChild(timeSlot);
-  }
+  });
 }
 
 // Parse time string (e.g., "11:22 AM") to 24-hour format
@@ -114,7 +107,19 @@ function populateCourtImagesAndLocation(courtData) {
 
     // Add click event to toggle selection
     imgContainer.addEventListener('click', function () {
-      this.classList.toggle('selected');
+      const selectedIndex = selectedCourts.indexOf(index);
+
+      if (selectedIndex === -1) {
+        // If not already selected, add to selectedCourts
+        selectedCourts.push(index);
+        this.classList.add('selected');
+      } else {
+        // If already selected, remove from selectedCourts
+        selectedCourts.splice(selectedIndex, 1);
+        this.classList.remove('selected');
+      }
+
+      log('Selected courts:', selectedCourts); // Debugging log
     });
 
     courtImagesContainer.appendChild(imgContainer);
@@ -123,17 +128,32 @@ function populateCourtImagesAndLocation(courtData) {
 
 doc.addEventListener('DOMContentLoaded', async function () {
   var calendarEl = getById('calendar');
+
+  // Get the current date in the Philippines timezone
+  const options = { timeZone: 'Asia/Manila', year: 'numeric', month: '2-digit', day: '2-digit' };
+  const formatter = new Intl.DateTimeFormat('en-CA', options); // Use 'en-CA' to get YYYY-MM-DD format
+  const currentDate = formatter.format(new Date()).replace(/\//g, '-');
+
   var calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
     validRange: {
-      start: new Date().toISOString().split('T')[0]
+      start: currentDate
     },
-    dateClick: function (info) {
-      // Remove previous selections
+    dateClick: async function (info) {
       doc.querySelectorAll('.fc-daygrid-day').forEach((day) => day.classList.remove('selected-date'));
-
-      // Add highlight to the clicked date
       info.dayEl.classList.add('selected-date');
+      selectedDate = info.dateStr;
+      log('Selected date:', selectedDate);
+
+      // Fetch data for the selected date
+      const { availabilityData } = await fetchCourtData(courtId, selectedDate);
+      if (availabilityData) {
+        generateTimeSlots(availabilityData);
+      }
+    },
+    datesSet: async function (dateInfo) {
+      // Highlight reserved dates every time the view changes
+      highlightReservedDates(reservedDates);
     }
   });
   calendar.render();
@@ -142,48 +162,145 @@ doc.addEventListener('DOMContentLoaded', async function () {
   const queryParams = new URLSearchParams(window.location.search);
   const courtId = queryParams.get('id');
 
+  console.log('Current Date in Philippines:', currentDate);
+
   if (courtId) {
-    const courtData = await fetchCourtData(courtId);
+    const {
+      courtData,
+      availabilityData,
+      reservedDates: fetchedReservedDates
+    } = await fetchCourtData(courtId, currentDate);
     if (courtData) {
       populateCourtImagesAndLocation(courtData);
-      generateTimeSlots(courtData.operating_hours);
+      generateTimeSlots(availabilityData); // Generate time slots
+
+      // Store reserved dates globally
+      reservedDates = fetchedReservedDates;
+      highlightReservedDates(reservedDates); // Highlight reserved dates
     }
   }
 });
 
-let hourlyRate = 200; // Example value, fetched dynamically
+// function to check if time slots are continuous
+function areTimeSlotsContinuous(selectedSlots) {
+  // extract the hour data
+  const hours = selectedSlots.map((slot) => parseInt(slot.getAttribute('data-hour')));
 
-let selectedCourts = 0;
-let selectedTimeSlots = [];
+  // sort the hours and check if they are consecutive
+  hours.sort((a, b) => a - b);
 
-// Function to update the total payment display
-function updateTotalPayment() {
-  const selectedHours = selectedTimeSlots.length; // Number of selected hours
-  const totalPayment = selectedHours * selectedCourts * hourlyRate;
-
-  getById('totalPayment').textContent = `Total Payment: ₱${totalPayment}`;
+  for (let i = 1; i < hours.length; i++) {
+    if (hours[i] !== hours[i - 1] + 1) {
+      return false; // Time slots are not continuous
+    }
+  }
+  return true;
 }
 
-// Event handler for selecting a court
-function selectCourt() {
-  const courtImages = getAll('.court-image');
-  courtImages.forEach((court, index) => {
-    court.addEventListener('click', function () {
-      this.classList.toggle('selected');
-      selectedCourts = getAll('.court-image.selected').length;
-      updateTotalPayment(); // Recalculate total after court selection
-    });
+// function to group time slots
+function groupTimeSlots(selectedSlots) {
+  const hours = selectedSlots.map((slot) => parseInt(slot.getAttribute('data-hour')));
+  hours.sort((a, b) => a - b);
+
+  const firstHour = hours[0];
+  const lastHour = hours[hours.length - 1];
+
+  const fromTimeSlot = selectedSlots.find((slot) => parseInt(slot.getAttribute('data-hour')) === firstHour);
+  const toTimeSlot = selectedSlots.find((slot) => parseInt(slot.getAttribute('data-hour')) === lastHour);
+
+  return {
+    from: fromTimeSlot.textContent.split(' - ')[0],
+    to: toTimeSlot.textContent.split(' - ')[1]
+  };
+}
+
+getById('reserveButton').addEventListener('click', function () {
+  const selectedSlots = Array.from(getAll('.time-slot.selected'));
+
+  log(selectedSlots);
+
+  if (selectedSlots.length === 0) {
+    alert('Please select at least one time slot.');
+    return;
+  }
+
+  // group time slots into one reservation
+  const groupedTimeSlot = groupTimeSlots(selectedSlots);
+
+  // send the grouped time slot to the backend
+  submitReservation(groupedTimeSlot);
+
+  // remove 'selected' class from all selected time slots to reset selection
+  selectedSlots.forEach((slot) => {
+    slot.classList.remove('selected');
+  });
+});
+
+async function fetchCourtData(courtId, selectedDate) {
+  try {
+    const response = await fetch(`/user/court/${courtId}`);
+    if (!response.ok) {
+      throw new Error(`Error fetching court data: ${response.status}`);
+    }
+    const courtData = await response.json();
+
+    // Fetch availability for the selected date
+    const availabilityResponse = await fetch(`/user/availability?date=${selectedDate}&courtId=${courtId}`);
+    if (!availabilityResponse.ok) {
+      throw new Error(`Error fetching availability: ${availabilityResponse.status}`);
+    }
+    const availabilityData = await availabilityResponse.json();
+
+    // Return both court data and availability data, including reserved dates
+    return { courtData, availabilityData, reservedDates: availabilityData.reservedDates };
+  } catch (err) {
+    error(err);
+    return null;
+  }
+}
+
+// Function to highlight reserved dates
+function highlightReservedDates(reservedDates) {
+  const calendarDays = getAll('.fc-daygrid-day');
+
+  calendarDays.forEach((day) => {
+    const date = day.getAttribute('data-date'); // Get the date attribute
+    if (reservedDates.includes(date)) {
+      day.classList.add('reserved'); // Add reserved class if the date is reserved
+    } else {
+      day.classList.remove('reserved'); // Remove reserved class if the date is not reserved
+    }
   });
 }
 
-// Event handler for selecting time slots
-function selectTimeSlots() {
-  const timeSlots = getAll('.time-slot');
-  timeSlots.forEach((slot) => {
-    slot.addEventListener('click', function () {
-      this.classList.toggle('selected');
-      selectedTimeSlots = Array.from(timeSlots).filter((slot) => slot.classList.contains('selected'));
-      updateTotalPayment(); // Recalculate total after time slot selection
-    });
-  });
+// Function to submit reservation to the backend
+async function submitReservation(timeSlot) {
+  log(timeSlot);
+  log(selectedCourts);
+  log(selectedDate);
+
+  // const queryParams = new URLSearchParams(window.location.search);
+  // const courtId = queryParams.get('id');
+  // const reservationData = {
+  //   courtId: courtId,
+  //   date: getById('calendar').value,  // Assuming you have a date input field
+  //   timeSlot: timeSlot,
+  //   selectedCourt: []  // Pass the selected court IDs here
+  // };
+  // try {
+  //   const response = await fetch('/user/reserve', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify(reservationData)
+  //   });
+  //   if (!response.ok) {
+  //     throw new Error('Failed to reserve time slot');
+  //   }
+  //   alert('Reservation successful!');
+  // } catch (err) {
+  //   console.error(err);
+  //   alert('An error occurred while making the reservation');
+  // }
 }

@@ -286,3 +286,15 @@ input:focus {
 .court-image.selected img {
   opacity: 0.6;
 }
+
+.time-slot.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  text-decoration: line-through;
+}
+.reserved {
+  background-color: #397cf7;
+}
+.fc-daygrid-day {
+  cursor: pointer; /* Changes the cursor to a hand (pointer) */
+}

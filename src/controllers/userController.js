@@ -1,6 +1,9 @@
 const User = require('../models/User');
 const File = require('../models/File');
+const Reservation = require('../models/Reservation');
 const { assignFileAccess } = require('../utils/assignFileAccess');
+const { isCourtAvailable } = require('../utils/courtAvailability');
+const { convertTo24Hour } = require('../utils/timeConvertion');
 const { log, error } = console;
 const { uploadToR2, deleteFromR2, getFileFromR2 } = require('../services/r2Service');
 const mongoose = require('mongoose');
@@ -11,6 +14,8 @@ const mime = require('mime-types');
 const fileType = require('file-type-cjs');
 const Court = require('../models/Court');
 const { geocodeAddress } = require('../utils/addressToCoord');
+const moment = require('moment-timezone');
+const calculateTotalAmount = require('../utils/amountCalculator');
 
 exports.getCurrentUser = async (req, res) => {
   try {
@@ -369,54 +374,303 @@ exports.getCourtById = async (req, res) => {
 exports.createReservation = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { courtId, date, timeSlot } = req.body;
 
-    // validate the date to ensure no past dates are selected
-    const selectedDate = new Date(date);
-    if (selectedDate < new Date()) {
-      return res.status(400).json({ error: 'Cannot select past dates.' });
+    const { courtId, date, timeSlot, selectedCourt } = req.body;
+
+    // Validate input
+    if (
+      !courtId ||
+      !date ||
+      !timeSlot ||
+      !timeSlot.from ||
+      !timeSlot.to ||
+      !Array.isArray(selectedCourt) ||
+      selectedCourt.length === 0
+    ) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'All fields are required and selectedCourt must not be empty.'
+      });
     }
 
-    // check court availability for the selected time slot
-    const existingReservation = await Reservation.findOne({
+    // Get the current date and time in the Philippines timezone
+    const now = moment.tz('Asia/Manila');
+
+    // Convert date to a Date object
+    const selectedDate = moment.tz(date, 'Asia/Manila');
+    const currentDate = moment.tz(new Date(), 'Asia/Manila');
+
+    // Normalize to the start of the day for comparison
+    const currentDateStartOfDay = moment().startOf('day');
+    const selectedDateStartOfDay = selectedDate.startOf('day');
+
+    // Check if the selected date is in the past
+    if (selectedDateStartOfDay.isBefore(currentDateStartOfDay)) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'Cannot check availability for past dates.'
+      });
+    }
+
+    // If the selected date is today, check the time slot
+    if (selectedDateStartOfDay.isSame(currentDateStartOfDay)) {
+      const fromTime = moment.tz(`${date} ${timeSlot.from}`, 'Asia/Manila');
+      if (fromTime.isBefore(currentDate)) {
+        return res.status(400).json({
+          status: 'error',
+          code: 400,
+          message: 'Cannot reserve a time slot that is in the past.'
+        });
+      }
+    }
+
+    // Get the court and its total courts
+    const court = await Court.findById(courtId);
+    if (!court) {
+      return res.status(404).json({
+        status: 'error',
+        code: 404,
+        message: 'Court not found'
+      });
+    }
+
+    // Check if the selected court images are within bounds
+    if (selectedCourt.some((index) => index < 0 || index >= totalCourts)) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: `Selected court indices are out of bounds. Total courts available: ${totalCourts}.`
+      });
+    }
+
+    // Check court availability
+    const courtAvailable = await isCourtAvailable(courtId, selectedDate, timeSlot, selectedCourt.length);
+    if (!courtAvailable) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'Selected time slot is not available'
+      });
+    }
+
+    // convert operating hours to Date objects for the selected date
+    const operatingStart = moment.tz(`${date} ${operating_hours.from}`, 'YYYY-MM-DD h:mm A', 'Asia/Manila');
+    const operatingEnd = moment.tz(`${date} ${operating_hours.to}`, 'YYYY-MM-DD h:mm A', 'Asia/Manila');
+
+    // convert time to 24-hour format
+    const fromTime24 = convertTo24Hour(timeSlot.from);
+    const toTime24 = convertTo24Hour(timeSlot.to);
+
+    // create Date objects for fromTime and toTime
+    const fromTime = moment.tz(`${selectedDate.format('YYYY-MM-DD')} ${fromTime24}`, 'Asia/Manila');
+    const toTime = moment.tz(`${selectedDate.format('YYYY-MM-DD')} ${toTime24}`, 'Asia/Manila');
+
+    // validate that the time slot falls within operating hours
+    if (fromTime.isBefore(operatingStart) || toTime.isAfter(operatingEnd)) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: `The selected time slot (${timeSlot.from} - ${timeSlot.to}) is outside of operating hours (${operating_hours.from} - ${operating_hours.to}).`
+      });
+    }
+
+    // validate time range
+    if (fromTime.isAfter(toTime)) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'End time must be after start time'
+      });
+    }
+
+    // ensure the reservation starts at least one hour from now
+    const oneHourLater = now.clone().add(1, 'hour'); // Current time + 1 hour
+    if (fromTime.isBefore(oneHourLater)) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'Reservations must start at least one hour from the current time.'
+      });
+    }
+
+    // calculate total amount
+    const totalAmount = calculateTotalAmount(fromTime, toTime, hourlyRate, selectedCourt.length);
+
+    // create a new reservation
+    const reservation = new Reservation({
+      user: userId,
       court: courtId,
-      date: selectedDate,
-      'timeSlot.from': timeSlot.from,
-      'timeSlot.to': timeSlot.to
+      date: selectedDate.toDate(),
+      timeSlot: {
+        from: fromTime24,
+        to: toTime24
+      },
+      totalAmount,
+      selectedCourt,
+      status: 'pending',
+      paymentStatus: 'unpaid'
     });
 
-    if (existingReservation) {
-      return res.status(400).json({ error: 'Selected time slot is not available.' });
+    await reservation.save();
+
+    return res.status(201).json(reservation);
+  } catch (err) {
+    // handle duplicate key error
+    console.error('Error while creating reservation:', err);
+    if (err.name === 'MongoServerError' && err.code === 11000) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'This time slot is already booked. Please choose another time.'
+      });
+    }
+    return res.status(500).json({
+      status: 'error',
+      code: 500,
+      message: 'Internal Server Error'
+    });
+  }
+};
+
+exports.getAvailability = async (req, res) => {
+  try {
+    const { date, courtId } = req.query;
+
+    // validate the date parameter
+    if (!date) {
+      return res.status(400).json({
+        status: 'error',
+        code: 400,
+        message: 'Date is required.'
+      });
     }
 
-    // retrieve the court's hourly rate
-    const hourlyRate = await getHourlyRate(courtId);
-    if (!hourlyRate) {
+    // parse and set timezone (ensure date is in a valid format)
+    const selectedDate = moment.tz(date, 'YYYY-MM-DD', 'Asia/Manila').startOf('day');
+    const currentDate = moment().tz('Asia/Manila').startOf('day');
+
+    // check if the selected date is in the past
+    if (selectedDate.isBefore(currentDate)) {
+      return res.status(400).json({ error: 'Cannot check availability for past dates.' });
+    }
+
+    const response = {
+      status: 'success',
+      reservedDates: [],
+      courts: []
+    };
+
+    // find all courts if courtId is not provided
+    const courts = courtId ? [await Court.findById(courtId)] : await Court.find();
+
+    // if no courts are found, return an error
+    if (courtId && !courts[0]) {
       return res.status(404).json({ error: 'Court not found.' });
     }
 
-    // calculate the total cost based on the time slot
-    const totalAmount = calculateTotalAmount(hourlyRate, timeSlot);
+    // get the current time for comparisons
+    const currentTime = moment().tz('Asia/Manila');
 
-    // create a new reservation with the user ID attached
-    const newReservation = new Reservation({
-      user: userId, // attach the authenticated user's ID
-      court: courtId,
-      date: selectedDate,
-      timeSlot,
-      totalAmount
-    });
+    // iterate through each court
+    for (const court of courts) {
+      const courtResponse = {
+        courtId: court._id,
+        timeSlot: {
+          available: [],
+          unavailable: []
+        }
+      };
 
-    // save the reservation to the database
-    await newReservation.save();
+      // get all reservations for the specified court
+      const reservations = await Reservation.find({ court: court._id });
 
-    // Return success response
-    return res.status(201).json({
-      message: 'Reservation successfully created',
-      reservation: newReservation
-    });
+      // populate reservedDates based on the selected date and future reservations
+      reservations.forEach((reservation) => {
+        const reservationDate = moment(reservation.date).tz('Asia/Manila').startOf('day');
+
+        // check if the reservation date is today or in the future
+        if (reservationDate.isSame(currentDate, 'day') || reservationDate.isAfter(currentDate)) {
+          if (!response.reservedDates.includes(reservationDate.format('YYYY-MM-DD'))) {
+            response.reservedDates.push(reservationDate.format('YYYY-MM-DD'));
+          }
+        }
+      });
+
+      // get the operating hours for the specific court
+      const operatingHours = court.operating_hours;
+
+      // correctly parse operating hours using explicit formats
+      const operatingStart = moment.tz(`${date} ${operatingHours.from}`, 'YYYY-MM-DD h:mm A', 'Asia/Manila');
+      const operatingEnd = moment.tz(`${date} ${operatingHours.to}`, 'YYYY-MM-DD h:mm A', 'Asia/Manila');
+
+      // create all available time slots based on operating hours
+      const availableTimeSlots = [];
+      for (let m = operatingStart; m.isBefore(operatingEnd); m.add(1, 'hours')) {
+        availableTimeSlots.push(m.format('h:mm A') + ' - ' + m.clone().add(1, 'hour').format('h:mm A'));
+      }
+
+      const unavailableTimeSlots = [];
+      const mergedUnavailableSlots = {};
+
+      // now we filter reservations that fall on the selected date
+      reservations.forEach((reservation) => {
+        const reservationDate = moment(reservation.date).tz('Asia/Manila').startOf('day');
+
+        // check if the reservation date matches the selected date
+        if (reservationDate.isSame(selectedDate, 'day')) {
+          const from = moment.tz(`${reservation.timeSlot.from}`, 'h:mm A', 'Asia/Manila');
+          const to = moment.tz(`${reservation.timeSlot.to}`, 'h:mm A', 'Asia/Manila');
+
+          // check each hour in the range and mark as unavailable
+          for (let m = from; m.isBefore(to); m.add(1, 'hour')) {
+            const timeSlotKey = `${m.format('h:mm A')} - ${m.clone().add(1, 'hour').format('h:mm A')}`;
+            mergedUnavailableSlots[timeSlotKey] = true;
+          }
+        }
+      });
+
+      // add unavailable slots to the array
+      for (const key in mergedUnavailableSlots) {
+        unavailableTimeSlots.push(key);
+      }
+
+      // check for past time slots and those within the next hour only for today
+      if (selectedDate.isSame(currentDate, 'day')) {
+        const oneHourFromNow = currentTime.clone().add(1, 'hour');
+        availableTimeSlots.forEach((slot) => {
+          const [fromTimeStr] = slot.split(' - ');
+          const fromTime = moment.tz(fromTimeStr, 'h:mm A', 'Asia/Manila');
+
+          // if the time slot is in the past or within the next hour, mark as unavailable
+          if (fromTime.isBefore(currentTime) || fromTime.isBefore(oneHourFromNow)) {
+            unavailableTimeSlots.push(slot);
+          }
+        });
+      }
+
+      // remove duplicates from unavailableTimeSlots
+      const uniqueUnavailableSlots = [...new Set(unavailableTimeSlots)];
+
+      // filter available slots based on unavailable slots for the current date
+      const finalAvailableSlots = availableTimeSlots.filter((slot) => !uniqueUnavailableSlots.includes(slot));
+
+      // set the final available and unavailable time slots in the court response
+      courtResponse.timeSlot.available = finalAvailableSlots;
+      courtResponse.timeSlot.unavailable = uniqueUnavailableSlots;
+
+      // push the court response to the main response
+      response.courts.push(courtResponse);
+    }
+
+    return res.status(200).json(response);
   } catch (error) {
-    console.error('Error while creating reservation:', error);
-    return res.status(500).json({ error: 'Internal Server Error' });
+    console.error('Error checking court availability:', error);
+    return res.status(500).json({
+      status: 'error',
+      code: 500,
+      message: 'Internal Server Error'
+    });
   }
 };
