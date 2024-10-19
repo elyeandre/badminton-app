@@ -461,6 +461,10 @@ exports.createReservation = async (req, res) => {
       });
     }
 
+    const hourlyRate = court.hourly_rate;
+
+    const { operating_hours } = court;
+
     // convert operating hours to Date objects for the selected date
     const operatingStart = moment.tz(`${date} ${operating_hours.from}`, 'YYYY-MM-DD h:mm A', 'Asia/Manila');
     const operatingEnd = moment.tz(`${date} ${operating_hours.to}`, 'YYYY-MM-DD h:mm A', 'Asia/Manila');
