@@ -548,12 +548,10 @@ exports.createReservation = async (req, res, io) => {
     });
   }
 };
-
 exports.getAvailability = async (req, res) => {
   try {
     const { date, courtId } = req.query;
 
-    // validate the date parameter
     if (!date) {
       return res.status(400).json({
         status: 'error',
@@ -562,11 +560,14 @@ exports.getAvailability = async (req, res) => {
       });
     }
 
-    // parse and set timezone (ensure date is in a valid format)
     const selectedDate = moment.tz(date, 'YYYY-MM-DD', 'Asia/Manila').startOf('day');
     const currentDate = moment().tz('Asia/Manila').startOf('day');
+    const currentTime = moment().tz('Asia/Manila'); // Capture current time for later checks
 
-    // check if the selected date is in the past
+    // Log current time for debugging
+    console.log('Current Time:', currentTime.format('YYYY-MM-DD h:mm A'));
+
+    // Check if the selected date is in the past
     if (selectedDate.isBefore(currentDate)) {
       return res.status(400).json({ error: 'Cannot check availability for past dates.' });
     }
@@ -580,15 +581,11 @@ exports.getAvailability = async (req, res) => {
     // find all courts if courtId is not provided
     const courts = courtId ? [await Court.findById(courtId)] : await Court.find();
 
-    // if no courts are found, return an error
     if (courtId && !courts[0]) {
       return res.status(404).json({ error: 'Court not found.' });
     }
 
-    // get the current time for comparisons
-    const currentTime = moment().tz('Asia/Manila');
-
-    // iterate through each court
+    // Iterate through each court
     for (const court of courts) {
       const courtResponse = {
         courtId: court._id,
@@ -598,14 +595,12 @@ exports.getAvailability = async (req, res) => {
         }
       };
 
-      // get all reservations for the specified court
+      // Get reservations
       const reservations = await Reservation.find({ court: court._id });
 
-      // populate reservedDates based on the selected date and future reservations
+      // Check for reservations and populate reservedDates
       reservations.forEach((reservation) => {
         const reservationDate = moment(reservation.date).tz('Asia/Manila').startOf('day');
-
-        // check if the reservation date is today or in the future
         if (reservationDate.isSame(currentDate, 'day') || reservationDate.isAfter(currentDate)) {
           if (!response.reservedDates.includes(reservationDate.format('YYYY-MM-DD'))) {
             response.reservedDates.push(reservationDate.format('YYYY-MM-DD'));
@@ -613,69 +608,86 @@ exports.getAvailability = async (req, res) => {
         }
       });
 
-      // get the operating hours for the specific court
+      // Get operating hours
       const operatingHours = court.operating_hours;
-
-      // correctly parse operating hours using explicit formats
       const operatingStart = moment.tz(`${date} ${operatingHours.from}`, 'YYYY-MM-DD h:mm A', 'Asia/Manila');
       const operatingEnd = moment.tz(`${date} ${operatingHours.to}`, 'YYYY-MM-DD h:mm A', 'Asia/Manila');
 
-      // create all available time slots based on operating hours
+      // Create available time slots
       const availableTimeSlots = [];
       for (let m = operatingStart; m.isBefore(operatingEnd); m.add(1, 'hours')) {
         availableTimeSlots.push(m.format('h:mm A') + ' - ' + m.clone().add(1, 'hour').format('h:mm A'));
       }
 
-      const unavailableTimeSlots = [];
-      const mergedUnavailableSlots = {};
+      // Log available time slots
+      console.log('Available Time Slots Before Reservations:', availableTimeSlots);
 
-      // now we filter reservations that fall on the selected date
+      // Mark unavailable slots
+      const unavailableTimeSlots = new Set();
+
+      // Mark reservations as unavailable
       reservations.forEach((reservation) => {
         const reservationDate = moment(reservation.date).tz('Asia/Manila').startOf('day');
-
-        // check if the reservation date matches the selected date
         if (reservationDate.isSame(selectedDate, 'day')) {
-          const from = moment.tz(`${reservation.timeSlot.from}`, 'h:mm A', 'Asia/Manila');
-          const to = moment.tz(`${reservation.timeSlot.to}`, 'h:mm A', 'Asia/Manila');
-
-          // check each hour in the range and mark as unavailable
+          const from = moment.tz(reservation.timeSlot.from, 'h:mm A', 'Asia/Manila');
+          const to = moment.tz(reservation.timeSlot.to, 'h:mm A', 'Asia/Manila');
           for (let m = from; m.isBefore(to); m.add(1, 'hour')) {
             const timeSlotKey = `${m.format('h:mm A')} - ${m.clone().add(1, 'hour').format('h:mm A')}`;
-            mergedUnavailableSlots[timeSlotKey] = true;
+            unavailableTimeSlots.add(timeSlotKey);
           }
         }
       });
 
-      // add unavailable slots to the array
-      for (const key in mergedUnavailableSlots) {
-        unavailableTimeSlots.push(key);
-      }
+      // Check for past time slots and those within the next hour only for today
+      const currentDate2 = currentTime.clone().startOf('day'); // Start of current day
 
-      // check for past time slots and those within the next hour only for today
-      if (selectedDate.isSame(currentDate, 'day')) {
+      if (selectedDate.isSame(currentDate2, 'day')) {
         const oneHourFromNow = currentTime.clone().add(1, 'hour');
+
         availableTimeSlots.forEach((slot) => {
           const [fromTimeStr] = slot.split(' - ');
-          const fromTime = moment.tz(fromTimeStr, 'h:mm A', 'Asia/Manila');
+          const fromTime = moment.tz(
+            selectedDate.format('YYYY-MM-DD') + ' ' + fromTimeStr,
+            'YYYY-MM-DD h:mm A',
+            'Asia/Manila'
+          );
 
-          // if the time slot is in the past or within the next hour, mark as unavailable
-          if (fromTime.isBefore(currentTime) || fromTime.isBefore(oneHourFromNow)) {
-            unavailableTimeSlots.push(slot);
+          // Logging for debugging
+          console.log(`Current Time: ${currentTime.format('YYYY-MM-DD HH:mm:ss')}`);
+          console.log(`From Time: ${fromTime.format('YYYY-MM-DD HH:mm:ss')}`);
+          console.log(`One Hour From Now: ${oneHourFromNow.format('YYYY-MM-DD HH:mm:ss')}`);
+
+          // Mark as unavailable if the slot is in the past
+          if (fromTime.isBefore(currentTime)) {
+            unavailableTimeSlots.add(slot);
+            console.log(`Marking as unavailable (past): ${slot}`);
+          }
+          // Mark as unavailable if the slot starts within the next hour
+          else if (fromTime.isBefore(oneHourFromNow)) {
+            if (fromTime.isSame(currentTime, 'hour') && currentTime.isBefore(oneHourFromNow)) {
+              console.log(`Skipping marking as unavailable (ongoing): ${slot}`);
+            } else {
+              unavailableTimeSlots.add(slot);
+              console.log(`Marking as unavailable (next hour): ${slot}`);
+            }
           }
         });
       }
 
-      // remove duplicates from unavailableTimeSlots
-      const uniqueUnavailableSlots = [...new Set(unavailableTimeSlots)];
+      // Log unavailable time slots after checking for past slots
+      console.log('Final Unavailable Time Slots:', Array.from(unavailableTimeSlots));
 
-      // filter available slots based on unavailable slots for the current date
-      const finalAvailableSlots = availableTimeSlots.filter((slot) => !uniqueUnavailableSlots.includes(slot));
+      // Assign final available and unavailable slots
+      courtResponse.timeSlot.unavailable = Array.from(unavailableTimeSlots);
+      courtResponse.timeSlot.available = availableTimeSlots.filter(
+        (slot) => !courtResponse.timeSlot.unavailable.includes(slot)
+      );
 
-      // set the final available and unavailable time slots in the court response
-      courtResponse.timeSlot.available = finalAvailableSlots;
-      courtResponse.timeSlot.unavailable = uniqueUnavailableSlots;
+      // Log final available and unavailable slots for the court
+      console.log(`Court ID: ${court._id} - Available Slots:`, courtResponse.timeSlot.available);
+      console.log(`Court ID: ${court._id} - Unavailable Slots:`, courtResponse.timeSlot.unavailable);
 
-      // push the court response to the main response
+      // Push to response
       response.courts.push(courtResponse);
     }
 
