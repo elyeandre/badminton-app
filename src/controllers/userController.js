@@ -414,10 +414,13 @@ exports.createReservation = async (req, res) => {
       });
     }
 
-    // If the selected date is today, check the time slot
+    // if the selected date is today, check the time slot
     if (selectedDateStartOfDay.isSame(currentDateStartOfDay)) {
-      const fromTime = moment.tz(`${date} ${timeSlot.from}`, 'Asia/Manila');
-      if (fromTime.isBefore(currentDate)) {
+      const fromTimeString = `${date} ${timeSlot.from}`;
+      const fromTime = moment.tz(fromTimeString, 'Asia/Manila');
+
+      // check if the time slot's start time is in the past
+      if (fromTime.isBefore(now)) {
         return res.status(400).json({
           status: 'error',
           code: 400,
@@ -435,6 +438,9 @@ exports.createReservation = async (req, res) => {
         message: 'Court not found'
       });
     }
+
+    // use the virtual field to get the total number of courts
+    const totalCourts = court.totalCourts;
 
     // Check if the selected court images are within bounds
     if (selectedCourt.some((index) => index < 0 || index >= totalCourts)) {
