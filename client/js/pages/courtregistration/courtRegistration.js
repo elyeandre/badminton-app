@@ -270,7 +270,6 @@ function clearForm() {
 clearForm();
 
 // initialize the modal and map
-const mapContainer = getById('map');
 const confirmLocationBtn = getById('confirmLocation');
 const courtLatInput = getById('courtLat');
 const courtLngInput = getById('courtLng');
