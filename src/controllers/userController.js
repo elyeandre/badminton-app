@@ -552,6 +552,7 @@ exports.getAvailability = async (req, res) => {
   try {
     const { date, courtId } = req.query;
 
+    // Validate the date parameter
     if (!date) {
       return res.status(400).json({
         status: 'error',
@@ -560,6 +561,7 @@ exports.getAvailability = async (req, res) => {
       });
     }
 
+    // Parse the date
     const selectedDate = moment.tz(date, 'YYYY-MM-DD', 'Asia/Manila').startOf('day');
     const currentDate = moment().tz('Asia/Manila').startOf('day');
     const currentTime = moment().tz('Asia/Manila'); // Capture current time for later checks
