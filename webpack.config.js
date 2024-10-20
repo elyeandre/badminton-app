@@ -24,7 +24,8 @@ const pageTitles = {
   eventtournaments: 'Event & Tournaments',
   viewuserpayment: 'User Payment',
   usercourtlist: 'Reserve Court',
-  usercourtreservation: 'Create Reservation'
+  usercourtreservation: 'Create Reservation',
+  usercourtviewing: 'View Available Courts'
 };
 
 // Page-specific stylesheets and scripts
@@ -127,6 +128,12 @@ const pageAssets = {
     hasNavbar: true,
     hasSidebar: false
   },
+  usercourtviewing: {
+    styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
+    scripts: [],
+    hasNavbar: true,
+    hasSidebar: false
+  },
   usercourtreservation: {
     styles: [
       'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
@@ -190,6 +197,7 @@ module.exports = () => {
       eventtournaments: './client/js/pages/event&tournaments/event&Tournaments.js',
       viewuserpayment: './client/js/pages/viewuserpayment/viewUserPayment.js',
       usercourtlist: './client/js/pages/usercourtlist/userCourtList.js',
+      usercourtviewing: './client/js/pages/usercourtviewing/userCourtViewing.js',
       usercourtreservation: './client/js/pages/usercourtreservation/userCourtReservation.js'
     },
     output: {

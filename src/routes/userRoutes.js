@@ -86,7 +86,7 @@ let routes = (app, io) => {
         filePath = path.resolve(__dirname, '../../build/usercourtlist.html');
         break;
       case 'map-view':
-        filePath = path.resolve(__dirname, '../../build/map.html');
+        filePath = path.resolve(__dirname, '../../build/usercourtviewing.html');
         break;
     }
 
