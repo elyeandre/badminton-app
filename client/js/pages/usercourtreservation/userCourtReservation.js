@@ -5,6 +5,12 @@ import '../../../css/pages/usercourtreservation/userCourtReservation.css';
 import { startSessionChecks, validateSessionAndNavigate } from '../../../utils/sessionUtils.js';
 import { setupLogoutListener } from '../../global/logout.js';
 
+let selectedCourts = [];
+let selectedDate = null;
+let reservedDates = [];
+let hourlyRate = 0;
+let calendar;
+
 const socket = io();
 socket.on('reservationCreated', (data) => {
   // refresh the court data and UI based on the received data
@@ -13,6 +19,7 @@ socket.on('reservationCreated', (data) => {
     generateTimeSlots(availabilityData);
     reservedDates = reservedDates;
     highlightReservedDates(reservedDates);
+    calendar.render();
   });
 });
 
@@ -27,11 +34,6 @@ setupLogoutListener();
 
 // Start session checks on page load
 startSessionChecks();
-
-let selectedCourts = [];
-let selectedDate = null;
-let reservedDates = [];
-let hourlyRate = 0;
 
 // Get address from coordinates
 export async function getAddressFromCoordinates(coordinates) {
@@ -109,7 +111,7 @@ doc.addEventListener('DOMContentLoaded', async function () {
   const formatter = new Intl.DateTimeFormat('en-CA', options); // Use 'en-CA' to get YYYY-MM-DD format
   const currentDate = formatter.format(new Date()).replace(/\//g, '-');
 
-  var calendar = new FullCalendar.Calendar(calendarEl, {
+  calendar = new FullCalendar.Calendar(calendarEl, {
     initialView: 'dayGridMonth',
     validRange: {
       start: currentDate
@@ -322,6 +324,16 @@ async function submitReservation(timeSlot) {
     }
 
     alert('Reservation successful!');
+
+    doc.querySelectorAll('.fc-daygrid-day').forEach((day) => day.classList.remove('selected-date'));
+
+    // fetch data again to refresh  reserved dates
+    const { reservedDates: fetchedReservedDates } = await fetchCourtData(courtId, finalDate);
+
+    if (fetchedReservedDates) {
+      reservedDates = fetchedReservedDates;
+      highlightReservedDates(reservedDates);
+    }
   } catch (err) {
     error(err);
     alert(`An error occurred: ${err.message}`);
