@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
     <title>User Payment</title>
-    <link rel="stylesheet" href="../css/viewUserPayment.css">
+    <link rel="stylesheet" href="../css/adminViewUserPayment.css">
     <script src="../js/sideNavAdmin.js" defer></script>
 </head>
 <body>
@@ -13,10 +13,10 @@
     <section class="home-section">
         <h1>User Payments</h1>
         <div id="profileNav" class="profile-nav">            
-            <a href="viewUserPayment.html" class="active">Court Reservation</a>
+            <a href="viewUserPaymentCourt.html">Court Reservation</a>
             <a href="viewUserPaymentET.html">Event/Tournaments</a>
-            <a href="viewUserPayment.html">Training</a>
-            <a href="viewUserPayment.html">Product Reservation</a>
+            <a href="viewUserPaymentTraining.html">Training</a>
+            <a href="viewUserPaymentProduct.html" class="active">Product Reservation</a>
         </div>
 
         <div class="box">
@@ -34,13 +34,11 @@
                         <th>Name</th>
                         <th>Account Number</th>
                         <th>Date Paid</th>
-                        <th>Amount</th>
+                        <th>Reservation Fee</th>
                         <th>Reference Number</th>
-                        <th>Date Reserved</th>
-                        <th>Time Reserved</th>
-                        <th>Court Reserved</th>
-                        <th>Total Bill</th>
-                        <th>Bill Status</th>
+                        <th>Product Name</th>
+                        <th>Total Fee</th>
+                        <th>Fee Status</th>
                         <th>Action</th>
                     </tr>
                 </thead>
@@ -51,9 +49,7 @@
                         <td>2024-10-05</td>
                         <td>$150.00</td>
                         <td>REF654321</td>
-                        <td>2024-10-10</td>
-                        <td>10:00 AM</td>
-                        <td>Court 1</td>
+                        <td>Product A</td> <!-- Replace with actual product name -->
                         <td>$150.00</td>
                         <td>Paid</td>
                         <td>
@@ -73,9 +69,7 @@
                         <td>2024-10-08</td>
                         <td>$200.00</td>
                         <td>REF123456</td>
-                        <td>2024-10-15</td>
-                        <td>12:00 PM</td>
-                        <td>Court 2</td>
+                        <td>Product B</td> <!-- Replace with actual product name -->
                         <td>$200.00</td>
                         <td>Unpaid</td>
                         <td>
@@ -95,9 +89,7 @@
                         <td>2024-11-08</td>
                         <td>$175.00</td>
                         <td>REF123435</td>
-                        <td>2024-11-10</td>
-                        <td>02:00 PM</td>
-                        <td>Court 3</td>
+                        <td>Product C</td> <!-- Replace with actual product name -->
                         <td>$175.00</td>
                         <td>Paid</td>
                         <td>
@@ -113,6 +105,7 @@
                     </tr>
                 </tbody>
             </table>
+            
         </div>
     </section>
     <script src="../js/viewUserPayment.js"></script>

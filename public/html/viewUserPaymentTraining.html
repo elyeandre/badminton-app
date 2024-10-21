@@ -14,8 +14,8 @@
         <h1>User Payments</h1>
         <div id="profileNav" class="profile-nav">            
             <a href="viewUserPaymentCourt.html">Court Reservation</a>
-            <a href="viewUserPaymentET.html" class="active">Event/Tournaments</a>
-            <a href="viewUserPaymentTraining.html">Training</a>
+            <a href="viewUserPaymentET.html">Event/Tournaments</a>
+            <a href="viewUserPaymentTraining.html" class="active">Training</a>
             <a href="viewUserPaymentProduct.html">Product Reservation</a>
         </div>
 
@@ -32,41 +32,65 @@
                 <thead>
                     <tr>
                         <th>Name</th>
+                        <th>Training Date</th>
+                        <th>Training Fee</th>
                         <th>Account Number</th>
                         <th>Date Paid</th>
-                        <th>Reservation Fee</th>
                         <th>Reference Number</th>
-                        <th>Event/Tournament Name</th>
+                        <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Charlie Brown</td>
+                        <td>2024-10-10</td>
+                        <td>$150.00</td>
                         <td>0987654321</td>
                         <td>2024-10-05</td>
-                        <td>$150.00</td>
                         <td>REF654321</td>
-                        <td>Annual Sports Fest</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-button view-schedule" title="View Schedule">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td>Lucy Van Pelt</td>
+                        <td>2024-10-15</td>
+                        <td>$200.00</td>
                         <td>1234567890</td>
                         <td>2024-10-08</td>
-                        <td>$200.00</td>
                         <td>REF123456</td>
-                        <td>Summer Tournament</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-button view-schedule" title="View Schedule">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td>KC Cruz</td>
+                        <td>2024-11-10</td>
+                        <td>$175.00</td>
                         <td>1234553790</td>
                         <td>2024-11-08</td>
-                        <td>$175.00</td>
                         <td>REF123435</td>
-                        <td>Winter Championship</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="icon-button view-schedule" title="View Schedule">
+                                    <i class="fas fa-calendar-alt"></i>
+                                </button>
+                            </div>
+                        </td>
                     </tr>
                 </tbody>
             </table>
+            
         </div>
     </section>
+    <script src="../js/viewUserPayment.js"></script>
 </body>
 </html>

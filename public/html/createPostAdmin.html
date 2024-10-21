@@ -17,7 +17,7 @@
             <a href="viewAdminPosts.html">My Posts</a>
         </div>
 
-        <div class="content-section">
+        <div class="content-section"> 
             <div class="caa-wrapper">
                 <div class="container">
                     <div class="row">
@@ -31,7 +31,7 @@
                                             <option value="announcement">Announcement</option>
                                             <option value="event">Event</option>
                                             <option value="tournament">Tournament</option>
-                                        </select>
+                                            <option value="membership">Membership</option>                                        </select>
                                     </div>
 
                                     <!-- Announcement Fields -->
@@ -41,8 +41,8 @@
                                             <input type="text" id="title" name="title" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="content">Content:</label>
-                                            <textarea id="content" name="content" required></textarea>
+                                            <label for="details">Details:</label>
+                                            <textarea id="details" name="details" required></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label for="image">Upload Images:</label>
@@ -72,8 +72,8 @@
                                             <input type="date" id="eventDate" name="eventDate" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="content">Content:</label>
-                                            <textarea id="content" name="content" required></textarea>
+                                            <label for="details">Details:</label>
+                                            <textarea id="details" name="details" required></textarea>
                                         </div>
                                         <div class="other-container">
                                             <div class="switch-container">
@@ -129,8 +129,8 @@
                                             <input type="date" id="tournamentDate" name="tournamentDate" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="tournamentContent">Tournament Content:</label>
-                                            <textarea id="tournamentContent" name="tournamentContent" required></textarea>
+                                            <label for="details">Details:</label>
+                                            <textarea id="details" name="details" required></textarea>
                                         </div>
                                         <div class="form-group">
                                             <label for="qualification">Qualification:</label>
@@ -181,6 +181,56 @@
                                         <div class="save-button-container">
                                             <input type="hidden" name="formSubmitted" value="1">
                                             <button type="submit" id="submitFormButton" class="btn btn-success">Post Now</button>
+                                        </div>
+                                    </div>
+
+                                    <div id="membershipFields" style="display:none;">
+                                        <div class="form-group">
+                                            <label for="membershipName">Membership Name:</label>
+                                            <input type="text" id="membershipName" name="membershipName" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="details">Details:</label>
+                                            <textarea id="details" name="details" required></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="qualification">Qualification:</label>
+                                            <div id="qualificationFieldsMembership">
+                                                <div class="qualification-input">
+                                                    <input type="text" name="qualification[]" class="form-control">
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-primary btn-sm" onclick="addQualificationField()">Add Qualification</button>
+                                        </div>
+                                        <div class="other-container">
+                                            <div class="switch-container">
+                                                <label class="switch" for="registrationSwitchMembership">
+                                                    <input type="checkbox" id="registrationSwitchMembership">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <label for="registrationSwitchMembership">Registration</label>
+                                            </div>
+                                            <div class="fields" id="registrationFieldsMembership">
+                                                <label>Start:</label>
+                                                <input type="date" id="startDateMembership" name="startDateMembership">
+                                                <label>End:</label>
+                                                <input type="date" id="endDateMembership" name="endDateMembership">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="image">Upload Image:</label>
+                                            <div class="input-group">
+                                                <input type="file" id="imageInputMembership" name="image[]" accept="image/*" style="display: none;" multiple>
+                                                <span class="input-group-btn">
+                                                    <button id="uploadButtonMembership" type="button" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
+                                                </span>
+                                            </div>
+                                            <input type="hidden" id="imageDataMembership" name="imageDataMembership">
+                                            <div id="imagePreviewContainerMembership"></div>
+                                        </div>
+                                        <div class="save-button-container">
+                                            <input type="hidden" name="formSubmitted" value="1">
+                                            <button type="submit" id="submitFormButtonMembership" class="btn btn-success">Post Now</button>
                                         </div>
                                     </div>
                                 </form>

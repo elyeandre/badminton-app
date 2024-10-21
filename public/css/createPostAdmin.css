@@ -26,7 +26,7 @@ body {
 .content-section {
     justify-content: center;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     width: 100%;
     max-width: 1300px;
     margin: 0 auto;
@@ -68,20 +68,11 @@ body {
     background-color: #f1f1f1;
 }
 
-.box {
-    background-color: #fff;
-    border-radius: 8px;
-    width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
-}
-
 .caa-wrapper {
     width: 75%;
     height: calc(100vh - 0px);
     overflow-x: hidden;
     overflow-y: hidden;
-
 }
 
 .container-flex {
@@ -94,7 +85,7 @@ body {
 .container {
     width: 100%;
     margin: 0 auto;
-    margin-bottom: 40px;
+    margin-bottom: 70px;
 }
 
 .form-wrapper {
@@ -144,7 +135,7 @@ textarea:focus,
 input[type="text"]:focus,
 input[type="number"]:focus,
 input[type="date"]:focus {
-    border: 1px solid black;
+    border: 1px solid black; 
 }
 
 .btn-primary,

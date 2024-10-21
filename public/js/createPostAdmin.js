@@ -1,9 +1,24 @@
 function showFormFields() {
-    const type = document.getElementById('typeSelector').value;
-    document.getElementById('announcementFields').style.display = type === 'announcement' ? 'block' : 'none';
-    document.getElementById('eventFields').style.display = type === 'event' ? 'block' : 'none';
-    document.getElementById('tournamentFields').style.display = type === 'tournament' ? 'block' : 'none';
+    const typeSelector = document.getElementById('typeSelector').value;
+    
+    // Hide all sections initially
+    document.getElementById('announcementFields').style.display = 'none';
+    document.getElementById('eventFields').style.display = 'none';
+    document.getElementById('tournamentFields').style.display = 'none';
+    document.getElementById('membershipFields').style.display = 'none';
+
+    // Show the relevant section based on selected value
+    if (typeSelector === 'announcement') {
+        document.getElementById('announcementFields').style.display = 'block';
+    } else if (typeSelector === 'event') {
+        document.getElementById('eventFields').style.display = 'block';
+    } else if (typeSelector === 'tournament') {
+        document.getElementById('tournamentFields').style.display = 'block';
+    } else if (typeSelector === 'membership') {
+        document.getElementById('membershipFields').style.display = 'block';
+    }
 }
+
 
 const uploadButton = document.getElementById("uploadButton");
 const imageInput = document.getElementById("imageInput");
@@ -13,7 +28,7 @@ let images = [];
 uploadButton.addEventListener("click", () => imageInput.click());
 
 imageInput.addEventListener("change", function() {
-    Array.from(this.files).forEach(file => {
+    Array.from(this.files).forEach(file => { 
         if (images.length >= 5) {
             alert("You can upload a maximum of 5 images.");
             return;
@@ -45,6 +60,21 @@ function removeImage(id) {
     updateImagePreviews();
 }
 
+// Added functionality for showing membership form fields without fee
+const registrationSwitchMembership = document.getElementById('registrationSwitchMembership');
+const registrationFieldsMembership = document.getElementById('registrationFieldsMembership');
+
+if (registrationSwitchMembership && registrationFieldsMembership) {
+    registrationSwitchMembership.addEventListener('change', function () {
+        if (registrationSwitchMembership.checked) {
+            registrationFieldsMembership.classList.add('visible');
+        } else {
+            registrationFieldsMembership.classList.remove('visible');
+        }
+    });
+}
+
+// Existing event/tournament switch functionality
 const registrationSwitchEvent = document.getElementById('registrationSwitchEvent');
 const feeSwitchEvent = document.getElementById('feeSwitchEvent');
 const registrationFieldsEvent = document.getElementById('registrationFieldsEvent');
