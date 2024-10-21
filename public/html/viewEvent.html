@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>User Payment</title>
+    <link rel="stylesheet" href="../css/viewEvent.css">
+    <script src="../js/sideNavAdmin.js" defer></script>
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <h1>Event Name Here</h1>
+
+        <div class="box">
+            <div class="filter-container">
+                <div class="filter-left">
+                    <p>Total Number of Participants: <strong>88</strong></p>
+                </div>
+
+                <div class="filter-actions">
+                    <label for="search">Search:</label>
+                    <input type="text" id="search" class="search-field" placeholder="Search by name..." onkeyup="searchTable()" />
+                    
+                    <a href="viewAdminPosts.html" class="filter-button">View Post <i class="fas fa-eye"></i></a>
+                    <a href="viewUserPaymentET.html" class="filter-button">View Payment <i class="fas fa-credit-card"></i></a>
+                    <a href="#" class="filter-button">Print Participant Names <i class="fas fa-file-alt"></i></a>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact Number</th>
+                        <th>Age</th>
+                        <th>Address</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Charlie Brown</td>
+                        <td>0987654321</td>
+                        <td>35</td>
+                        <td>123 Peanuts St.</td>
+                    </tr>
+                    <tr>
+                        <td>Lucy Van Pelt</td>
+                        <td>1234567890</td>
+                        <td>28</td>
+                        <td>456 Lucy Lane</td>
+                    </tr>
+                    <tr>
+                        <td>KC Cruz</td>
+                        <td>1234553790</td>
+                        <td>40</td>
+                        <td>789 Cruz Ave.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+    <script src="../js/viewUserPayment.js"></script>
+</body>
+</html>
