@@ -68,8 +68,12 @@
                                             <input type="text" id="eventName" name="eventName" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="eventDate">Event Date:</label>
-                                            <input type="date" id="eventDate" name="eventDate" required>
+                                            <label for="eventDateFrom">Event Date (From):</label>
+                                            <input type="date" id="eventDateFrom" name="eventDateFrom" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="eventDateTo">Event Date (To):</label>
+                                            <input type="date" id="eventDateTo" name="eventDateTo" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="details">Details:</label>
@@ -125,14 +129,18 @@
                                             <input type="text" id="tournamentName" name="tournamentName" required>
                                         </div>
                                         <div class="form-group">
-                                            <label for="tournamentDate">Tournament Date:</label>
-                                            <input type="date" id="tournamentDate" name="tournamentDate" required>
+                                            <label for="tournamentDateFrom">Tournament Date (From):</label>
+                                            <input type="date" id="tournamentDateFrom" name="tournamentDateFrom" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="tournamentDateTo">Tournament Date (To):</label>
+                                            <input type="date" id="tournamentDateTo" name="tournamentDateTo" required>
                                         </div>
                                         <div class="form-group">
                                             <label for="details">Details:</label>
                                             <textarea id="details" name="details" required></textarea>
                                         </div>
-                                        <div class="form-group">
+                                        <!--<div class="form-group">
                                             <label for="qualification">Qualification:</label>
                                             <div id="qualificationFields">
                                                 <div class="qualification-input">
@@ -140,7 +148,7 @@
                                                 </div>
                                             </div>
                                             <button type="button" class="btn btn-primary btn-sm" onclick="addQualificationField()">Add Qualification</button>
-                                        </div>
+                                        </div>-->
                                         <div class="other-container">
                                             <div class="switch-container">
                                                 <label class="switch" for="registrationSwitchTournament">
@@ -184,55 +192,65 @@
                                         </div>
                                     </div>
 
-                                    <div id="membershipFields" style="display:none;">
-                                        <div class="form-group">
-                                            <label for="membershipName">Membership Name:</label>
-                                            <input type="text" id="membershipName" name="membershipName" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="details">Details:</label>
-                                            <textarea id="details" name="details" required></textarea>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="qualification">Qualification:</label>
-                                            <div id="qualificationFieldsMembership">
-                                                <div class="qualification-input">
-                                                    <input type="text" name="qualification[]" class="form-control">
-                                                </div>
-                                            </div>
-                                            <button type="button" class="btn btn-primary btn-sm" onclick="addQualificationField()">Add Qualification</button>
-                                        </div>
-                                        <div class="other-container">
-                                            <div class="switch-container">
-                                                <label class="switch" for="registrationSwitchMembership">
-                                                    <input type="checkbox" id="registrationSwitchMembership">
-                                                    <span class="slider round"></span>
-                                                </label>
-                                                <label for="registrationSwitchMembership">Registration</label>
-                                            </div>
-                                            <div class="fields" id="registrationFieldsMembership">
-                                                <label>Start:</label>
-                                                <input type="date" id="startDateMembership" name="startDateMembership">
-                                                <label>End:</label>
-                                                <input type="date" id="endDateMembership" name="endDateMembership">
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="image">Upload Image:</label>
-                                            <div class="input-group">
-                                                <input type="file" id="imageInputMembership" name="image[]" accept="image/*" style="display: none;" multiple>
-                                                <span class="input-group-btn">
-                                                    <button id="uploadButtonMembership" type="button" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
-                                                </span>
-                                            </div>
-                                            <input type="hidden" id="imageDataMembership" name="imageDataMembership">
-                                            <div id="imagePreviewContainerMembership"></div>
-                                        </div>
-                                        <div class="save-button-container">
-                                            <input type="hidden" name="formSubmitted" value="1">
-                                            <button type="submit" id="submitFormButtonMembership" class="btn btn-success">Post Now</button>
-                                        </div>
-                                    </div>
+<!-- Adjusted ID of membershipFields -->
+<div id="trainingMembershipFields" style="display:none;">
+    <div class="form-group">
+        <label for="trainingMembershipName">Training Membership Name:</label>
+        <input type="text" id="trainingMembershipName" name="trainingMembershipName" required>
+    </div>
+    <div class="form-group">
+        <label for="trainingMembershipDateFrom">Training Date (From):</label>
+        <input type="date" id="trainingMembershipDateFrom" name="trainingMembershipDateFrom" required>
+    </div>
+    <div class="form-group">
+        <label for="trainingMembershipDateTo">Training Date (To):</label>
+        <input type="date" id="trainingMembershipDateTo" name="trainingMembershipDateTo" required>
+    </div>
+    <div class="form-group">
+        <label for="details">Details:</label>
+        <textarea id="details" name="details" required></textarea>
+    </div>
+    <div class="form-group">
+        <label for="qualification">Qualification:</label>
+        <div id="qualificationFieldsTrainingMembership">
+            <div class="qualification-input">
+                <input type="text" name="qualification[]" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary btn-sm" onclick="addQualificationField()">Add Qualification</button>
+    </div>
+    <div class="other-container">
+        <div class="switch-container">
+            <label class="switch" for="registrationSwitchTrainingMembership">
+                <input type="checkbox" id="registrationSwitchTrainingMembership">
+                <span class="slider round"></span>
+            </label>
+            <label for="registrationSwitchTrainingMembership">Registration</label>
+        </div>
+        <div class="fields" id="registrationFieldsTrainingMembership">
+            <label>Start:</label>
+            <input type="date" id="startDateTrainingMembership" name="startDateTrainingMembership">
+            <label>End:</label>
+            <input type="date" id="endDateTrainingMembership" name="endDateTrainingMembership">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="image">Upload Image:</label>
+        <div class="input-group">
+            <input type="file" id="imageInputTrainingMembership" name="image[]" accept="image/*" style="display: none;" multiple>
+            <span class="input-group-btn">
+                <button id="uploadButtonTrainingMembership" type="button" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
+            </span>
+        </div>
+        <input type="hidden" id="imageDataTrainingMembership" name="imageDataTrainingMembership">
+        <div id="imagePreviewContainerTrainingMembership"></div>
+    </div>
+    <div class="save-button-container">
+        <input type="hidden" name="formSubmitted" value="1">
+        <button type="submit" id="submitFormButtonTrainingMembership" class="btn btn-success">Post Now</button>
+    </div>
+</div>
+                                  
                                 </form>
                             </div>
                         </div>

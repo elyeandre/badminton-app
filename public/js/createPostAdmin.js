@@ -1,139 +1,134 @@
+// Function to display the appropriate form fields based on the selected type
 function showFormFields() {
-    const typeSelector = document.getElementById('typeSelector').value;
-    
+    const selectedType = document.getElementById('typeSelector').value;
+
     // Hide all sections initially
     document.getElementById('announcementFields').style.display = 'none';
     document.getElementById('eventFields').style.display = 'none';
     document.getElementById('tournamentFields').style.display = 'none';
-    document.getElementById('membershipFields').style.display = 'none';
+    document.getElementById('trainingMembershipFields').style.display = 'none';
 
     // Show the relevant section based on selected value
-    if (typeSelector === 'announcement') {
+    if (selectedType === 'announcement') {
         document.getElementById('announcementFields').style.display = 'block';
-    } else if (typeSelector === 'event') {
+    } else if (selectedType === 'event') {
         document.getElementById('eventFields').style.display = 'block';
-    } else if (typeSelector === 'tournament') {
+    } else if (selectedType === 'tournament') {
         document.getElementById('tournamentFields').style.display = 'block';
-    } else if (typeSelector === 'membership') {
-        document.getElementById('membershipFields').style.display = 'block';
+    } else if (selectedType === 'membership') {
+        document.getElementById('trainingMembershipFields').style.display = 'block';
     }
 }
 
+// Ensure the correct upload buttons and preview containers are used
+document.querySelectorAll('[id^="uploadButton"]').forEach((button, index) => {
+    const input = document.querySelectorAll('[id^="imageInput"]')[index];
+    const previewContainer = document.querySelectorAll('[id^="imagePreviewContainer"]')[index];
 
-const uploadButton = document.getElementById("uploadButton");
-const imageInput = document.getElementById("imageInput");
-const imagePreviewContainer = document.getElementById("imagePreviewContainer");
-let images = [];
+    let images = [];
 
-uploadButton.addEventListener("click", () => imageInput.click());
+    // Trigger the file input when the upload button is clicked
+    button.addEventListener("click", () => input.click());
 
-imageInput.addEventListener("change", function() {
-    Array.from(this.files).forEach(file => { 
-        if (images.length >= 5) {
-            alert("You can upload a maximum of 5 images.");
-            return;
-        }
+    // Handle image input change
+    input.addEventListener("change", function() {
+        Array.from(this.files).forEach(file => { 
+            if (images.length >= 5) {
+                alert("You can upload a maximum of 5 images.");
+                return;
+            }
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => {
-            const id = Date.now().toString();
-            images.push({ id, src: reader.result, file });
-            updateImagePreviews();
-        };
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => {
+                const id = Date.now().toString();
+                images.push({ id, src: reader.result, file });
+                updateImagePreviews(images, previewContainer);
+            };
+        });
     });
+
+    // Function to update image preview area
+    function updateImagePreviews(images, container) {
+        container.innerHTML = '';
+        images.forEach(image => {
+            const div = document.createElement('div');
+            div.classList.add('image-preview');
+            div.innerHTML = `<img src="${image.src}" alt="Image Preview">
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('${image.id}', images, container)"><i class="fas fa-times"></i></button>`;
+            container.appendChild(div);
+        });
+    }
+
+    // Function to remove an image from preview
+    window.removeImage = function(id, images, container) {
+        images = images.filter(image => image.id !== id);
+        updateImagePreviews(images, container);
+    };
 });
 
-function updateImagePreviews() {
-    imagePreviewContainer.innerHTML = '';
-    images.forEach(image => {
-        const div = document.createElement('div');
-        div.classList.add('image-preview');
-        div.innerHTML = `<img src="${image.src}" alt="Image Preview">
-                            <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('${image.id}')"><i class="fas fa-times"></i></button>`;
-        imagePreviewContainer.appendChild(div);
-    });
-}
-
-function removeImage(id) {
-    images = images.filter(image => image.id !== id);
-    updateImagePreviews();
-}
-
-// Added functionality for showing membership form fields without fee
-const registrationSwitchMembership = document.getElementById('registrationSwitchMembership');
-const registrationFieldsMembership = document.getElementById('registrationFieldsMembership');
-
-if (registrationSwitchMembership && registrationFieldsMembership) {
-    registrationSwitchMembership.addEventListener('change', function () {
-        if (registrationSwitchMembership.checked) {
-            registrationFieldsMembership.classList.add('visible');
-        } else {
-            registrationFieldsMembership.classList.remove('visible');
-        }
-    });
-}
-
-// Existing event/tournament switch functionality
+// Handle event-based registration switch
 const registrationSwitchEvent = document.getElementById('registrationSwitchEvent');
-const feeSwitchEvent = document.getElementById('feeSwitchEvent');
 const registrationFieldsEvent = document.getElementById('registrationFieldsEvent');
+registrationSwitchEvent.addEventListener('change', function () {
+    if (this.checked) {
+        registrationFieldsEvent.style.display = 'block';
+    } else {
+        registrationFieldsEvent.style.display = 'none';
+    }
+});
+
+// Handle event-based fee switch
+const feeSwitchEvent = document.getElementById('feeSwitchEvent');
 const feeFieldsEvent = document.getElementById('feeFieldsEvent');
+feeSwitchEvent.addEventListener('change', function () {
+    if (this.checked) {
+        feeFieldsEvent.style.display = 'block';
+    } else {
+        feeFieldsEvent.style.display = 'none';
+    }
+});
 
-if (registrationSwitchEvent && feeSwitchEvent && registrationFieldsEvent && feeFieldsEvent) {
-    registrationSwitchEvent.addEventListener('change', function () {
-        if (registrationSwitchEvent.checked) {
-            registrationFieldsEvent.classList.add('visible');
-        } else {
-            registrationFieldsEvent.classList.remove('visible');
-        }
-    });
-
-    feeSwitchEvent.addEventListener('change', function () {
-        if (feeSwitchEvent.checked) {
-            feeFieldsEvent.classList.add('visible');
-        } else {
-            feeFieldsEvent.classList.remove('visible');
-        }
-    });
-}
-
+// Handle tournament-based registration switch
 const registrationSwitchTournament = document.getElementById('registrationSwitchTournament');
-const feeSwitchTournament = document.getElementById('feeSwitchTournament');
 const registrationFieldsTournament = document.getElementById('registrationFieldsTournament');
+registrationSwitchTournament.addEventListener('change', function () {
+    if (this.checked) {
+        registrationFieldsTournament.style.display = 'block';
+    } else {
+        registrationFieldsTournament.style.display = 'none';
+    }
+});
+
+// Handle tournament-based fee switch
+const feeSwitchTournament = document.getElementById('feeSwitchTournament');
 const feeFieldsTournament = document.getElementById('feeFieldsTournament');
+feeSwitchTournament.addEventListener('change', function () {
+    if (this.checked) {
+        feeFieldsTournament.style.display = 'block';
+    } else {
+        feeFieldsTournament.style.display = 'none';
+    }
+});
 
-if (registrationSwitchTournament && feeSwitchTournament && registrationFieldsTournament && feeFieldsTournament) {
-    registrationSwitchTournament.addEventListener('change', function () {
-        if (registrationSwitchTournament.checked) {
-            registrationFieldsTournament.classList.add('visible');
-        } else {
-            registrationFieldsTournament.classList.remove('visible');
-        }
-    });
+// Handle training membership-based registration switch
+const registrationSwitchTrainingMembership = document.getElementById('registrationSwitchTrainingMembership');
+const registrationFieldsTrainingMembership = document.getElementById('registrationFieldsTrainingMembership');
+registrationSwitchTrainingMembership.addEventListener('change', function () {
+    if (this.checked) {
+        registrationFieldsTrainingMembership.style.display = 'block';
+    } else {
+        registrationFieldsTrainingMembership.style.display = 'none';
+    }
+});
 
-    feeSwitchTournament.addEventListener('change', function () {
-        if (feeSwitchTournament.checked) {
-            feeFieldsTournament.classList.add('visible');
-        } else {
-            feeFieldsTournament.classList.remove('visible');
-        }
-    });
-}
-
-function addQualificationField() {
-    var qualificationFields = document.getElementById('qualificationFields');
-    var inputField = document.createElement('div');
-    inputField.classList.add('qualification-input');
-    inputField.innerHTML = `<div class="input-with-button">
-                                <input type="text" name="qualification[]" class="form-control">
-                                <button type="button" class="btn btn-danger btn-sm" onclick="removeQualificationField(this)"><i class="fas fa-times"></i></button>
-                            </div>`;
-    qualificationFields.appendChild(inputField);
-}
-
-function removeQualificationField(button) {
-    var inputField = button.parentNode.parentNode;
-    var qualificationFields = document.getElementById('qualificationFields');
-    qualificationFields.removeChild(inputField);
-}
+// Handle training membership-based fee switch
+const feeSwitchTrainingMembership = document.getElementById('feeSwitchTrainingMembership');
+const feeFieldsTrainingMembership = document.getElementById('feeFieldsTrainingMembership');
+feeSwitchTrainingMembership.addEventListener('change', function () {
+    if (this.checked) {
+        feeFieldsTrainingMembership.style.display = 'block';
+    } else {
+        feeFieldsTrainingMembership.style.display = 'none';
+    }
+});
