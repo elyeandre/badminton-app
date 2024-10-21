@@ -13,6 +13,8 @@ const fileUpload = require('express-fileupload');
 const { startTokenCleanupCronJob } = require('./src/utils/tokenCleanupCron.js');
 
 const config = require('config');
+// check for required environment variables
+require('./config/checkEnvVars');
 
 const MAX_FILE_SIZE = config.get('maxFileSize');
 
