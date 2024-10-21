@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const path = require('path');
+const config = require('config');
 const roleChecker = require('../middleware/roleChecker');
 const verifyToken = require('../middleware/authJwt');
 const {
@@ -50,6 +51,12 @@ let routes = (app, io) => {
   router.get('/court-reservation', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/usercourtreservation.html');
     serveFile(filePath, res, next);
+  });
+
+  // endpoint to get the client Key for adyen
+  router.get('/client-key', verifyToken, (req, res) => {
+    const clientKey = config.get('adyen').clientKey;
+    res.json({ clientKey });
   });
 
   router.get('/admin/schedule-dashboard', verifyToken, roleChecker(['admin']), (req, res, next) => {

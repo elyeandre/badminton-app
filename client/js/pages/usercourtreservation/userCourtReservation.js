@@ -11,6 +11,14 @@ let reservedDates = [];
 let hourlyRate = 0;
 let calendar;
 
+function calculateTotalAmount() {
+  const selectedSlots = Array.from(getAll('.time-slot.selected'));
+  const totalHours = calculateDuration(groupTimeSlots(selectedSlots));
+  const totalCourts = selectedCourts.length;
+  const calculatedAmount = totalHours * hourlyRate * totalCourts;
+  return calculatedAmount * 100;
+}
+
 const socket = io();
 socket.on('reservationCreated', (data) => {
   // refresh the court data and UI based on the received data
@@ -359,7 +367,9 @@ function resetPaymentUI() {
   getAll('.payment-row .total-payment-value')[0].textContent = formatCurrency(0);
 }
 
-doc.addEventListener('DOMContentLoaded', initializePaymentDisplay);
+document.addEventListener('DOMContentLoaded', () => {
+  initializePaymentDisplay();
+});
 
 function updatePaymentUI(totalHours, totalCourts) {
   const calculatedAmount = totalHours * hourlyRate * totalCourts;
@@ -412,4 +422,20 @@ function generateTimeSlots(availabilityData) {
 
     timeSlotsContainer.appendChild(timeSlot);
   });
+}
+async function fetchClientKey() {
+  try {
+    const response = await fetch('/user/client-key', {
+      method: 'GET',
+      credentials: 'include'
+    });
+    if (!response.ok) {
+      throw new Error(`Error fetching client key: ${response.status}`);
+    }
+    const data = await response.json();
+    return data.clientKey;
+  } catch (error) {
+    console.error(error);
+    throw new Error('Failed to fetch client key');
+  }
 }

@@ -55,7 +55,7 @@ const reservationSchema = new mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      enum: ['paypal'],
+      enum: ['gcash', 'paypal'],
       default: 'paypal'
     },
     notes: {
