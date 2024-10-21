@@ -12,25 +12,23 @@
     <div id="navbar" class="navbar"></div>
     <section class="home-section">
         <h1>Manage Posts</h1>
-        <div id="profileNav" class="profile-nav">
-            <a href="createPostAdmin.html">Create Post</a>
-            <a href="viewAdminPosts.html" class="active">My Posts</a>
-        </div>
 
         <div class="content-section">
             <div class="caa-wrapper">
                 <div class="filter-buttons">
-                    <button class="active">All</button>
-                    <button>Announcements</button>
-                    <button>Events</button>
-                    <button>Tournaments</button>
-                    <button>Membership</button>
+                    <div class="left-buttons">
+                        <button class="active">All</button>
+                        <button>Announcements</button>
+                        <button>Events</button>
+                        <button>Tournaments</button>
+                        <button>Membership</button>
+                    </div>
+                    <button id="add-post" class="plus-button"><i class="fas fa-plus"></i></button>
                 </div>
-
+                
                 <div class="box">
                     <div class="post-card">
                         <i class="fas fa-ellipsis-v three-dots"></i>
-                        
                         <div class="user-info">
                             <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-pic">
                             <div class="name-and-time">
@@ -38,39 +36,12 @@
                                 <span class="time">01/01/2003 3:00pm</span>
                             </div>
                         </div>
-                        
                         <hr>
                         <h2>Title</h2>
                         <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                        
                         <div class="post-images">
-                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 1">
-                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 2">
-                        </div>
-                        <hr>
-                        <div class="view-more">
-                            <button>View More</button>
-                        </div>
-                    </div>
-
-                    <div class="post-card">
-                        <i class="fas fa-ellipsis-v three-dots"></i>
-                        
-                        <div class="user-info">
-                            <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-pic">
-                            <div class="name-and-time">
-                                <span class="name">Name</span>
-                                <span class="time">01/01/2003 3:00pm</span>
-                            </div>
-                        </div>
-                        
-                        <hr>
-                        <h2>Title</h2>
-                        <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-                        
-                        <div class="post-images">
-                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 1">
-                            <img src="https://via.placeholder.com/100" alt="Placeholder Image 2">
+                            <img src="https://via.placeholder.com/150" alt="Placeholder Image 1">
+                            <img src="https://via.placeholder.com/150" alt="Placeholder Image 2">
                         </div>
                         <hr>
                         <div class="view-more">
@@ -80,6 +51,132 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal -->
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <h2>Add New Post</h2>
+                <label for="category">Select Category:</label>
+                <select id="category" required>
+                    <option value="announcement">Announcement</option>
+                    <option value="event">Event</option>
+                    <option value="tournament">Tournament</option>
+                    <option value="membership">Membership</option>
+                </select>
+
+                <div id="common-fields">
+                    <label for="heading">Heading</label>
+                    <input type="text" id="heading" placeholder="Type here">
+                    <label for="details">Details</label>
+                    <textarea id="details" rows="4" placeholder="Type here"></textarea>
+                </div>
+
+                <div id="event-fields" style="display: none;">
+                    <label for="start-date">Start Date</label>
+                    <input type="date" id="start-date">
+                    <label for="end-date">End Date</label>
+                    <input type="date" id="end-date">
+                    <label for="registration-end-date">Registration End Date</label>
+                    <input type="date" id="registration-end-date">
+                    <label for="fee">Fee</label>
+                    <input type="number" id="fee" placeholder="Enter fee">
+                </div>
+
+                <label for="image">Upload Images:</label>
+                <div class="input-group">
+                    <input type="file" id="imageInput" name="image[]" accept="image/*" style="display: none;" multiple>
+                    <span class="input-group-btn">
+                        <button id="uploadButton" type="button" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
+                    </span>
+                </div>
+
+                <!-- Image Preview Container -->
+                <div id="imagePreviewContainer" class="image-preview-container"></div>
+
+                <div class="modal-buttons">
+                    <button type="postNow">Post Now</button>
+                    <button type="button" id="cancelModal">Cancel</button>
+                </div>            
+            </div>
+        </div>
     </section>
+
+    <script>
+        // Get the modal
+        var modal = document.getElementById("addModal");
+        
+        // Get the button that opens the modal
+        var btn = document.getElementById("add-post");
+        
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName("close")[0];
+        
+        // Get the category select element
+        var categorySelect = document.getElementById("category");
+        
+        // Get the fields for events
+        var eventFields = document.getElementById("event-fields");
+    
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "flex";
+            eventFields.style.display = "none"; // Hide event fields initially
+        }
+        
+        // Change event to show/hide fields based on category
+        categorySelect.onchange = function() {
+            if (this.value === "event" || this.value === "tournament" || this.value === "membership") {
+                eventFields.style.display = "block"; // Show event fields for these categories
+            } else {
+                eventFields.style.display = "none"; // Hide event fields for announcements
+            }
+        };
+
+        // Ensure the correct upload buttons and preview containers are used
+        const input = document.getElementById("imageInput");
+        const previewContainer = document.getElementById("imagePreviewContainer");
+        let images = [];
+
+        // Trigger the file input when the upload button is clicked
+        document.getElementById("uploadButton").addEventListener("click", () => input.click());
+
+        // Handle image input change
+        input.addEventListener("change", function() {
+            Array.from(this.files).forEach(file => { 
+                if (images.length >= 5) {
+                    alert("You can upload a maximum of 5 images.");
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => {
+                    const id = Date.now().toString();
+                    images.push({ id, src: reader.result, file });
+                    updateImagePreviews(images, previewContainer);
+                };
+            });
+        });
+
+        // Function to update image preview area
+        function updateImagePreviews(images, container) {
+            container.innerHTML = '';  // Clear existing previews
+            images.forEach(image => {
+                const div = document.createElement('div');
+                div.classList.add('image-preview');
+                div.innerHTML = `
+                    <img src="${image.src}" alt="Image Preview">
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('${image.id}')"><i class="fas fa-times"></i></button>`;
+                container.appendChild(div);
+            });
+        }
+
+        // Function to remove an image from preview
+        window.removeImage = function(id) {
+            images = images.filter(image => image.id !== id);
+            updateImagePreviews(images, previewContainer);
+        };
+    </script>
+    
 </body>
 </html>

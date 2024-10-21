@@ -66,6 +66,10 @@ body {
     margin: 0 auto;
 }
 
+.hide-column {
+    display: none;
+}
+
 .filter-container {
     display: flex;
     justify-content: flex-end;
@@ -206,4 +210,34 @@ tbody tr:nth-child(even) {
 
 .edit-status i {
     color: #007bff;
+}
+
+th {
+    cursor: pointer;
+    position: relative;
+}
+
+.sort-icon {
+    margin-left: 5px;
+    visibility: hidden; 
+}
+
+th:hover .sort-icon {
+    visibility: visible; 
+}
+
+
+.sort-asc:after {
+    content: '\f0de'; 
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-left: 5px;
+}
+
+.sort-desc:after {
+    content: '\f0de'; 
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-left: 5px;
+    transform: rotate(180deg); 
 }

@@ -25,71 +25,94 @@
                     <label for="search">Search:</label>
                     <input type="text" id="search" class="search-field" placeholder="Search by name..." onkeyup="searchTable()" />
                     <button class="filter-button">Print Payment <i class="fas fa-file-alt"></i></button>
+                    <button id="expandButton" class="filter-button">Expand Table <i class="fas fa-expand"></i></button>
+
                 </div>
             </div>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Name</th>
-                        <th>Training Date</th>
-                        <th>Training Fee</th>
+                        <th onclick="sortTable(0)">Name <i class="sort-icon fas fa-sort"></i></th>
                         <th>Account Number</th>
-                        <th>Date Paid</th>
+                        <th onclick="sortTable(1)">Date Paid <i class="sort-icon fas fa-sort"></i></th>
+                        <th>Reservation Fee</th>
                         <th>Reference Number</th>
+                        <th class="hide-column" onclick="sortTable(2)">Training Start Date <i class="sort-icon fas fa-sort"></i></th>
+                        <th class="hide-column" onclick="sortTable(3)">Training End Date <i class="sort-icon fas fa-sort"></i></th>
+                        <th>Total Training Bill</th>
+                        <th onclick="sortTable(4)">Bill Status <i class="sort-icon fas fa-sort"></i></th>
                         <th>Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>Charlie Brown</td>
+                        <td>0987654321</td>
                         <td>2024-10-10</td>
                         <td>$150.00</td>
-                        <td>0987654321</td>
-                        <td>2024-10-05</td>
                         <td>REF654321</td>
+                        <td class="hide-column">2024-10-05</td>
+                        <td class="hide-column"class="hide-column">2024-10-12</td>
+                        <td>$150.00</td>
+                        <td>Paid</td>
                         <td>
                             <div class="action-buttons">
                                 <button class="icon-button view-schedule" title="View Schedule">
                                     <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <button class="icon-button edit-status" title="Edit Status">
+                                    <i class="fas fa-edit"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>Lucy Van Pelt</td>
+                        <td>1234567890</td>
                         <td>2024-10-15</td>
                         <td>$200.00</td>
-                        <td>1234567890</td>
-                        <td>2024-10-08</td>
                         <td>REF123456</td>
+                        <td class="hide-column">2024-10-08</td>
+                        <td class="hide-column">2024-10-15</td>
+                        <td>$200.00</td>
+                        <td>Paid</td>
                         <td>
                             <div class="action-buttons">
                                 <button class="icon-button view-schedule" title="View Schedule">
                                     <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <button class="icon-button edit-status" title="Edit Status">
+                                    <i class="fas fa-edit"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
                     <tr>
                         <td>KC Cruz</td>
+                        <td>1234553790</td>
                         <td>2024-11-10</td>
                         <td>$175.00</td>
-                        <td>1234553790</td>
-                        <td>2024-11-08</td>
                         <td>REF123435</td>
+                        <td class="hide-column">2024-11-01</td>
+                        <td class="hide-column">2024-11-08</td>
+                        <td>$175.00</td>
+                        <td>Paid</td>
                         <td>
                             <div class="action-buttons">
                                 <button class="icon-button view-schedule" title="View Schedule">
                                     <i class="fas fa-calendar-alt"></i>
+                                </button>
+                                <button class="icon-button edit-status" title="Edit Status">
+                                    <i class="fas fa-edit"></i>
                                 </button>
                             </div>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            
         </div>
     </section>
+    <script src="../js/viewUserPayment.js"></script>
 </body>
 </html>

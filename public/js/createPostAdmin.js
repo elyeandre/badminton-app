@@ -122,6 +122,17 @@ registrationSwitchTrainingMembership.addEventListener('change', function () {
     }
 });
 
+// Handle membership-based fee switch
+const feeSwitchMembership = document.getElementById('feeSwitchMembership');
+const feeFieldsMembership = document.getElementById('feeFieldsMembership');
+feeSwitchTournament.addEventListener('change', function () {
+    if (this.checked) {
+        feeFieldsMembership.style.display = 'block';
+    } else {
+        feeFieldsMembership.style.display = 'none';
+    }
+});
+
 // Handle training membership-based fee switch
 const feeSwitchTrainingMembership = document.getElementById('feeSwitchTrainingMembership');
 const feeFieldsTrainingMembership = document.getElementById('feeFieldsTrainingMembership');
