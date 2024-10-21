@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Events and Tournaments</title>
+    <link rel="stylesheet" href="../css/viewEventTornaList.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.home-section {
+    position: relative;
+    background: #fff;
+    top: 0;
+    left: 78px;
+    width: calc(100% - 78px);
+    transition: all 0.5s ease;
+    min-height: unset;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar.open ~ .home-section {
+    left: 250px;
+    width: calc(100% - 250px);
+}
+
+.box {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.stat-box {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: left;
+    width: 22%;
+    color: #333;
+    height: 100px;
+}
+
+.stat-box i {
+    font-size: 55px;
+    color: #fff;
+    margin-right: 15px;
+}
+
+.stat-box-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-box h3 {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 300; 
+}
+
+.stat-box span {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
+.content-section {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    gap: 15px;
+}
+
+.box-1 {
+    width: 23%;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    padding: 10px;
+}
+
+.box-2 {
+    width: 77%;
+    box-sizing: border-box;
+}
+
+.image-upload {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px dashed #ccc;
+    margin-bottom: 10px;
+    height: 150px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+}
+
+.image-upload img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#file-input {
+    display: none;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-top: 10px;
+}
+
+form input, form select {
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+form button {
+    padding: 10px;
+    background-color: #001f3f;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+form button:hover {
+    background-color: #005f7f;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #e0e0e0;
+}
+
+thead th {
+    padding: 10px;
+    background-color: #192850;
+    color: #fff;
+    font-weight: bold;
+    text-align: center;
+    border-right: 1px solid #e0e0e0;
+}
+
+thead th:last-child {
+    border-right: none;
+}
+
+tbody td {
+    padding: 10px;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+}
+
+tbody tr td:last-child {
+    border-right: none;
+}
+
+tbody tr:last-child td {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+tbody tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #fff;
+}
+
+/* Product image styling */
+.product-image {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Action buttons */
+.edit-btn, .delete-btn {
+    padding: 5px 10px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.edit-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.delete-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #0056b3;
+}
+
+.delete-btn:hover {
+    background-color: #c82333;
+}
+h1 {
+    font-size: 24px;
+    color: #192850;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.box-1, .box-2 {
+    display: block;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.box-2 {
+    clear: both;
+}
+
+.content-section {
+    display: flex;
+    flex-direction: column;
+}
+
+  </style>
+    <script src="../js/sideNavAdmin.js" defer></script>
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <h1>Product Inventory</h1>
+        <div class="box">
+            <div class="stats-container">
+                <div class="stat-box">
+                    <i class="fas fa-calendar-alt"></i>
+                    <div class="stat-box-content">
+                        <h3>Total Event</h3>
+                        <span>8</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-trophy"></i>
+                    <div class="stat-box-content">
+                        <h3>Total Tournament</h3>
+                        <span>8</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-users"></i>
+                    <div class="stat-box-content">
+                        <h3>Joined Users</h3>
+                        <span>234</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <div class="stat-box-content">
+                        <h3>Total Fees</h3>
+                        <span>25778</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <div class="content-section">
+                    <div class="box">
+                        <!-- Heading for Product Form (Box 1) -->
+                        <h1>Product Form</h1>
+                        <div class="content-section">
+                            
+                            <!-- Box 1: Form Section -->
+                            <div class="box-1">
+                                <form action="/upload" method="post" enctype="multipart/form-data">
+                                    <div class="image-upload">
+                                        <label for="file-input">
+                                            <img src="placeholder-image.png" alt="Upload Image" />
+                                        </label>
+                                        <input id="file-input" type="file" name="product-image" />
+                                    </div>
+                    
+                                    <label for="product-name">Product Name</label>
+                                    <input type="text" id="product-name" name="product-name" placeholder="Product Name" />
+                    
+                                    <label for="brand">Brand</label>
+                                    <select id="brand" name="brand">
+                                        <option value="brand1">Brand 1</option>
+                                        <option value="brand2">Brand 2</option>
+                                        <option value="brand3">Brand 3</option>
+                                    </select>
+                    
+                                    <label for="category">Category</label>
+                                    <select id="category" name="category">
+                                        <option value="category1">Category 1</option>
+                                        <option value="category2">Category 2</option>
+                                        <option value="category3">Category 3</option>
+                                    </select>
+                    
+                                    <label for="details">Details</label>
+                                    <input type="text" id="details" name="details" placeholder="Details" />
+                    
+                                    <label for="stock">Stock</label>
+                                    <input type="number" id="stock" name="stock" placeholder="Stock" />
+                    
+                                    <label for="sizes">Sizes</label>
+                                    <div id="sizes">
+                                        <input type="checkbox" id="size-small" name="sizes" value="Small" />
+                                        <label for="size-small">Small</label><br>
+                    
+                                        <input type="checkbox" id="size-medium" name="sizes" value="Medium" />
+                                        <label for="size-medium">Medium</label><br>
+                    
+                                        <input type="checkbox" id="size-large" name="sizes" value="Large" />
+                                        <label for="size-large">Large</label><br>
+                                    </div>
+                    
+                                    <button type="submit">Add Product</button>
+                                </form>
+                            </div>
+                    
+                            <!-- Heading for Product Table (Box 2) -->
+                            <h1>Product Table</h1>
+                            
+                            <!-- Box 2: Table Section -->
+                            <div class="box-2">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Product Name</th>
+                                            <th>Brand</th>
+                                            <th>Category</th>
+                                            <th>Details</th>
+                                            <th>Stock</th>
+                                            <th>Sizes</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td><img src="sample-product-image.png" alt="Product Image" class="product-image"></td>
+                                            <td>Sample Product</td>
+                                            <td>Brand 1</td>
+                                            <td>Category 1</td>
+                                            <td>Sample details about the product</td>
+                                            <td>50</td>
+                                            <td>Small, Medium</td>
+                                            <td>
+                                                <button class="edit-btn">Edit</button>
+                                                <button class="delete-btn">Delete</button>
+                                            </td>
+                                        </tr>
+                                        <!-- Add more rows as needed -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
