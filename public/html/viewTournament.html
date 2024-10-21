@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>User Payment</title>
+    <link rel="stylesheet" href="../css/viewTournament.css">
+    <script src="../js/sideNavAdmin.js" defer></script>
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <h1>Tournament Name Here</h1>
+
+        <div class="box">
+            <div class="filter-container">
+                <div class="filter-left">
+                    <p>Total Number of Participants: <strong>88</strong></p>
+                </div>
+
+                <div class="filter-actions">
+                    <label for="search">Search:</label>
+                    <input type="text" id="search" class="search-field" placeholder="Search by name..." onkeyup="searchTable()" />
+                    
+                    <a href="viewAdminPosts.html" class="filter-button">View Post <i class="fas fa-eye"></i></a>
+                    <a href="viewUserPaymentET.html" class="filter-button">View Payment <i class="fas fa-credit-card"></i></a>
+                    <a href="#" class="filter-button">Print Result <i class="fas fa-file-alt"></i></a>
+                    <a href="#" class="filter-button">Create Result <i class="fas fa-plus"></i></a>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Contact Number</th>
+                        <th>Age</th>
+                        <th>Address</th>
+                        <th>Category</th>
+                        <th>Result</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Charlie Brown</td>
+                        <td>0987654321</td>
+                        <td>35</td>
+                        <td>123 Peanuts St.</td>
+                        <td>Singles Men</td>
+                        <td>Champion</td>
+                    </tr>
+                    <tr>
+                        <td>Lucy Van Pelt</td>
+                        <td>1234567890</td>
+                        <td>28</td>
+                        <td>456 Lucy Lane</td>
+                        <td>Doubles Women</td>
+                        <td>Runner-up</td>
+                    </tr>
+                    <tr>
+                        <td>KC Cruz</td>
+                        <td>1234553790</td>
+                        <td>40</td>
+                        <td>789 Cruz Ave.</td>
+                        <td>Mixed</td>
+                        <td>Disqualified</td>
+                    </tr>
+                    <tr>
+                        <td>Samantha Lee</td>
+                        <td>0987654322</td>
+                        <td>22</td>
+                        <td>111 Maple St.</td>
+                        <td>Singles Women</td>
+                        <td>Participation Award</td>
+                    </tr>
+                    <tr>
+                        <td>Mike Johnson</td>
+                        <td>0987654323</td>
+                        <td>30</td>
+                        <td>222 Oak Ave.</td>
+                        <td>Doubles Men</td>
+                        <td>Most Valuable Player</td>
+                    </tr>
+                    <tr>
+                        <td>Anna Smith</td>
+                        <td>0987654324</td>
+                        <td>25</td>
+                        <td>333 Pine Rd.</td>
+                        <td>Doubles Women</td>
+                        <td>Fair Play Award</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+        <div id="createResultModal" class="modal">
+            <div class="modal-content">
+                <h2>Create Tournament Result</h2>
+                <form id="resultForm">
+                    <label for="participantSelect">Select Participant:</label>
+                    <select id="participantSelect" required>
+                        <option value="">Select a participant</option>
+                        <option value="Charlie Brown">Charlie Brown</option>
+                        <option value="Lucy Van Pelt">Lucy Van Pelt</option>
+                        <option value="KC Cruz">KC Cruz</option>
+                    </select>
+
+                    <label for="categorySelect">Select Category:</label>
+                    <select id="categorySelect" required>
+                        <option value="">Select category</option>
+                        <option value="Singles Women">Singles Women</option>
+                        <option value="Singles Men">Singles Men</option>
+                        <option value="Doubles Women">Doubles Women</option>
+                        <option value="Doubles Men">Doubles Men</option>
+                        <option value="Mixed">Mixed</option>
+                    </select>
+                    
+                    <label for="result_tournamentResultSelect">Tournament Result:</label>
+                    <select id="result_tournamentResultSelect" required>
+                        <option value="">Select result</option>
+                        <option value="Champion">Champion</option>
+                        <option value="2nd Place">2nd Place</option>
+                        <option value="3rd Place">3rd Place</option>
+                        <option value="4th Place">4th Place</option>
+                        <option value="5th Place">5th Place</option>
+                        <option value="Disqualified">Disqualified</option>
+                        <option value="Participation Award">Participation Award</option>
+                        <option value="Best Player">Best Player</option>
+                    </select>
+        
+                    <label for="comments">Comments (optional):</label>
+                    <textarea id="comments" rows="4" placeholder="Add any additional notes here..."></textarea>
+        
+                    <div class="modal-buttons">
+                        <button type="submit">Submit</button>
+                        <button type="button" id="cancelModal">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    </section>
+    <script>
+        const modal = document.getElementById("createResultModal");
+        const btn = document.querySelector(".filter-button:last-child"); // Select the last filter button (Create Result)
+        const span = document.getElementById("closeModal");
+    
+        // When the user clicks the button, open the modal 
+        btn.onclick = function() {
+            modal.style.display = "block";
+        }
+    
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+    
+        // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+    </body>
+</html>
