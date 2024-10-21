@@ -7,5 +7,9 @@ module.exports = {
   adyen: {
     ...commonConfig.adyen,
     environment: 'TEST'
+  },
+  paypal: {
+    ...commonConfig.paypal,
+    apiBaseUrl: 'https://api-m.sandbox.paypal.com'
   }
 };
