@@ -9,18 +9,23 @@ const { assignFileAccess } = require('./assignFileAccess');
 const assignFileToAdmin = async (file, adminId, category) => {
   const accessibleUsers = [adminId]; // User who uploaded should have access
   let roleBasedAccess = [];
+
   switch (category) {
     case 'businessLogo':
       roleBasedAccess = ['admin', 'coach', 'player'];
+      file.isPublic = true;
       break;
     case 'courtImage':
       roleBasedAccess = ['admin', 'coach', 'player'];
+      file.isPublic = false;
       break;
     case 'facilityImage':
       roleBasedAccess = ['admin', 'coach', 'player'];
+      file.isPublic = false;
       break;
     default:
       roleBasedAccess = []; // No specific roles
+      file.isPublic = false;
       break;
   }
 
