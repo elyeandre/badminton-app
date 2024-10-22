@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Events and Tournaments</title>
+    <link rel="stylesheet" href="../css/viewEventTournaList.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #fff;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.home-section {
+    position: relative;
+    background: #fff;
+    top: 0;
+    left: 78px;
+    width: calc(100% - 78px);
+    transition: all 0.5s ease;
+    min-height: unset;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.sidebar.open ~ .home-section {
+    left: 250px;
+    width: calc(100% - 250px);
+}
+
+.box {
+    background-color: #fff;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
+.content-section {
+    display: flex;
+    justify-content: space-between;
+}
+    </style>
+    <script src="../js/sideNavAdmin.js" defer></script>
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <h1>Events and Tournaments</h1>
+        <div class="box">
+            <div class="content-section">
+
+            </div>
+        </div>
+    </section>
+</body>
+</html>
