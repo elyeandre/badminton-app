@@ -16,7 +16,9 @@ const requiredEnvVars = [
   'DISABLE_SECURITY',
   'MAX_FILE_SIZE',
   'R2_AUTH_KEY',
-  'R2_UPLOAD_URL'
+  'R2_UPLOAD_URL',
+  'PAYPAL_CLIENT_ID',
+  'PAYPAL_SECRET_KEY'
 ];
 
 requiredEnvVars.forEach((varName) => {
