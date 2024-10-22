@@ -105,7 +105,7 @@ const courtRegistrationSchema = Joi.object({
   paypal_email: Joi.string()
     .email({ tlds: { allow: ['com'] } })
     .custom((value, helpers) => {
-      const validDomains = ['gmail.com', 'yahoo.com', 'googlemail.com'];
+      const validDomains = ['gmail.com', 'yahoo.com', 'googlemail.com', 'personal.example.com'];
       const domain = value.split('@')[1];
       if (!validDomains.includes(domain)) {
         return helpers.message('Email must be from Gmail, Yahoo, or Googlemail.');
