@@ -7,6 +7,12 @@ const { checkResetToken, checkVerificationToken, checkCourtAccess } = require('.
 const checkAuth = require('../middleware/checkAuth');
 const verifyToken = require('../middleware/authJwt');
 
+const { serveData } = require('../controllers/userController');
+const { createRateLimiter } = require('../middleware/rateLimiter');
+const { checkFilePermissions } = require('../middleware/checkFilePermission');
+
+const limiter = createRateLimiter(15 * 60 * 1000, 100);
+
 let routes = (app) => {
   router.get('/', checkAuth, (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/index.html');
@@ -17,6 +23,8 @@ let routes = (app) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.json({ message: 'pong!' });
   });
+
+  router.get('/data/:filename', checkFilePermissions, limiter, serveData);
 
   // serve the registration page
   router.get('/register', checkAuth, checkMongoConnection, (req, res, next) => {
