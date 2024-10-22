@@ -361,6 +361,10 @@ tbody tr:nth-child(even) {
     color: #ffcc00;
 }
 
+.redo i {
+    color: #ffcc00;
+}
+
 .delete i {
     color: #dc3545;
 }

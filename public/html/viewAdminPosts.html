@@ -48,6 +48,67 @@
                             <button>View More</button>
                         </div>
                     </div>
+                    <div class="post-card">
+                        <i class="fas fa-ellipsis-v three-dots"></i>
+                        <div class="user-info">
+                            <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-pic">
+                            <div class="name-and-time">
+                                <span class="name">Name</span>
+                                <span class="time">01/01/2003 3:00pm</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <h2>Title</h2>
+                        <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        <div class="post-images">
+                            <img src="https://via.placeholder.com/150" alt="Placeholder Image 1">
+                            <img src="https://via.placeholder.com/150" alt="Placeholder Image 2">
+                        </div>
+                        <hr>
+                        <div class="view-more">
+                            <button>View More</button>
+                        </div>
+                    </div>                    <div class="post-card">
+                        <i class="fas fa-ellipsis-v three-dots"></i>
+                        <div class="user-info">
+                            <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-pic">
+                            <div class="name-and-time">
+                                <span class="name">Name</span>
+                                <span class="time">01/01/2003 3:00pm</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <h2>Title</h2>
+                        <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        <div class="post-images">
+                            <img src="https://via.placeholder.com/150" alt="Placeholder Image 1">
+                            <img src="https://via.placeholder.com/150" alt="Placeholder Image 2">
+                        </div>
+                        <hr>
+                        <div class="view-more">
+                            <button>View More</button>
+                        </div>
+                    </div>                    <div class="post-card">
+                        <i class="fas fa-ellipsis-v three-dots"></i>
+                        <div class="user-info">
+                            <img src="https://via.placeholder.com/50" alt="Profile Picture" class="profile-pic">
+                            <div class="name-and-time">
+                                <span class="name">Name</span>
+                                <span class="time">01/01/2003 3:00pm</span>
+                            </div>
+                        </div>
+                        <hr>
+                        <h2>Title</h2>
+                        <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
+                        <div class="post-images">
+                            <img src="https://via.placeholder.com/150" alt="Placeholder Image 1">
+                            <img src="https://via.placeholder.com/150" alt="Placeholder Image 2">
+                        </div>
+                        <hr>
+                        <div class="view-more">
+                            <button>View More</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -74,17 +135,30 @@
                 <div id="event-fields" style="display: none;">
                     <label for="start-date">Start Date</label>
                     <input type="date" id="start-date">
+                
                     <label for="end-date">End Date</label>
                     <input type="date" id="end-date">
+                
                     <label for="registration-end-date">Registration End Date</label>
                     <input type="date" id="registration-end-date">
-                    <label for="fee">Fee</label>
-                    <input type="number" id="fee" placeholder="Enter fee">
+                
+                    <label for="reservationFee">Reservation Fee (optional)</label>
+                    <input type="number" id="reservationFee" placeholder="Enter reservation fee">
+                
+                    <!-- Fee Inputs with Unique IDs -->
+                    <label for="eventFee">Event Fee (optional)</label>
+                    <input type="number" id="eventFee" placeholder="Enter event fee">
+                
+                    <label for="tournamentFee">Tournament Fee (optional)</label>
+                    <input type="number" id="tournamentFee" placeholder="Enter tournament fee">
+                
+                    <label for="membershipFee">Membership Fee (optional)</label>
+                    <input type="number" id="membershipFee" placeholder="Enter membership fee">
                 </div>
+                
 
                 <label for="image">Upload Images:</label>
                 <div class="input-group">
-                    <input type="file" id="imageInput" name="image[]" accept="image/*" style="display: none;" multiple>
                     <span class="input-group-btn">
                         <button id="uploadButton" type="button" class="btn btn-primary"><i class="fas fa-upload"></i> Upload</button>
                     </span>
@@ -100,46 +174,102 @@
             </div>
         </div>
     </section>
-
     <script>
         // Get the modal
         var modal = document.getElementById("addModal");
-        
+    
         // Get the button that opens the modal
         var btn = document.getElementById("add-post");
-        
-        // Get the <span> element that closes the modal
-        var span = document.getElementsByClassName("close")[0];
-        
+    
         // Get the category select element
         var categorySelect = document.getElementById("category");
-        
-        // Get the fields for events
-        var eventFields = document.getElementById("event-fields");
     
-        // When the user clicks the button, open the modal 
+        // Get the fields for events and fees
+        var eventFields = document.getElementById("event-fields");
+        var eventFeeInput = document.getElementById('eventFee');
+        var tournamentFeeInput = document.getElementById('tournamentFee');
+        var membershipFeeInput = document.getElementById('membershipFee');
+    
+        // Get labels for the fees
+        var eventFeeLabel = document.querySelector('label[for="eventFee"]');
+        var tournamentFeeLabel = document.querySelector('label[for="tournamentFee"]');
+        var membershipFeeLabel = document.querySelector('label[for="membershipFee"]');
+        
+        // Get common form fields
+        var headingInput = document.getElementById("heading");
+        var detailsInput = document.getElementById("details");
+        var startDateInput = document.getElementById("start-date");
+        var endDateInput = document.getElementById("end-date");
+        var registrationEndDateInput = document.getElementById("registration-end-date");
+        var reservationFeeInput = document.getElementById("reservationFee");
+        var imageUpload = document.getElementById("imageInput");
+        var modalButtons = document.getElementsByClassName("modal-buttons")[0];
+    
+        // When the user clicks the button, open the modal
         btn.onclick = function() {
             modal.style.display = "flex";
             eventFields.style.display = "none"; // Hide event fields initially
-        }
-        
-        // Change event to show/hide fields based on category
+            hideAllFeeInputsAndLabels(); // Hide all fee inputs and labels
+        };
+    
+        // Show/hide fields based on the selected category
         categorySelect.onchange = function() {
-            if (this.value === "event" || this.value === "tournament" || this.value === "membership") {
-                eventFields.style.display = "block"; // Show event fields for these categories
+            // Reset the visibility of fee inputs and labels
+            hideAllFeeInputsAndLabels();
+    
+            if (this.value === "event") {
+                // Show event-specific fields
+                eventFields.style.display = "block";
+                eventFeeInput.style.display = 'block';
+                eventFeeLabel.style.display = 'block';
+                
+                // Make sure all event fields are shown
+                headingInput.style.display = 'block';
+                detailsInput.style.display = 'block';
+                startDateInput.style.display = 'block';
+                endDateInput.style.display = 'block';
+                registrationEndDateInput.style.display = 'block';
+                reservationFeeInput.style.display = 'block';
+                imageUpload.style.display = 'block';
+                modalButtons.style.display = 'block';
+            } else if (this.value === "tournament") {
+                // Show event fields but change the fee input to tournament fee
+                eventFields.style.display = "block";
+                tournamentFeeInput.style.display = 'block';
+                tournamentFeeLabel.style.display = 'block';
+    
+                // Keep common fields visible but change only the fee field
+            } else if (this.value === "membership") {
+                // Show event fields but change the fee input to membership fee
+                eventFields.style.display = "block";
+                membershipFeeInput.style.display = 'block';
+                membershipFeeLabel.style.display = 'block';
+    
+                // Keep common fields visible but change only the fee field
             } else {
-                eventFields.style.display = "none"; // Hide event fields for announcements
+                // Hide event fields for announcement or other categories
+                eventFields.style.display = "none";
             }
         };
-
+    
+        // Function to hide all fee inputs and labels
+        function hideAllFeeInputsAndLabels() {
+            eventFeeInput.style.display = 'none';
+            tournamentFeeInput.style.display = 'none';
+            membershipFeeInput.style.display = 'none';
+            eventFeeLabel.style.display = 'none';
+            tournamentFeeLabel.style.display = 'none';
+            membershipFeeLabel.style.display = 'none';
+        }
+    
         // Ensure the correct upload buttons and preview containers are used
         const input = document.getElementById("imageInput");
         const previewContainer = document.getElementById("imagePreviewContainer");
         let images = [];
-
+    
         // Trigger the file input when the upload button is clicked
         document.getElementById("uploadButton").addEventListener("click", () => input.click());
-
+    
         // Handle image input change
         input.addEventListener("change", function() {
             Array.from(this.files).forEach(file => { 
@@ -147,7 +277,7 @@
                     alert("You can upload a maximum of 5 images.");
                     return;
                 }
-
+    
                 const reader = new FileReader();
                 reader.readAsDataURL(file);
                 reader.onload = () => {
@@ -157,7 +287,7 @@
                 };
             });
         });
-
+    
         // Function to update image preview area
         function updateImagePreviews(images, container) {
             container.innerHTML = '';  // Clear existing previews
@@ -166,11 +296,13 @@
                 div.classList.add('image-preview');
                 div.innerHTML = `
                     <img src="${image.src}" alt="Image Preview">
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('${image.id}')"><i class="fas fa-times"></i></button>`;
+                    <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('${image.id}')">
+                        <i class="fas fa-times"></i>
+                    </button>`;
                 container.appendChild(div);
             });
         }
-
+    
         // Function to remove an image from preview
         window.removeImage = function(id) {
             images = images.filter(image => image.id !== id);
