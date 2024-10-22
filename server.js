@@ -34,17 +34,9 @@ app.set('views', path.join(__dirname, 'client', 'views'));
 // check the environment variable to decide on security features
 const disableSecurity = config.get('disableSecurity');
 
-// Set CORS options
-const corsOptions = {
-  origin: [config.get('frontendUrl'), 'https://checkoutanalytics-test.adyen.com'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
-};
-
 // CORS middleware allows your API to be accessed from other origins (domains)
 if (!disableSecurity) {
-  app.use(cors(corsOptions));
+  app.use(cors());
 }
 app.disable('x-powered-by'); // reduce fingerprinting
 app.use(cookieParser());
