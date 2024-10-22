@@ -210,20 +210,38 @@ label {
     font-size: 1em;
 }
 
+#cancelButton {
+    background-color: #ddd; 
+    color: #000;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+#cancelButton:hover {
+    background-color: #397CF7;
+    color: #fff; /* Darker grey on hover */
+}
+
 .modal button:hover {
     background-color: #397CF7;
 }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
+
+.privacy-policy {
+    font-size: 10px; /* Small font for the privacy section */
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
-.close:hover, .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+.privacy-policy h3 {
+    margin-bottom: 5px; /* Adjust space below the heading */
+}
+
+.privacy-policy p {
+    margin: 0; /* Removes space around the paragraph */
+}
+
+.privacy-policy .small-checkbox {
+    font-size: 10px; /* Smaller font for the checkbox label */
 }
