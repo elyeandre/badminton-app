@@ -53,12 +53,6 @@ let routes = (app, io) => {
     serveFile(filePath, res, next);
   });
 
-  // endpoint to get the client Key for adyen
-  router.get('/client-key', verifyToken, (req, res) => {
-    const clientKey = config.get('adyen').clientKey;
-    res.json({ clientKey });
-  });
-
   router.get('/admin/schedule-dashboard', verifyToken, roleChecker(['admin']), (req, res, next) => {
     const tab = req.query.tab; // get the page from the query parameter
     let filePath;

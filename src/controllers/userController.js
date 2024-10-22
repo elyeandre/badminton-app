@@ -16,6 +16,7 @@ const Court = require('../models/Court');
 const { geocodeAddress } = require('../utils/addressToCoord');
 const moment = require('moment-timezone');
 const calculateTotalAmount = require('../utils/amountCalculator');
+const { createPayPalPayment } = require('../services/paypalService');
 
 exports.getCurrentUser = async (req, res) => {
   try {
@@ -375,6 +376,15 @@ exports.createReservation = async (req, res, io) => {
   try {
     const userId = req.user.id;
 
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        code: 404,
+        message: 'User not found'
+      });
+    }
+
     const { courtId, date, timeSlot, selectedCourt } = req.body;
 
     // Validate input
@@ -525,12 +535,36 @@ exports.createReservation = async (req, res, io) => {
 
     await reservation.save();
 
+    const admin = await User.findOne({ court: courtId, role: 'admin' }).select('payer_id');
+
+    if (!admin) {
+      return res.status(404).json({
+        status: 'error',
+        code: 404,
+        message: 'Admin with specified court ID not found'
+      });
+    }
+
+    const brandName = court.business_name;
+    const logoImage = court.business_logo.replace('/user', '');
+    const payerId = admin.payer_id;
+    const payeeEmail = court.paypal_email;
+
+    const payment = await createPayPalPayment(totalAmount, payeeEmail, brandName, logoImage, payerId);
+
+    log(payment);
+
     io.emit('reservationCreated', {
       courtId,
       date
     });
 
-    return res.status(201).json(reservation);
+    return res.status(201).json({
+      status: 'success',
+      code: 201,
+      reservation
+      // approvalUrl: approvalUrl.href
+    });
   } catch (err) {
     // handle duplicate key error
     console.error('Error while creating reservation:', err);

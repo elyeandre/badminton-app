@@ -324,7 +324,7 @@ async function submitReservation(timeSlot) {
       body: JSON.stringify(reservationData)
     });
 
-    if (!response.ok) {
+    if (!response.status === 201) {
       const errorData = await response.json();
       const errorMessage = errorData.message || 'Failed to reserve time slot. Please try again.';
       resetPaymentUI();
@@ -332,6 +332,7 @@ async function submitReservation(timeSlot) {
     }
 
     alert('Reservation successful!');
+    resetPaymentUI();
 
     doc.querySelectorAll('.fc-daygrid-day').forEach((day) => day.classList.remove('selected-date'));
 

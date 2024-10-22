@@ -19,6 +19,10 @@ let routes = (app) => {
     serveFile(filePath, res, next);
   });
 
+  router.post('/test-redirect', (req, res, next) => {
+    return res.redirect('/ping');
+  });
+
   router.get('/ping', verifyToken, (req, res) => {
     res.set('Cache-Control', 'no-store, no-cache, must-revalidate');
     res.json({ message: 'pong!' });
