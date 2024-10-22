@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>View Announcement</title>
+    <link rel="stylesheet" href="../css/userViewAnnoucement.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+.main-content {
+    display: flex;
+    flex-direction: column;
+    align-items: left;
+    margin: 0 auto;
+    margin-top: 70px;
+    padding: 20px;
+    width: 100%;
+    max-width: 1300px;
+}
+.main-content h1 {
+    font-size: 21px;
+}
+.container {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+}
+.box1 {
+    width: 16%; /* Set width to 16% */
+    box-sizing: border-box;
+}
+
+.box2 {
+    width: 84%; /* Set width to 84% */
+    box-sizing: border-box;
+    overflow-y: auto;
+    max-height: 600px;
+    position: relative;
+}
+.box2::-webkit-scrollbar {
+    display: none; /* Hide the scrollbar for WebKit browsers */
+}
+.filter-header {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+.filter-section {
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+}
+.selected-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+.selected-filter {
+    background-color: #397CF7;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+}
+.selected-filter .remove-filter {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #555;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.title-container {
+            display: flex;
+            justify-content: space-between; /* Aligns items to opposite ends */
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .title-container h1 {
+            font-size: 21px;
+        }
+        .cart-container {
+            display: flex;
+            align-items: center;
+        }
+        .cart-icon {
+            font-size: 24px; /* Adjust icon size */
+            color: #142850; /* Icon color */
+        }
+        .product-list {
+    width: 100%; /* Set width to take full width of box2 */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+}
+
+        .product {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 0;
+            text-align: left;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .product img {
+            max-width: 100%;
+            width: 200px;
+            height: auto;
+            border-radius: 5px 5px 0 0;
+            display: block;
+        }
+        .product-name {
+            font-size: 18px;
+            margin-top: 10px;
+            margin-left: 10px;
+            margin-bottom: -1px;
+        }
+        .brand, .stocks {
+            font-size: 12px;
+            margin: 2px 0 0 10px;
+        }
+        .price {
+            font-size: 16px;
+            margin-left: 10px;
+            margin-right: auto;
+        }
+        .add-to-cart {
+            font-size: 22px;
+            margin-right: -45px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #142850;
+        }
+        .add-to-cart:hover {
+            color: #3973f7;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 5px;
+            padding: 0;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="navbar"></div>
+    <script>
+        fetch('navBarUser.html')
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById('navbar').innerHTML = data;
+            });
+    </script>
+    <div class="main-content">
+        <div class="title-container">
+            <h1>Browse Products</h1>
+            <div class="cart-container">
+                <i class="fas fa-shopping-cart cart-icon"></i>
+            </div>
+        </div>        
+
+        <div class="container">
+            <div class="box1">
+                <div class="filter-header">Filter</div>
+                <div class="selected-filters" id="selected-filters"></div>
+
+                <div class="filter-section">
+                    <div class="filter-header">Date Posted</div>
+                    <label><input type="checkbox" value="today" onclick="toggleFilter(this)"> Today</label>
+                    <label><input type="checkbox" value="this-week" onclick="toggleFilter(this)"> This Week</label>
+                    <label><input type="checkbox" value="this-month" onclick="toggleFilter(this)"> This Month</label>
+                </div>                
+
+                <div class="filter-section">
+                    <div class="filter-header">Category</div>
+                    <label><input type="checkbox" value="Announcement" onclick="toggleFilter(this)"> aa</label>
+                    <label><input type="checkbox" value="Event" onclick="toggleFilter(this)"> aa</label>
+                    <label><input type="checkbox" value="Tournament" onclick="toggleFilter(this)"> aa</label>
+                    <label><input type="checkbox" value="Membership" onclick="toggleFilter(this)"> aa</label>
+                </div>
+            </div>
+
+            <div class="box2">
+                <div class="product-list">
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                    <div class="product">
+                        <img src="https://via.placeholder.com/150" alt="Badminton Racket">
+                        <h3 class="product-name">Badminton Racket 1</h3>
+                        <p class="brand">Brand: Yonex</p>
+                        <p class="stocks">Stocks: 10</p>
+                        <div class="button-container">
+                            <p class="price">$59.99</p>
+                            <button class="add-to-cart"><i class="fas fa-shopping-cart"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
