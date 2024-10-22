@@ -27,5 +27,9 @@ module.exports = {
     authKey: process.env.R2_AUTH_KEY, // Store your custom auth key
     uploadUrl: process.env.R2_UPLOAD_URL // Store your R2 upload URL
   },
-  maxFileSize: new Function(`return ${process.env.MAX_FILE_SIZE}`)()
+  maxFileSize: new Function(`return ${process.env.MAX_FILE_SIZE}`)(),
+  paypal: {
+    clientId: process.env.PAYPAL_CLIENT_ID,
+    secretKey: process.env.PAYPAL_SECRET_KEY
+  }
 };

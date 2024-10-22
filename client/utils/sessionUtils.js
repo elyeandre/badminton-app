@@ -1,109 +1,148 @@
 let sessionCheckIntervalId = null;
 
-// function to check session validity and refresh token if necessary
+const doc = document;
+const { log, error } = console;
+
+const getById = (id) => doc.getElementById(id);
+
+// show the preloader
+export function showPreloader() {
+  const preloader = getById('preloader');
+  if (preloader) preloader.style.display = 'flex';
+  const root = getById('root');
+  if (root) root.style.opacity = '0.2';
+}
+
+// Hide the preloader
+export function hidePreloader() {
+  const preloader = getById('preloader');
+  if (preloader) preloader.style.display = 'none';
+
+  const root = getById('root');
+  if (root) root.style.opacity = '1';
+}
+
+// Function to check session validity and refresh token if necessary
 export function checkSessionValidity() {
   fetch('/ping', {
     method: 'GET',
-    credentials: 'include' // Ensures cookies are sent
+    credentials: 'include', // Ensures cookies are sent
+    withPreloader: false
   })
     .then((response) => {
       if (response.status === 401) {
-        console.log('Session invalid. Attempting to refresh token...');
+        log('Session invalid. Attempting to refresh token...');
         return refreshToken();
       } else {
-        console.log('Session is valid.');
+        log('Session is valid.');
       }
     })
-    .catch((error) => {
-      console.error('Error during session validation:', error);
+    .catch((err) => {
+      error('Error during session validation:', err);
     });
 }
 
-// function to refresh the token
+// Function to refresh the token
 function refreshToken() {
   return fetch('/auth/refresh', {
     method: 'POST',
-    credentials: 'include' // Important: Send cookies with the request
+    credentials: 'include',
+    withPreloader: false
   }).then((refreshResponse) => {
     if (refreshResponse.ok) {
-      console.log('Token refreshed successfully.');
-      return; // Optionally, you might want to re-fetch user data here or other resources
-    } else {
-      console.error('Failed to refresh token. Redirecting to login...');
-      window.location.href = '/login'; // Redirect to the login page
+      log('Token refreshed successfully.');
+      return;
+    } else if (refreshResponse.status === 401 || refreshResponse.status === 403) {
+      error('Failed to refresh token. Redirecting to login...');
+      // Redirect to login or handle logout
+      window.location.href = '/login'; // Redirect to login page
       throw new Error('Refresh token failed');
+    } else {
+      error('Unexpected error while refreshing token.');
+      throw new Error('Unexpected error');
     }
   });
 }
 
-// create a Proxy for fetch
+// Create a Proxy for fetch to retry on 401 error
 const originalFetch = window.fetch;
 window.fetch = new Proxy(originalFetch, {
   apply(fetch, that, args) {
-    return fetch(...args).then((response) => {
-      if (response.status === 401) {
-        console.log('Token expired or invalid, attempting to refresh...');
-        return refreshToken().then(() => {
-          console.log('Retrying original request...');
-          return fetch(...args); // Retry the original request
-        });
-      }
-      return response; // Return original response if not 401
-    });
+    const options = args[1] || {};
+    const withPreloader = options.withPreloader !== false;
+    if (withPreloader) showPreloader();
+    return fetch(...args)
+      .then((response) => {
+        if (response.status === 401) {
+          log('Token expired or invalid, attempting to refresh...');
+          return refreshToken().then(() => {
+            log('Retrying original request...');
+            return fetch(...args).finally(() => {
+              if (withPreloader) hidePreloader();
+            });
+          });
+        }
+
+        if (withPreloader) hidePreloader();
+        return response;
+      })
+      .catch((err) => {
+        error('Fetch error:', err);
+        if (withPreloader) hidePreloader();
+      });
   }
 });
 
-// Function to validate session and navigate
+// function to validate session and navigate to a URL
 export function validateSessionAndNavigate(url) {
-  // attempt to fetch a protected resource (e.g., profile data) to see if the session is valid
   fetch('/ping', {
     method: 'GET',
-    credentials: 'include' // Ensures cookies are sent
+    credentials: 'include',
+    withPreloader: false
   })
     .then((response) => {
       if (response.status === 401) {
-        // if unauthorized, try refreshing the token
         return fetch('/auth/refresh', {
           method: 'POST',
-          credentials: 'include'
+          credentials: 'include',
+          withPreloader: false
         }).then((refreshResponse) => {
           if (refreshResponse.ok) {
-            // if the refresh was successful, retry the original request to validate the session
-            console.log('Token refreshed, proceeding to page...');
+            log('Token refreshed, proceeding to page...');
             window.location.href = url; // navigate to the intended page
           } else {
-            // If the refresh fails, redirect to the login page
-            console.error('Failed to refresh token. Redirecting to login...');
+            error('Failed to refresh token. Redirecting to login...');
             window.location.href = '/login';
           }
+          hidePreloader();
         });
       } else if (response.ok) {
-        // If the session is valid, navigate to the desired page
-        console.log('Session is valid. Navigating to page...');
+        log('Session is valid. Navigating to page...');
         window.location.href = url;
       } else {
-        // Handle other potential errors
-        console.error('Error validating session:', response.status);
+        error('Error validating session:', response.status);
         window.location.href = '/login';
       }
+      hidePreloader();
     })
-    .catch((error) => {
-      console.error('Error during session validation:', error);
+    .catch((err) => {
+      error('Error during session validation:', err);
       window.location.href = '/login';
+      hidePreloader();
     });
 }
 
-// Function to start session checks
+// function to start session checks
 export function startSessionChecks() {
-  // Clear any existing interval before starting a new one
   if (sessionCheckIntervalId) {
     clearInterval(sessionCheckIntervalId);
   }
 
-  // Set up a new interval to check session validity every 40 seconds
-  sessionCheckIntervalId = setInterval(checkSessionValidity, 40000);
+  // check session validity every 40 seconds
+  sessionCheckIntervalId = setInterval(checkSessionValidity, 50000);
 
+  // initial session check on page load
   document.addEventListener('DOMContentLoaded', () => {
-    checkSessionValidity(); // Initial session check on page load
+    checkSessionValidity();
   });
 }

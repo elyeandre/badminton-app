@@ -19,7 +19,13 @@ const pageTitles = {
   userdash: 'Welcome',
   userprofile: 'Edit Profile',
   courtregistration: 'Court Registration',
-  admindash: 'Welcome'
+  admindash: 'Welcome',
+  courtreservations: 'Court Schedule',
+  eventtournaments: 'Event & Tournaments',
+  viewuserpayment: 'User Payment',
+  usercourtlist: 'Reserve Court',
+  usercourtreservation: 'Create Reservation',
+  usercourtviewing: 'View Available Courts'
 };
 
 // Page-specific stylesheets and scripts
@@ -87,6 +93,55 @@ const pageAssets = {
     scripts: [],
     hasNavbar: false,
     hasSidebar: true
+  },
+  courtreservations: {
+    styles: [
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+      'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
+    ],
+    scripts: [],
+    hasNavbar: false,
+    hasSidebar: true
+  },
+
+  eventtournaments: {
+    styles: [
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+      'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
+    ],
+    scripts: [],
+    hasNavbar: false,
+    hasSidebar: true
+  },
+  viewuserpayment: {
+    styles: [
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+      'https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css'
+    ],
+    scripts: [],
+    hasNavbar: false,
+    hasSidebar: true
+  },
+  usercourtlist: {
+    styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
+    scripts: [],
+    hasNavbar: true,
+    hasSidebar: false
+  },
+  usercourtviewing: {
+    styles: ['https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css'],
+    scripts: [],
+    hasNavbar: true,
+    hasSidebar: false
+  },
+  usercourtreservation: {
+    styles: [
+      'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css',
+      'https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css'
+    ],
+    scripts: ['https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js'],
+    hasNavbar: true,
+    hasSidebar: false
   }
 };
 
@@ -134,10 +189,16 @@ module.exports = () => {
       signup: './client/js/pages/signUp/signUp.js',
       verification: './client/js/pages/verification/verification.js',
       resetpassword: './client/js/pages/resetpassword/resetPassword.js',
-      userdash: './client/js/pages/userdash/userdash.js',
+      userdash: './client/js/pages/userdash/userDash.js',
       userprofile: './client/js/pages/userprofile/userprofile.js',
       courtregistration: './client/js/pages/courtregistration/courtRegistration.js',
-      admindash: './client/js/pages/admindash/admindash.js'
+      admindash: './client/js/pages/admindash/adminDash.js',
+      courtreservations: './client/js/pages/courtreservations/courtReservations.js',
+      eventtournaments: './client/js/pages/event&tournaments/event&Tournaments.js',
+      viewuserpayment: './client/js/pages/viewuserpayment/viewUserPayment.js',
+      usercourtlist: './client/js/pages/usercourtlist/userCourtList.js',
+      usercourtviewing: './client/js/pages/usercourtviewing/userCourtViewing.js',
+      usercourtreservation: './client/js/pages/usercourtreservation/userCourtReservation.js'
     },
     output: {
       filename: '[name].[contenthash].js',

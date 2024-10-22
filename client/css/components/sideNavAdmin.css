@@ -20,7 +20,7 @@
 }
 
 .sidebar.open {
-  width: 250px;
+  width: 270px;
 }
 
 .sidebar .logo-details {
@@ -181,7 +181,7 @@
 }
 
 .sidebar.open li.profile {
-  width: 250px;
+  width: 270px;
 }
 
 .sidebar li .profile-details {
@@ -210,19 +210,20 @@
   font-size: 12px;
 }
 
-.sidebar .profile #log_out {
+.sidebar .profile #logoutBtn {
   position: absolute;
   top: 50%;
   right: 0;
   transform: translateY(-50%);
   background: #397cf7;
   width: 100%;
+  cursor: pointer;
   height: 60px;
   line-height: 60px;
   transition: all 0.5s ease;
 }
 
-.sidebar.open .profile #log_out {
+.sidebar.open .profile #logoutBtn {
   width: 50px;
   background: none;
 }

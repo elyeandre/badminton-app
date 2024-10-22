@@ -13,14 +13,19 @@ const fileUpload = require('express-fileupload');
 const { startTokenCleanupCronJob } = require('./src/utils/tokenCleanupCron.js');
 
 const config = require('config');
+// check for required environment variables
+require('./config/checkEnvVars');
 
 const MAX_FILE_SIZE = config.get('maxFileSize');
 
 // database connection
 const connectDB = require('./config/db');
+const { startReservationCleanupCronJob } = require('./src/utils/reservationCleanup.js');
 connectDB(config);
 
 const app = express();
+var httpServer = require('http').createServer(app);
+var io = require('socket.io')(httpServer);
 
 // view engine setup
 app.set('view engine', 'ejs');
@@ -29,9 +34,17 @@ app.set('views', path.join(__dirname, 'client', 'views'));
 // check the environment variable to decide on security features
 const disableSecurity = config.get('disableSecurity');
 
+// Set CORS options
+const corsOptions = {
+  origin: [config.get('frontendUrl'), 'https://checkoutanalytics-test.adyen.com'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+};
+
 // CORS middleware allows your API to be accessed from other origins (domains)
 if (!disableSecurity) {
-  app.use(cors());
+  app.use(cors(corsOptions));
 }
 app.disable('x-powered-by'); // reduce fingerprinting
 app.use(cookieParser());
@@ -99,10 +112,25 @@ app.use(
   })
 );
 
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  console.log('New client connected');
+
+  // You can listen for events from the client
+  socket.on('message', (message) => {
+    console.log('Received message:', message);
+  });
+
+  // Notify clients about a reservation update
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
+
 // initialize and register all the application routes
 require('./src/routes/indexRoutes')(app);
 require('./src/routes/authRoutes')(app);
-require('./src/routes/userRoutes')(app);
+require('./src/routes/userRoutes')(app, io);
 
 //  handle unregistered route for all HTTP Methods
 app.all('*', function (req, res, next) {
@@ -134,11 +162,13 @@ app.use(function (err, req, res, next) {
   });
 });
 
-const server = app.listen(config.get('port'), config.get('host'), () => {
+const server = httpServer.listen(config.get('port'), config.get('host'), () => {
   console.log(`Server is running at http://${config.get('host')}:${config.get('port')}`);
 
   // start the token cleanup cron job
   startTokenCleanupCronJob();
+  // start the reservation cleanup cron job
+  startReservationCleanupCronJob();
 });
 
 // handle graceful shutdown

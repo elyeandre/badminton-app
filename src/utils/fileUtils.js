@@ -9,7 +9,10 @@ const serveFile = (filePath, res, next) => {
 
     res.sendFile(filePath, (sendFileErr) => {
       if (sendFileErr) {
-        return next(createError(500, 'Internal Server Error'));
+        // Only call next if the headers haven't been sent
+        if (!res.headersSent) {
+          return next(createError(500, 'Internal Server Error'));
+        }
       }
     });
   });
