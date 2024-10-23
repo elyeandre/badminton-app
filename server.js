@@ -35,9 +35,10 @@ app.set('views', path.join(__dirname, 'client', 'views'));
 const disableSecurity = config.get('disableSecurity');
 
 // CORS middleware allows your API to be accessed from other origins (domains)
-if (!disableSecurity) {
+if (disableSecurity) {
   app.use(cors());
 }
+app.use(cors());
 app.disable('x-powered-by'); // reduce fingerprinting
 app.use(cookieParser());
 // enable compression reduces the size of html css and js to significantly improves the latency
@@ -46,11 +47,13 @@ app.use(compression());
 app.use(morgan('dev'));
 //It protects against common security vulnerabilities like clickjacking, XSS, etc.
 
-if (!disableSecurity) {
+if (disableSecurity) {
+  app.use(helmet());
   app.use(
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
+        connectSrc: ["'self'", 'https://nominatim.openstreetmap.org'],
         baseUri: ["'self'"],
         fontSrc: ["'self'", 'https:', 'data:'],
         formAction: ["'self'"],
