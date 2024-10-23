@@ -19,6 +19,7 @@ const { validateUserId, validateUserInfo } = require('../middleware/validator');
 const validateUpdateFields = require('../middleware/validateUpdateField');
 const { createRateLimiter } = require('../middleware/rateLimiter');
 const { checkFilePermissions } = require('../middleware/checkFilePermission');
+const checkCourtId = require('../middleware/checkCourtId');
 
 const limiter = createRateLimiter(15 * 60 * 1000, 100);
 
@@ -48,7 +49,7 @@ let routes = (app, io) => {
     serveFile(filePath, res, next);
   });
 
-  router.get('/court-reservation', verifyToken, roleChecker(['player', 'coach']), (req, res, next) => {
+  router.get('/court-reservation', verifyToken, checkCourtId, roleChecker(['player', 'coach']), (req, res, next) => {
     const filePath = path.resolve(__dirname, '../../build/usercourtreservation.html');
     serveFile(filePath, res, next);
   });
