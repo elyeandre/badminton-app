@@ -53,12 +53,12 @@ if (disableSecurity) {
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
-        connectSrc: ["'self'", 'https://nominatim.openstreetmap.org'],
+        connectSrc: ["'self'", 'https://nominatim.openstreetmap.org', 'https://raw.githubusercontent.com'],
         baseUri: ["'self'"],
         fontSrc: ["'self'", 'https:', 'data:'],
         formAction: ["'self'"],
         frameAncestors: ["'self'"],
-        imgSrc: ["'self'", 'data:'],
+        imgSrc: ["'self'", 'data:', 'https://*.tile.openstreetmap.org'],
         objectSrc: ["'none'"],
         scriptSrc: [
           "'self'",
