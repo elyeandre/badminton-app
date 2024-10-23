@@ -47,8 +47,8 @@ async function createPayPalPayment(totalAmount, payeeEmail, brandName, logoImage
   const accessToken = tokenData.access_token;
   const unsignedToken = createUnsignedJWT('badminton-app', payerId);
 
-  // use the access token to create a payment
-  const paymentResponse = await fetch(`${config.get('paypal').apiBaseUrl}/v1/payments/payment`, {
+  // use the access token to create an order via v2/checkout/orders
+  const orderResponse = await fetch(`${config.get('paypal').apiBaseUrl}/v2/checkout/orders`, {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -57,41 +57,36 @@ async function createPayPalPayment(totalAmount, payeeEmail, brandName, logoImage
       // 'PayPal-Auth-Assertion': unsignedToken
     },
     body: JSON.stringify({
-      intent: 'sale',
-      payer: {
-        payment_method: 'paypal'
-      },
-      transactions: [
+      intent: 'CAPTURE',
+      purchase_units: [
         {
           amount: {
-            total: totalAmount,
-            currency: 'PHP'
+            currency_code: 'PHP',
+            value: totalAmount
           },
           payee: {
-            email: payeeEmail
+            email_address: payeeEmail
           },
-          description: 'Payment for court reservation',
-          note_to_payer: 'Contact us for any questions on your order.'
+          description: 'Payment for court reservation'
         }
       ],
-      redirect_urls: {
+      application_context: {
+        brand_name: 'bataanbadminton',
+        locale: 'en-US',
+        shipping_preference: 'NO_SHIPPING',
+        user_action: 'PAY_NOW',
         return_url: `${config.get('frontendUrl')}/user/court-reservation`,
         cancel_url: `${config.get('frontendUrl')}/user/court-reservation`
-      },
-      application_context: {
-        // brand_name: brandName || 'badminton-app',
-        brand_name: brandName,
-        locale: 'en-US',
-        shipping_preference: 'NO_SHIPPING'
-        // user_action: 'PAY_NOW'
-        // logo_image: 'https://r2-api.mayor.workers.dev/logo.png'
-        // logo_image: `${config.get('frontendUrl')}${logoImage}`
       }
     })
   });
 
-  const paymentData = await paymentResponse.json();
-  return paymentData;
+  if (!orderResponse.ok) {
+    throw new Error(`Error creating PayPal order: ${orderResponse.statusText}`);
+  }
+
+  const orderData = await orderResponse.json();
+  return orderData;
 }
 
 module.exports = { createPayPalPayment };
