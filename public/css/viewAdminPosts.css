@@ -327,3 +327,30 @@ textarea {
     color: red;
     cursor: pointer;
 }
+
+.category-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.category-label input[type="checkbox"] {
+    margin-right: 6px; 
+}
+
+.category-label {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    width: 280px; 
+}
+
+.participant-limit {
+    padding: 10px;
+    font-size: 14px;
+    background-color: #f1f4fb;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    width: 70px; 
+    margin-left: 10px; 
+}

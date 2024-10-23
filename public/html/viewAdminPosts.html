@@ -12,7 +12,7 @@
     <div id="navbar" class="navbar"></div>
     <section class="home-section">
         <h1>Manage Posts</h1>
-
+ 
         <div class="content-section">
             <div class="caa-wrapper">
                 <div class="filter-buttons">
@@ -117,6 +117,7 @@
         <div id="addModal" class="modal">
             <div class="modal-content">
                 <h2>Add New Post</h2>
+
                 <label for="category">Select Category:</label>
                 <select id="category" required>
                     <option value="announcement">Announcement</option>
@@ -125,6 +126,7 @@
                     <option value="membership">Membership</option>
                 </select>
 
+                <!-- Common Fields -->
                 <div id="common-fields">
                     <label for="heading">Heading</label>
                     <input type="text" id="heading" placeholder="Type here">
@@ -132,31 +134,113 @@
                     <textarea id="details" rows="4" placeholder="Type here"></textarea>
                 </div>
 
+
+                <!-- Event Fields -->
                 <div id="event-fields" style="display: none;">
                     <label for="start-date">Start Date</label>
                     <input type="date" id="start-date">
-                
+
                     <label for="end-date">End Date</label>
                     <input type="date" id="end-date">
                 
+                
+                    <label for="registration-end-date">Registration End Date</label>
+                    <input type="date" id="registration-end-date">
+                
+
                     <label for="registration-end-date">Registration End Date</label>
                     <input type="date" id="registration-end-date">
                 
                     <label for="reservationFee">Reservation Fee (optional)</label>
                     <input type="number" id="reservationFee" placeholder="Enter reservation fee">
                 
+                
+                    <!-- Fee Inputs with Unique IDs -->
+
                     <!-- Fee Inputs with Unique IDs -->
                     <label for="eventFee">Event Fee (optional)</label>
                     <input type="number" id="eventFee" placeholder="Enter event fee">
-                
+
+                    <label for="participantLimit">Participant Limit</label>
+                    <input type="number" id="participantLimit" placeholder="Enter participant limit">
+                </div>
+
+                <!-- Tournament Fields -->
+                <div id="tournament-fields" style="display: none;">
+                    <label for="start-date">Start Date</label>
+                    <input type="date" id="tournament-start-date">
+
+                    <label for="end-date">End Date</label>
+                    <input type="date" id="tournament-end-date">
+
+                    <label for="reservationFee">Reservation Fee (optional)</label>
+                    <input type="number" id="tournament-reservationFee" placeholder="Enter reservation fee">
+
                     <label for="tournamentFee">Tournament Fee (optional)</label>
                     <input type="number" id="tournamentFee" placeholder="Enter tournament fee">
+
+                    <label for="category">Category</label>
+                    <div id="tournament-categories">
+                        <div class="category-row">
+                            <label class="category-label">
+                                <input type="checkbox" id="singlesWomen"> Singles Women
+                            </label>
+                            <input type="number" class="participant-limit" id="singlesWomenParticipants" placeholder="Enter participant limit">
+                        </div>
+                    
+                        <div class="category-row">
+                            <label class="category-label">
+                                <input type="checkbox" id="singlesMen"> Singles Men
+                            </label>
+                            <input type="number" class="participant-limit" id="singlesMenParticipants" placeholder="Enter participant limit">
+                        </div>
+                    
+                        <div class="category-row">
+                            <label class="category-label">
+                                <input type="checkbox" id="doublesWomen"> Doubles Women
+                            </label>
+                            <input type="number" class="participant-limit" id="doublesWomenParticipants" placeholder="Enter participant limit">
+                        </div>
+                    
+                        <div class="category-row">
+                            <label class="category-label">
+                                <input type="checkbox" id="doublesMen"> Doubles Men
+                            </label>
+                            <input type="number" class="participant-limit" id="doublesMenParticipants" placeholder="Enter participant limit">
+                        </div>
+                    
+                        <div class="category-row">
+                            <label class="category-label">
+                                <input type="checkbox" id="mix"> Mixed
+                            </label>
+                            <input type="number" class="participant-limit" id="mixParticipants" placeholder="Enter participant limit">
+                        </div>
+                    </div>
+                </div> 
                 
+                <!-- Membership Fields -->
+                <div id="membership-fields" style="display: none;">
+                    <label for="start-date">Start Date</label>
+                    <input type="date" id="membership-start-date">
+
+                    <label for="end-date">End Date</label>
+                    <input type="date" id="membership-end-date">
+
+                    <label for="reservationFee">Reservation Fee (optional)</label>
+                    <input type="number" id="membership-reservationFee" placeholder="Enter reservation fee">
+
                     <label for="membershipFee">Membership Fee (optional)</label>
                     <input type="number" id="membershipFee" placeholder="Enter membership fee">
-                </div>
-                
 
+                    <label for="participantLimit">Participant Limit</label>
+                    <input type="number" id="membership-participantLimit" placeholder="Enter participant limit">
+
+                    <label>
+                        <input type="checkbox" id="hiringForCoach"> Looking for a Coach
+                    </label>
+                </div>
+
+                <!-- Image Upload -->
                 <label for="image">Upload Images:</label>
                 <div class="input-group">
                     <span class="input-group-btn">
@@ -167,148 +251,16 @@
                 <!-- Image Preview Container -->
                 <div id="imagePreviewContainer" class="image-preview-container"></div>
 
+                <!-- Buttons -->
                 <div class="modal-buttons">
-                    <button type="postNow">Post Now</button>
+                    <button type="button" id="postNow">Post Now</button>
                     <button type="button" id="cancelModal">Cancel</button>
-                </div>            
+                </div>
             </div>
         </div>
     </section>
-    <script>
-        // Get the modal
-        var modal = document.getElementById("addModal");
-    
-        // Get the button that opens the modal
-        var btn = document.getElementById("add-post");
-    
-        // Get the category select element
-        var categorySelect = document.getElementById("category");
-    
-        // Get the fields for events and fees
-        var eventFields = document.getElementById("event-fields");
-        var eventFeeInput = document.getElementById('eventFee');
-        var tournamentFeeInput = document.getElementById('tournamentFee');
-        var membershipFeeInput = document.getElementById('membershipFee');
-    
-        // Get labels for the fees
-        var eventFeeLabel = document.querySelector('label[for="eventFee"]');
-        var tournamentFeeLabel = document.querySelector('label[for="tournamentFee"]');
-        var membershipFeeLabel = document.querySelector('label[for="membershipFee"]');
-        
-        // Get common form fields
-        var headingInput = document.getElementById("heading");
-        var detailsInput = document.getElementById("details");
-        var startDateInput = document.getElementById("start-date");
-        var endDateInput = document.getElementById("end-date");
-        var registrationEndDateInput = document.getElementById("registration-end-date");
-        var reservationFeeInput = document.getElementById("reservationFee");
-        var imageUpload = document.getElementById("imageInput");
-        var modalButtons = document.getElementsByClassName("modal-buttons")[0];
-    
-        // When the user clicks the button, open the modal
-        btn.onclick = function() {
-            modal.style.display = "flex";
-            eventFields.style.display = "none"; // Hide event fields initially
-            hideAllFeeInputsAndLabels(); // Hide all fee inputs and labels
-        };
-    
-        // Show/hide fields based on the selected category
-        categorySelect.onchange = function() {
-            // Reset the visibility of fee inputs and labels
-            hideAllFeeInputsAndLabels();
-    
-            if (this.value === "event") {
-                // Show event-specific fields
-                eventFields.style.display = "block";
-                eventFeeInput.style.display = 'block';
-                eventFeeLabel.style.display = 'block';
-                
-                // Make sure all event fields are shown
-                headingInput.style.display = 'block';
-                detailsInput.style.display = 'block';
-                startDateInput.style.display = 'block';
-                endDateInput.style.display = 'block';
-                registrationEndDateInput.style.display = 'block';
-                reservationFeeInput.style.display = 'block';
-                imageUpload.style.display = 'block';
-                modalButtons.style.display = 'block';
-            } else if (this.value === "tournament") {
-                // Show event fields but change the fee input to tournament fee
-                eventFields.style.display = "block";
-                tournamentFeeInput.style.display = 'block';
-                tournamentFeeLabel.style.display = 'block';
-    
-                // Keep common fields visible but change only the fee field
-            } else if (this.value === "membership") {
-                // Show event fields but change the fee input to membership fee
-                eventFields.style.display = "block";
-                membershipFeeInput.style.display = 'block';
-                membershipFeeLabel.style.display = 'block';
-    
-                // Keep common fields visible but change only the fee field
-            } else {
-                // Hide event fields for announcement or other categories
-                eventFields.style.display = "none";
-            }
-        };
-    
-        // Function to hide all fee inputs and labels
-        function hideAllFeeInputsAndLabels() {
-            eventFeeInput.style.display = 'none';
-            tournamentFeeInput.style.display = 'none';
-            membershipFeeInput.style.display = 'none';
-            eventFeeLabel.style.display = 'none';
-            tournamentFeeLabel.style.display = 'none';
-            membershipFeeLabel.style.display = 'none';
-        }
-    
         // Ensure the correct upload buttons and preview containers are used
         const input = document.getElementById("imageInput");
-        const previewContainer = document.getElementById("imagePreviewContainer");
-        let images = [];
-    
-        // Trigger the file input when the upload button is clicked
-        document.getElementById("uploadButton").addEventListener("click", () => input.click());
-    
-        // Handle image input change
-        input.addEventListener("change", function() {
-            Array.from(this.files).forEach(file => { 
-                if (images.length >= 5) {
-                    alert("You can upload a maximum of 5 images.");
-                    return;
-                }
-    
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => {
-                    const id = Date.now().toString();
-                    images.push({ id, src: reader.result, file });
-                    updateImagePreviews(images, previewContainer);
-                };
-            });
-        });
-    
-        // Function to update image preview area
-        function updateImagePreviews(images, container) {
-            container.innerHTML = '';  // Clear existing previews
-            images.forEach(image => {
-                const div = document.createElement('div');
-                div.classList.add('image-preview');
-                div.innerHTML = `
-                    <img src="${image.src}" alt="Image Preview">
-                    <button type="button" class="btn btn-danger btn-sm" onclick="removeImage('${image.id}')">
-                        <i class="fas fa-times"></i>
-                    </button>`;
-                container.appendChild(div);
-            });
-        }
-    
-        // Function to remove an image from preview
-        window.removeImage = function(id) {
-            images = images.filter(image => image.id !== id);
-            updateImagePreviews(images, previewContainer);
-        };
-    </script>
-    
+    <script src="../js/viewAdminPosts.js"></script> 
 </body>
 </html>
