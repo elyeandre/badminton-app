@@ -36,19 +36,84 @@ body {
     margin: 0 auto;
 }
 
+.stats-container {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    gap: 8px;
+}
+
+.stat-box {
+    background-color: #eee;
+    border: 1px solid #eee;
+    border-left: 5px solid transparent;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    padding: 10px;
+    text-align: left;
+    width: 22%;
+    color: #333;
+    height: 100px;
+}
+
+.stat-box.total-product {
+    border-left-color: #007bff;
+}
+
+.stat-box.total-stock {
+    border-left-color: #28a745;
+}
+
+.stat-box.total-orders {
+    border-left-color: #ffc107;
+}
+
+.stat-box.sales {
+    border-left-color: #dc3545;
+}
+
+.stat-box.total-customers {
+    border-left-color: #17a2b8;
+}
+
+.stat-box i {
+    font-size: 55px;
+    color: #000;
+    margin-right: 15px;
+}
+
+.stat-box-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-box h3 {
+    font-size: 14px;
+    margin: 0;
+    font-weight: 300;
+}
+
+.stat-box span {
+    font-size: 24px;
+    font-weight: 600;
+    margin-top: 5px;
+}
+
 .filter-container {
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     margin-bottom: 10px;
-    align-items: center; 
+    align-items: center;
 }
 
 .filter-left {
-    font-weight: 600; 
+    font-weight: 600;
 }
 
 .filter-button {
-    padding: 10px 20px; 
+    padding: 10px 20px;
     color: #000;
     border: none;
     border-radius: 5px;
@@ -57,7 +122,7 @@ body {
     display: flex;
     align-items: center;
     font-weight: 500;
-    text-decoration: none; 
+    text-decoration: none;
     font-size: 14px;
 }
 
@@ -69,7 +134,6 @@ body {
     background-color: #397CF7;
     color: #fff;
 }
-
 
 table {
     width: 100%;
@@ -117,7 +181,6 @@ tbody tr:nth-child(even) {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 10px;
 }
 
 .filter-container select {
@@ -180,7 +243,7 @@ tbody tr:nth-child(even) {
     color: #007bff;
 }
 
-.modal {
+#addProductModal.modal {
     display: none;
     position: fixed;
     z-index: 1;
@@ -191,31 +254,54 @@ tbody tr:nth-child(even) {
     background-color: rgba(0, 0, 0, 0.4);
 }
 
-.modal-content {
+#addProductModal .modal-content {
     background-color: #fefefe;
-    position: absolute; 
-    top: 50%; 
-    left: 50%; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     padding: 20px;
     border: 1px solid #888;
-    width: 90%; 
-    max-width: 500px; 
+    width: 90%;
+    max-width: 800px;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-wrap: wrap;
 }
 
-h2 {
+#addProductModal .modal-left {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+}
+
+#addProductModal .modal-left img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 8px;
+}
+
+#addProductModal .modal-right {
+    width: 70%;
+    padding-left: 20px;
+}
+
+#addProductModal h2 {
     margin-bottom: 15px;
 }
 
-label {
+#addProductModal label {
     display: block;
     margin-bottom: 5px;
     font-weight: 500;
 }
 
-select, textarea {
+#addProductModal input,
+#addProductModal select,
+#addProductModal textarea {
     background-color: #f1f4fb;
     width: 100%;
     padding: 10px;
@@ -225,45 +311,89 @@ select, textarea {
     font-size: 14px;
 }
 
-select:focus, textarea:focus {
+#addProductModal input:focus,
+#addProductModal select:focus,
+#addProductModal textarea:focus {
     border: 0.5px solid black;
 }
 
-textarea {
-    resize: none;
-}
-
-.modal-buttons {
+#addProductModal .input-row {
     display: flex;
     justify-content: space-between;
 }
 
-button {
-    width: 100%; 
-    padding: 10px; 
+#addProductModal .input-row div {
+    width: 48%;
+}
+
+#addProductModal .modal-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+#addProductModal .modal-buttons button {
+    width: 48%;
+    padding: 10px;
     border: none;
     border-radius: 5px;
     background-color: #142850;
     color: #fff;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     transition: background-color 0.3s;
 }
 
-.modal-buttons button:nth-child(2) {
-    margin-left: 10px; 
+#addProductModal .modal-buttons button:hover {
+    background-color: #397CF7;
 }
 
-.modal-buttons button:hover {
-    background-color: #397CF7; 
-}
-
-#cancelModal {
-    background-color: #e0e0e0; 
+#addProductModal #cancelProductModal {
+    background-color: #e0e0e0;
     color: #000;
 }
 
-#cancelModal:hover {
-    background-color: #397CF7; 
+#addProductModal #cancelProductModal:hover {
+    background-color: #397CF7;
     color: #fff;
+}
+
+.archive i {
+    color: #ffcc00;
+}
+
+.redo i {
+    color: #ffcc00;
+}
+
+.delete i {
+    color: #dc3545;
+}
+
+th {
+    cursor: pointer;
+    position: relative;
+}
+
+.sort-icon {
+    margin-left: 5px;
+    visibility: hidden;
+}
+
+th:hover .sort-icon {
+    visibility: visible;
+}
+
+.sort-asc:after {
+    content: '\f0de';
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-left: 5px;
+}
+
+.sort-desc:after {
+    content: '\f0de';
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-left: 5px;
+    transform: rotate(180deg);
 }
