@@ -375,11 +375,11 @@ document.addEventListener('DOMContentLoaded', () => {
 function updatePaymentUI(totalHours, totalCourts) {
   const calculatedAmount = totalHours * hourlyRate * totalCourts;
   const reservationFee = (calculatedAmount * 0.1).toFixed(2);
-  const totalPayment = (calculatedAmount - reservationFee).toFixed(2);
 
+  // update the UI to show the reservation fee only
   getAll('.payment-row .payment-value')[0].textContent = formatCurrency(calculatedAmount);
   getAll('.payment-row .payment-value')[1].textContent = formatCurrency(reservationFee);
-  getAll('.payment-row .total-payment-value')[0].textContent = formatCurrency(totalPayment);
+  getAll('.payment-row .total-payment-value')[0].textContent = formatCurrency(reservationFee);
 }
 
 function handleTimeSlotSelection() {
