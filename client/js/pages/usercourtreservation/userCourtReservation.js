@@ -424,19 +424,3 @@ function generateTimeSlots(availabilityData) {
     timeSlotsContainer.appendChild(timeSlot);
   });
 }
-async function fetchClientKey() {
-  try {
-    const response = await fetch('/user/client-key', {
-      method: 'GET',
-      credentials: 'include'
-    });
-    if (!response.ok) {
-      throw new Error(`Error fetching client key: ${response.status}`);
-    }
-    const data = await response.json();
-    return data.clientKey;
-  } catch (error) {
-    console.error(error);
-    throw new Error('Failed to fetch client key');
-  }
-}
