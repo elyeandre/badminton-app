@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
-    <title>User Payment</title>
+    <title>User List</title>
     <link rel="stylesheet" href="../css/viewTournament.css">
     <script src="../js/sideNavAdmin.js" defer></script>
 </head>
@@ -24,14 +24,14 @@
                     <input type="text" id="search" class="search-field" placeholder="Search by name..." onkeyup="searchTable()" />
                     <a href="viewAdminPosts.html" class="filter-button">View Post <i class="fas fa-eye"></i></a>
                     <a href="viewUserPaymentET.html" class="filter-button">View Payment <i class="fas fa-credit-card"></i></a>
-                    <a href="#" class="filter-button">Print User List <i class="fas fa-file-alt"></i></a>
                 </div>
             </div>
 
             <div class="filter-actions">
                 <a href="viewTournament.html" class="filter-button active">User List <i class="fas fa-users"></i></a>
-                <a href="createBracket.html" class="filter-button">Create Bracket <i class="fas fa-tasks"></i></a>
-                <a href="viewResult.html" class="filter-button">View Result <i class="fas fa-list-alt"></i></a>
+                <a href="createBracket.html" class="filter-button">Game Bracket <i class="fas fa-tasks"></i></a>
+                <a href="viewResult.html" class="filter-button">Score Result <i class="fas fa-list-alt"></i></a>
+                <button class="print-button filter-button" onclick="window.print()">Print <i class="fas fa-print"></i></button>
             </div>
                    
             <table>

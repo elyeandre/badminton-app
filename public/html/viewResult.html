@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <title>Tournament Result</title>
+    <link rel="stylesheet" href="../css/viewTournament.css">
+    <script src="../js/sideNavAdmin.js" defer></script>
+    <style>
+        h3 {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar" class="navbar"></div>
+    <section class="home-section">
+        <h1>Tournament Name Here</h1>
+
+        <div class="box">
+            <div class="filter-container">
+                <div class="filter-left">
+                    <p>Total Number of Participants: <strong>20</strong></p>
+                </div>
+
+                <div class="filter-actions">
+                    <label for="search">Search:</label>
+                    <input type="text" id="search" class="search-field" placeholder="Search by name..." onkeyup="searchTable()" />
+                    <a href="viewAdminPosts.html" class="filter-button">View Post <i class="fas fa-eye"></i></a>
+                    <a href="viewUserPaymentET.html" class="filter-button">View Payment <i class="fas fa-credit-card"></i></a>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <a href="viewTournament.html" class="filter-button">User List <i class="fas fa-users"></i></a>
+                <a href="createBracket.html" class="filter-button">Game Bracket <i class="fas fa-tasks"></i></a>
+                <a href="viewResult.html" class="filter-button active">Score Result <i class="fas fa-list-alt"></i></a>
+                <button class="print-button filter-button" onclick="window.print()">Print <i class="fas fa-print"></i></button>
+            </div>
+
+            <!-- Singles Women Table -->
+            <h3>Singles Women</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score 1</th>
+                        <th>Score 2</th>
+                        <th>Score 3</th>
+                        <th>Score 4</th>
+                        <th>Final Score</th>
+                        <th>Award</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Emma Johnson</td>
+                        <td>21</td>
+                        <td>15</td>
+                        <td>21</td>
+                        <td>17</td>
+                        <td>104</td>
+                        <td>Gold</td>
+                    </tr>
+                    <tr>
+                        <td>Sophia Williams</td>
+                        <td>18</td>
+                        <td>21</td>
+                        <td>15</td>
+                        <td>21</td>
+                        <td>75</td>
+                        <td>Silver</td>
+                    </tr>
+                    <tr>
+                        <td>Olivia Brown</td>
+                        <td>20</td>
+                        <td>19</td>
+                        <td>21</td>
+                        <td>18</td>
+                        <td>78</td>
+                        <td>Bronze</td>
+                    </tr>
+                    <tr>
+                        <td>Ava Garcia</td>
+                        <td>16</td>
+                        <td>18</td>
+                        <td>19</td>
+                        <td>17</td>
+                        <td>70</td>
+                        <td>Participant</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Singles Men Table -->
+            <h3>Singles Men</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score 1</th>
+                        <th>Score 2</th>
+                        <th>Score 3</th>
+                        <th>Score 4</th>
+                        <th>Final Score</th>
+                        <th>Award</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Lucas Smith</td>
+                        <td>21</td>
+                        <td>10</td>
+                        <td>21</td>
+                        <td>15</td>
+                        <td>100</td>
+                        <td>Gold</td>
+                    </tr>
+                    <tr>
+                        <td>Noah Johnson</td>
+                        <td>20</td>
+                        <td>15</td>
+                        <td>21</td>
+                        <td>12</td>
+                        <td>81</td>
+                        <td>Silver</td>
+                    </tr>
+                    <tr>
+                        <td>Oliver Lee</td>
+                        <td>19</td>
+                        <td>21</td>
+                        <td>18</td>
+                        <td>21</td>
+                        <td>79</td>
+                        <td>Bronze</td>
+                    </tr>
+                    <tr>
+                        <td>Elijah Martinez</td>
+                        <td>16</td>
+                        <td>18</td>
+                        <td>17</td>
+                        <td>15</td>
+                        <td>66</td>
+                        <td>Participant</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Doubles Women Table -->
+            <h3>Doubles Women</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score 1</th>
+                        <th>Score 2</th>
+                        <th>Score 3</th>
+                        <th>Score 4</th>
+                        <th>Final Score</th>
+                        <th>Award</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Emma Johnson / Ava Garcia</td>
+                        <td>21</td>
+                        <td>18</td>
+                        <td>21</td>
+                        <td>20</td>
+                        <td>102</td>
+                        <td>Gold</td>
+                    </tr>
+                    <tr>
+                        <td>Olivia Brown / Sophia Williams</td>
+                        <td>19</td>
+                        <td>21</td>
+                        <td>18</td>
+                        <td>19</td>
+                        <td>77</td>
+                        <td>Silver</td>
+                    </tr>
+                    <tr>
+                        <td>Isabella Miller / Mia Davis</td>
+                        <td>18</td>
+                        <td>20</td>
+                        <td>19</td>
+                        <td>18</td>
+                        <td>75</td>
+                        <td>Bronze</td>
+                    </tr>
+                    <tr>
+                        <td>Charlotte Wilson / Amelia Rodriguez</td>
+                        <td>15</td>
+                        <td>16</td>
+                        <td>15</td>
+                        <td>18</td>
+                        <td>64</td>
+                        <td>Participant</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Doubles Men Table -->
+            <h3>Doubles Men</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score 1</th>
+                        <th>Score 2</th>
+                        <th>Score 3</th>
+                        <th>Score 4</th>
+                        <th>Final Score</th>
+                        <th>Award</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>James Davis / Liam Taylor</td>
+                        <td>21</td>
+                        <td>19</td>
+                        <td>21</td>
+                        <td>20</td>
+                        <td>105</td>
+                        <td>Gold</td>
+                    </tr>
+                    <tr>
+                        <td>Benjamin Wilson / Noah Harris</td>
+                        <td>19</td>
+                        <td>18</td>
+                        <td>21</td>
+                        <td>17</td>
+                        <td>75</td>
+                        <td>Silver</td>
+                    </tr>
+                    <tr>
+                        <td>Lucas Lewis / Elijah Martinez</td>
+                        <td>17</td>
+                        <td>15</td>
+                        <td>19</td>
+                        <td>18</td>
+                        <td>69</td>
+                        <td>Bronze</td>
+                    </tr>
+                    <tr>
+                        <td>Henry Walker / Alexander Robinson</td>
+                        <td>15</td>
+                        <td>14</td>
+                        <td>16</td>
+                        <td>17</td>
+                        <td>62</td>
+                        <td>Participant</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Mixed Table -->
+            <h3>Mixed</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Score 1</th>
+                        <th>Score 2</th>
+                        <th>Score 3</th>
+                        <th>Score 4</th>
+                        <th>Final Score</th>
+                        <th>Award</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Emma Johnson / Lucas Smith</td>
+                        <td>21</td>
+                        <td>15</td>
+                        <td>21</td>
+                        <td>20</td>
+                        <td>105</td>
+                        <td>Gold</td>
+                    </tr>
+                    <tr>
+                        <td>Sophia Williams / Benjamin Wilson</td>
+                        <td>19</td>
+                        <td>18</td>
+                        <td>20</td>
+                        <td>17</td>
+                        <td>74</td>
+                        <td>Silver</td>
+                    </tr>
+                    <tr>
+                        <td>Olivia Brown / James Davis</td>
+                        <td>20</td>
+                        <td>21</td>
+                        <td>18</td>
+                        <td>19</td>
+                        <td>78</td>
+                        <td>Bronze</td>
+                    </tr>
+                    <tr>
+                        <td>Ava Garcia / Henry Walker</td>
+                        <td>15</td>
+                        <td>14</td>
+                        <td>16</td>
+                        <td>18</td>
+                        <td>63</td>
+                        <td>Participant</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</body>
+</html>
