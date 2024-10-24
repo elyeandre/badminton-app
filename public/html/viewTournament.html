@@ -25,15 +25,15 @@
                     <a href="viewAdminPosts.html" class="filter-button">View Post <i class="fas fa-eye"></i></a>
                     <a href="viewUserPaymentET.html" class="filter-button">View Payment <i class="fas fa-credit-card"></i></a>
                     <a href="#" class="filter-button">Print User List <i class="fas fa-file-alt"></i></a>
-                    <!--<a href="#" class="filter-button">Create Result <i class="fas fa-plus"></i></a>-->
                 </div>
             </div>
 
             <div class="filter-actions">
+                <a href="viewTournament.html" class="filter-button active">User List <i class="fas fa-users"></i></a>
                 <a href="createBracket.html" class="filter-button">Create Bracket <i class="fas fa-tasks"></i></a>
                 <a href="viewResult.html" class="filter-button">View Result <i class="fas fa-list-alt"></i></a>
             </div>
-                        
+                   
             <table>
                 <thead>
                     <tr>
@@ -91,74 +91,14 @@
             </table>
             
         </div>
-        <div id="createResultModal" class="modal">
-            <div class="modal-content">
-                <h2>Create Tournament Result</h2>
-                <form id="resultForm">
-                    <label for="participantSelect">Select Participant:</label>
-                    <select id="participantSelect" required>
-                        <option value="">Select a participant</option>
-                        <option value="Charlie Brown">Charlie Brown</option>
-                        <option value="Lucy Van Pelt">Lucy Van Pelt</option>
-                        <option value="KC Cruz">KC Cruz</option>
-                    </select>
-
-                    <label for="categorySelect">Select Category:</label>
-                    <select id="categorySelect" required>
-                        <option value="">Select category</option>
-                        <option value="Singles Women">Singles Women</option>
-                        <option value="Singles Men">Singles Men</option>
-                        <option value="Doubles Women">Doubles Women</option>
-                        <option value="Doubles Men">Doubles Men</option>
-                        <option value="Mixed">Mixed</option>
-                    </select>
-                    
-                    <label for="result_tournamentResultSelect">Tournament Result:</label>
-                    <select id="result_tournamentResultSelect" required>
-                        <option value="">Select result</option>
-                        <option value="Champion">Champion</option>
-                        <option value="2nd Place">2nd Place</option>
-                        <option value="3rd Place">3rd Place</option>
-                        <option value="4th Place">4th Place</option>
-                        <option value="5th Place">5th Place</option>
-                        <option value="Disqualified">Disqualified</option>
-                        <option value="Participation Award">Participation Award</option>
-                        <option value="Best Player">Best Player</option>
-                    </select>
-        
-                    <label for="comments">Comments (optional):</label>
-                    <textarea id="comments" rows="4" placeholder="Add any additional notes here..."></textarea>
-        
-                    <div class="modal-buttons">
-                        <button type="submit">Submit</button>
-                        <button type="button" id="cancelModal">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
     </section>
     <script>
-        const modal = document.getElementById("createResultModal");
-        const btn = document.querySelector(".filter-button:last-child"); // Select the last filter button (Create Result)
-        const span = document.getElementById("closeModal");
-    
-        // When the user clicks the button, open the modal 
-        btn.onclick = function() {
-            modal.style.display = "block";
-        }
-    
-        // When the user clicks on <span> (x), close the modal
-        span.onclick = function() {
-            modal.style.display = "none";
-        }
-    
-        // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
-            }
-        }
+        document.querySelectorAll('.filter-button').forEach(button => {
+            button.addEventListener('click', function() {
+                document.querySelector('.filter-button.active')?.classList.remove('active');
+                this.classList.add('active');
+            });
+        });
     </script>
     </body>
 </html>

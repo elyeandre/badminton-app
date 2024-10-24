@@ -120,6 +120,14 @@ tbody tr:nth-child(even) {
     margin-bottom: 10px;
 }
 
+.filter-actions a.active {
+    background-color: #f1f1f1;
+    font-weight: bold;
+    border-bottom: 3px solid #142850;
+    color: #000; /* Ensure text color stays readable */
+}
+
+
 .filter-container select {
     padding: 10px 20px;
     color: #000;

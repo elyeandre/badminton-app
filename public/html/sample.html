@@ -1,288 +1,276 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dynamic Bracket</title>
-    <style>
-        @import 'https://fonts.googleapis.com/css?family=Roboto+Slab:400,700';
-        html {
-            font-size: 1rem;
-        }
-
-        body {
-            background: #f0f2f2;
-        }
-
-        .bracket {
-            display: inline-block;
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            white-space: nowrap;
-            font-size: 0;
-        }
-        .bracket .round {
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .bracket .round .winners > div {
-            display: inline-block;
-            vertical-align: middle;
-        }
-        .bracket .round .winners > div.matchups .matchup:last-child {
-            margin-bottom: 0 !important;
-        }
-        .bracket .round .winners > div.matchups .matchup .participants {
-            border-radius: 0.25rem;
-            overflow: hidden;
-        }
-        .bracket .round .winners > div.matchups .matchup .participants .participant {
-            box-sizing: border-box;
-            color: #858585;
-            border-left: 0.25rem solid #858585;
-            background: white;
-            width: 14rem;
-            height: 3rem;
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
-        }
-        .bracket .round .winners > div.matchups .matchup .participants .participant.winner {
-            color: #60c645;
-            border-color: #60c645;
-        }
-        .bracket .round .winners > div.matchups .matchup .participants .participant.loser {
-            color: #dc563f;
-            border-color: #dc563f;
-        }
-        .bracket .round .winners > div.matchups .matchup .participants .participant:not(:last-child) {
-            border-bottom: thin solid #f0f2f2;
-        }
-        .bracket .round .winners > div.matchups .matchup .participants .participant span {
-            margin: 0 1.25rem;
-            line-height: 3;
-            font-size: 1rem;
-            font-family: "Roboto Slab";
-        }
-        .bracket .round .winners > div.connector.filled .line, 
-        .bracket .round .winners > div.connector.filled.bottom .merger:after, 
-        .bracket .round .winners > div.connector.filled.top .merger:before {
-            border-color: #60c645;
-        }
-        .bracket .round .winners > div.connector .line, 
-        .bracket .round .winners > div.connector .merger {
-            box-sizing: border-box;
-            width: 2rem;
-            display: inline-block;
-            vertical-align: top;
-        }
-        .bracket .round .winners > div.connector .line {
-            border-bottom: thin solid #c0c0c8;
-            height: 4rem;
-        }
-        .bracket .round .winners > div.connector .merger {
-            position: relative;
-            height: 8rem;
-        }
-        .bracket .round .winners > div.connector .merger:before, 
-        .bracket .round .winners > div.connector .merger:after {
-            content: "";
-            display: block;
-            box-sizing: border-box;
-            width: 100%;
-            height: 50%;
-            border: 0 solid;
-            border-color: #c0c0c8;
-        }
-        .bracket .round .winners > div.connector .merger:before {
-            border-right-width: thin;
-            border-top-width: thin;
-        }
-        .bracket .round .winners > div.connector .merger:after {
-            border-right-width: thin;
-            border-bottom-width: thin;
-        }
-        .bracket .round.quarterfinals .winners:not(:last-child) {
-            margin-bottom: 2rem;
-        }
-        .bracket .round.quarterfinals .winners .matchups .matchup:not(:last-child) {
-            margin-bottom: 2rem;
-        }
-        .bracket .round.semifinals .winners .matchups .matchup:not(:last-child) {
-            margin-bottom: 10rem;
-        }
-        .bracket .round.semifinals .winners .connector .merger {
-            height: 16rem;
-        }
-        .bracket .round.semifinals .winners .connector .line {
-            height: 8rem;
-        }
-        .bracket .round.finals .winners .connector .merger {
-            height: 3rem;
-        }
-        .bracket .round.finals .winners .connector .line {
-            height: 1.5rem;
-        }
-        .input-section {
-            text-align: center;
-            margin-top: 2rem;
-        }
-        
-        .input-section input {
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            width: 14rem;
-        }
-        
-        .input-section button {
-            padding: 0.75rem;
-            background-color: #60c645;
-            color: white;
-            border: none;
-            border-radius: 0.25rem;
-            cursor: pointer;
-        }
-        
-        .input-section button:hover {
-            background-color: #4caf50;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Bracket</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,700">
+  <style>
+    html {
+      font-size: 1rem;
+    }
+    body {
+      background: #f0f2f2;
+    }
+    .bracket {
+      display: inline-block;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      white-space: nowrap;
+      font-size: 0;
+    }
+    .bracket .round {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .bracket .round .winners > div {
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .bracket .round .winners > div.matchups .matchup:last-child {
+      margin-bottom: 0 !important;
+    }
+    .bracket .round .winners > div.matchups .matchup .participants {
+      overflow: hidden;
+    }
+    .bracket .round .winners > div.matchups .matchup .participants .participant {
+      box-sizing: border-box;
+      color: #858585;
+      background: white;
+      width: 14rem;
+      height: 3rem;
+      box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .bracket .round .winners > div.matchups .matchup .participants .participant input[type="text"] {
+      font-size: 1rem;
+      font-family: "Roboto Slab";
+      padding: 0.5rem;
+      width: 11rem;
+      height: 100%;
+      box-sizing: border-box;
+      border: .5px solid #000;
+    }
+    .bracket .round .winners > div.matchups .matchup .participants .participant input[type="number"] {
+      font-size: 1rem;
+      font-family: "Roboto Slab";
+      text-align: center;
+      width: 3rem;
+      height: 100%;
+      background-color: #e0e0e0;
+      box-sizing: border-box;
+      border: .5px solid #000;
+    }
+    .bracket .round .winners > div.matchups .matchup .participants .participant.winner {
+      color: #60c645;
+      border-color: #60c645;
+    }
+    .bracket .round .winners > div.matchups .matchup .participants .participant.loser {
+      color: #dc563f;
+      border-color: #dc563f;
+    }
+    .bracket .round .winners > div.connector.filled .line, 
+    .bracket .round .winners > div.connector.filled.bottom .merger:after, 
+    .bracket .round .winners > div.connector.filled.top .merger:before {
+      border-color: #60c645;
+    }
+    .bracket .round .winners > div.connector .line, 
+    .bracket .round .winners > div.connector .merger {
+      box-sizing: border-box;
+      width: 2rem;
+      display: inline-block;
+      vertical-align: top;
+    }
+    .bracket .round .winners > div.connector .line {
+      border-bottom: thin solid #c0c0c8;
+      height: 4rem;
+    }
+    .bracket .round .winners > div.connector .merger {
+      position: relative;
+      height: 8rem;
+    }
+    .bracket .round .winners > div.connector .merger:before, 
+    .bracket .round .winners > div.connector .merger:after {
+      content: "";
+      display: block;
+      box-sizing: border-box;
+      width: 100%;
+      height: 50%;
+      border: 0 solid;
+      border-color: #c0c0c8;
+    }
+    .bracket .round .winners > div.connector .merger:before {
+      border-right-width: thin;
+      border-top-width: thin;
+    }
+    .bracket .round .winners > div.connector .merger:after {
+      border-right-width: thin;
+      border-bottom-width: thin;
+    }
+    .bracket .round.quarterfinals .winners:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+    .bracket .round.quarterfinals .winners .matchups .matchup:not(:last-child) {
+      margin-bottom: 2rem;
+    }
+    .bracket .round.semifinals .winners .matchups .matchup:not(:last-child) {
+      margin-bottom: 10rem;
+    }
+    .bracket .round.semifinals .winners .connector .merger {
+      height: 16rem;
+    }
+    .bracket .round.semifinals .winners .connector .line {
+      height: 8rem;
+    }
+    .bracket .round.finals .winners .connector .merger {
+      height: 3rem;
+    }
+    .bracket .round.finals .winners .connector .line {
+      height: 1.5rem;
+    }
+  </style>
 </head>
 <body>
-
-<div class="input-section" id="inputSection">
-    <h2>Enter participant names for Round 1</h2>
-    <div id="inputContainer">
-        <!-- JavaScript will dynamically generate the inputs here -->
-    </div>
-    <button onclick="generateBracket()">Generate Bracket</button>
-</div>
-
-<div class="bracket" id="bracketContainer">
-    <!-- Bracket will be dynamically generated here -->
-</div>
-
-<script>
-    // Initial number of participants
-    const participantsCount = 8;
-
-    // Create input fields dynamically
-    window.onload = function() {
-        const inputContainer = document.getElementById('inputContainer');
-        for (let i = 0; i < participantsCount; i++) {
-            const input = document.createElement('input');
-            input.type = 'text';
-            input.placeholder = `Participant ${i + 1}`;
-            input.id = `participant-${i}`;
-            inputContainer.appendChild(input);
-            inputContainer.appendChild(document.createElement('br'));
-        }
-    };
-
-    // Generate bracket dynamically
-    function generateBracket() {
-        const participants = [];
-        for (let i = 0; i < participantsCount; i++) {
-            const participant = document.getElementById(`participant-${i}`).value;
-            participants.push(participant || `Participant ${i + 1}`); // Default if empty
-        }
-
-        const bracketContainer = document.getElementById('bracketContainer');
-        bracketContainer.innerHTML = ''; // Clear previous bracket if any
-
-        let currentRound = participants;
-
-        // Create rounds dynamically
-        let round = 1;
-        while (currentRound.length > 1) {
-            const nextRound = [];
-            const roundDiv = document.createElement('section');
-            roundDiv.classList.add('round', 'quarterfinals'); // Modify for round style
-
-            const winnersDiv = document.createElement('div');
-            winnersDiv.classList.add('winners');
-            const matchupsDiv = document.createElement('div');
-            matchupsDiv.classList.add('matchups');
-
-            for (let i = 0; i < currentRound.length; i += 2) {
-                const winner = currentRound[i];  // For now, we just take the first in the pair
-
-                // Add to next round
-                nextRound.push(winner);
-
-                // Create matchup div
-                const matchupDiv = document.createElement('div');
-                matchupDiv.classList.add('matchup');
-
-                const participantsDiv = document.createElement('div');
-                participantsDiv.classList.add('participants');
-
-                const participant1Div = document.createElement('div');
-                participant1Div.classList.add('participant');
-                participant1Div.innerHTML = `<span>${currentRound[i]}</span>`;
-                participantsDiv.appendChild(participant1Div);
-
-                const participant2Div = document.createElement('div');
-                participant2Div.classList.add('participant');
-                participant2Div.innerHTML = `<span>${currentRound[i + 1] || 'Bye'}</span>`;
-                participantsDiv.appendChild(participant2Div);
-
-                matchupDiv.appendChild(participantsDiv);
-                matchupsDiv.appendChild(matchupDiv);
-            }
-
-            winnersDiv.appendChild(matchupsDiv);
-            winnersDiv.appendChild(createConnector(currentRound.length));
-            roundDiv.appendChild(winnersDiv);
-            bracketContainer.appendChild(roundDiv);
-
-            currentRound = nextRound;
-            round++;
-        }
-
-        // Final winner display
-        const finalRound = document.createElement('section');
-        finalRound.classList.add('round', 'finals');
-        const finalWinners = document.createElement('div');
-        finalWinners.classList.add('winners');
-        const finalMatchup = document.createElement('div');
-        finalMatchup.classList.add('matchups');
-        const finalMatch = document.createElement('div');
-        finalMatch.classList.add('matchup');
-        const finalParticipants = document.createElement('div');
-        finalParticipants.classList.add('participants');
-
-        const finalWinnerDiv = document.createElement('div');
-        finalWinnerDiv.classList.add('participant', 'winner');
-        finalWinnerDiv.innerHTML = `<span>${currentRound[0]}</span>`;
-        finalParticipants.appendChild(finalWinnerDiv);
-
-        finalMatch.appendChild(finalParticipants);
-        finalMatchup.appendChild(finalMatch);
-        finalWinners.appendChild(finalMatchup);
-        finalRound.appendChild(finalWinners);
-        bracketContainer.appendChild(finalRound);
-
-        // Hide input section after generating bracket
-        document.getElementById('inputSection').style.display = 'none';
-    }
-
-    // Create connector
-    function createConnector(participantsCount) {
-        const connectorDiv = document.createElement('div');
-        connectorDiv.classList.add('connector');
-        connectorDiv.innerHTML = '<div class="merger"></div><div class="line"></div>';
-        
-        if (participantsCount > 1) {
-            const connectorDiv1 = document.createElement('div');
-            connectorDiv1.classList.add('connector');
-            connectorDiv1.innerHTML = '<div class="merger"></div><div class="line"></div>';
-            connectorDiv.appendChild(connectorDiv1);
-        }
-        
-        return connectorDiv;
-    }
-</script>
-
+  <div class="bracket">
+    <!-- Quarterfinals -->
+    <section class="round quarterfinals">
+      <div class="winners">
+        <div class="matchups">
+          <div class="matchup">
+            <div class="participants">
+              <div class="participant winner">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+              <div class="participant">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+            </div>
+          </div>
+          <div class="matchup">
+            <div class="participants">
+              <div class="participant">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+              <div class="participant winner">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="connector">
+          <div class="merger"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+      <div class="winners">
+        <div class="matchups">
+          <div class="matchup">
+            <div class="participants">
+              <div class="participant">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+              <div class="participant winner">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+            </div>
+          </div>
+          <div class="matchup">
+            <div class="participants">
+              <div class="participant">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+              <div class="participant winner">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="connector">
+          <div class="merger"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </section>
+    <!-- Semifinals -->
+    <section class="round semifinals">
+      <div class="winners">
+        <div class="matchups">
+          <div class="matchup">
+            <div class="participants">
+              <div class="participant winner">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+              <div class="participant">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+            </div>
+          </div>
+          <div class="matchup">
+            <div class="participants">
+              <div class="participant winner">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+              <div class="participant">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="connector">
+          <div class="merger"></div>
+          <div class="line"></div>
+        </div>
+      </div>
+    </section>
+    <!-- Finals -->
+    <section class="round finals">
+      <div class="winners">
+        <div class="matchups">
+          <div class="matchup">
+            <div class="participants">
+              <div class="participant winner">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+              <div class="participant">
+                <input type="text" placeholder="Enter name" />
+                <input type="number" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="connector">
+          <div class="merger"></div>
+          <div class="line"></div>
+        </div>
+        <div class="matchups">
+            <div class="matchup">
+              <div class="participants">
+                <div class="participant winner">
+                  <input type="text" placeholder="Enter name" />
+                  <input type="number" />
+                </div>
+              </div>
+            </div>
+        </div>  
+      </div>
+    </section>
+  </div>
 </body>
 </html>
